@@ -14,11 +14,18 @@ import org.json.*;
 
 /**
  * Created by Jules on 29-3-2016.
+ *
+ * The responseReader reads all input from the server, it also parses all input, if it has found something useful he notifies all listeners
+ * If the response doesn't turn out to be useful he adds it to a queue. Lines can be gotten from the queue.
+ *
  * Wij gebruiken voor het parsen van de JSON een JSON parser van het internet.
  * Deze parser is gemaakt door Douglas Crockford en de parser is te vinden op http://mvnrepository.com/artifact/org.json/json/20160212.
  */
 public class ServerResponseReader implements Runnable {
 
+    /**
+     * Constants for protocol communication
+     */
     public static final String GAME_PREFIX = "SVR GAME ";
 
     public static final String MATCH_PREFIX = "MATCH ", YOURTURN_PREFIX = "YOURTURN ", MOVE_PREFIX = "MOVE ", CHALLENGE_PREFIX = "CHALLENGE ",
@@ -30,17 +37,39 @@ public class ServerResponseReader implements Runnable {
     private static final String PLAYERONESCORE_VARNAME = "PLAYERONESCORE", PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE", COMMENT_VARNAME = "COMMENT";
     public static final String CANCELLED_PREFIX = "CANCELLED ";
 
+    /**
+     * All gameListeners which will be notified of events
+     */
     private ArrayList<GameListener> listeners = new ArrayList<>();
 
+    /**
+     * All server responses which should not be sent to listeners (Like a game has started for example, mostly this queue consists of
+     * OK's and ERR's). When a line from this queue is read it is also deleted.
+     */
     private Queue<String> responseBuffer = new LinkedList<>();
+    /**
+     * A reader to read the input stream.
+     */
     private BufferedReader reader;
 
+    /**
+     * A boolean indicating if this thread should run
+     */
     boolean running = true;
 
+    /**
+     *
+     * @param socket The socket on which's inputStream to read.
+     * @throws IOException
+     */
     public ServerResponseReader(Socket socket) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
+    /**
+     * This method can be started and will read input of the socket. It has to be started in a new Thread, because it will run till
+     * stop is called.
+     */
     @Override
     public void run() {
         while (running) {
@@ -60,7 +89,11 @@ public class ServerResponseReader implements Runnable {
     }
 
 
-
+    /**
+     * Parse a String read from the inputStream
+     * @param s The string to parse.
+     * @return true if a Line containing information for listeners has been found, false otherwise
+     */
     private boolean parse(String s) {
         if (s.equals("Strategic Game Server [Version 1.0]") || s.equals("(C) Copyright 2009 Hanze Hogeschool Groningen")) {
             return true;
@@ -128,17 +161,29 @@ public class ServerResponseReader implements Runnable {
         return true;
     }
 
+    /**
+     * Add a new gamelistener
+     * @param listener The listener which wishes to be notified of game events
+     */
     public void addGameListener(GameListener listener) {
         listeners.add(listener);
     }
 
+    /**
+     * Stop the thread reading from the server
+     */
     public void stop() {
         running = false;
     }
 
+    /**
+     * Read i lines from the buffer (Server responses which are not sent to listeners). This method blocks until i lines have been
+     * gathered.
+     * @param i The amount of lines to read
+     * @return The lines which have been read
+     */
     public List<String> read(int i) {
         List<String> result = new ArrayList<>(i);
-
         for (int j = 0; j < i; j++) {
             synchronized (responseBuffer){
                 while(responseBuffer.size()==0){
