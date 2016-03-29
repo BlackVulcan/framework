@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 public class ContainerView extends JFrame implements View{
+	private static final long serialVersionUID = 1L;
 	JPanel container;
 	ArrayList<JButton> buttons = new ArrayList<>();
 	public ContainerView() {
