@@ -1,6 +1,8 @@
+package main.java.model;
+
+import main.java.controller.GameListener;
 import org.json.JSONArray;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
