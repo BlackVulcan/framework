@@ -1,10 +1,9 @@
-package main.java.controller;
+package controller;
 
 /**
  * Created by Jules on 29-3-2016.
  */
 public interface GameListener {
-
     public void match(String playerToMove, String gametype, String opponent);
     public void yourTurn(String turnmessage);
     public void move(String player, String move, String details);

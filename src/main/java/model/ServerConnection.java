@@ -1,6 +1,6 @@
-package main.java.model;
+package model;
 
-import main.java.controller.GameListener;
+import controller.GameListener;
 import org.json.JSONArray;
 
 import java.io.IOException;

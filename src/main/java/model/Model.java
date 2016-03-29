@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Model {
-	private ArrayList<ActionListener> actionListenerList = new ArrayList<ActionListener>();
+	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 	
 	public void addActionListener(ActionListener actionListener){
 		actionListenerList.add(actionListener);
