@@ -8,13 +8,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
-public class ContainerView implements View{
-	ArrayList<JButton> buttons;
+public class ContainerView extends JFrame implements View{
+	JPanel container;
+	ArrayList<JButton> buttons = new ArrayList<>();
 	public ContainerView() {
-		JFrame jFrame = new JFrame();
 		
-		JPanel panel = new JPanel();
-		jFrame.getContentPane().add(panel, BorderLayout.CENTER);
+		container = new JPanel();
+		this.getContentPane().add(container, BorderLayout.CENTER);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 
 	@Override
@@ -25,5 +26,9 @@ public class ContainerView implements View{
 	
 	public ArrayList<JButton> getButtons(){
 		return buttons;
+	}
+	
+	public void showView(JPanel panel){
+		container.add(container, BorderLayout.CENTER);
 	}
 }

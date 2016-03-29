@@ -7,17 +7,24 @@ import javax.swing.JButton;
 
 import model.Model;
 import view.ContainerView;
-import view.View;
+import view.*;
 
 public class Controller implements ActionListener{
 	ContainerView containerView;
+	MenuView menuView;
+	
 	public Controller(Model model) {
 		this.containerView = new ContainerView();
+		this.menuView = new MenuView();
+		
+		containerView.setJMenuBar(menuView);
 		
 		//add actionListeners to control buttons
 		for(JButton button: containerView.getButtons()){
 			button.addActionListener(this);
 		}
+		
+		this.containerView.setVisible(true);
 	}
 
 	@Override
