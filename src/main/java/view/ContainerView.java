@@ -7,13 +7,13 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 public class ContainerView extends JFrame implements View{
 	private static final long serialVersionUID = 1L;
 	JPanel container;
 	ArrayList<JButton> buttons = new ArrayList<>();
-	public ContainerView() {
-		
+	public ContainerView() {		
 		container = new JPanel();
 		this.getContentPane().add(container, BorderLayout.CENTER);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -30,6 +30,6 @@ public class ContainerView extends JFrame implements View{
 	}
 	
 	public void showView(JPanel panel){
-		container.add(container, BorderLayout.CENTER);
+		getContentPane().add(panel, BorderLayout.CENTER);
 	}
 }

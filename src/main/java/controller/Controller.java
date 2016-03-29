@@ -2,31 +2,37 @@ package controller;
 
 import model.Model;
 import model.ServerConnection;
-import view.ContainerView;
-import view.MenuView;
-import view.View;
+import view.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Controller implements ActionListener {
     private ServerConnection serverConnection;
     ContainerView containerView;
     MenuView menuView;
+    LobbyView lobbyView;
 
     public Controller(Model model) {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
+        this.lobbyView = new LobbyView();
 
         containerView.setJMenuBar(menuView);
 
-        //add actionListeners to control buttons
-        for (JButton button : containerView.getButtons()) {
-            button.addActionListener(this);
-        }
-
+        //maybe for later in the project
+//        //add actionListeners to control buttons
+//        for (JButton button : containerView.getButtons()) {
+//            button.addActionListener(this);
+//        }
+        
+        setLobby();
+        this.containerView.showView(lobbyView);
+        
         this.containerView.setVisible(true);
     }
 
@@ -35,7 +41,7 @@ public class Controller implements ActionListener {
         Object source = e.getSource();
         if (source instanceof Model) {
             //do stuff
-        } else if (source instanceof View) {
+        } else if (source instanceof LobbyView) {
             //do stuff
         }
     }
@@ -75,5 +81,23 @@ public class Controller implements ActionListener {
     public void acceptMatch() {
         //todo: implement method.
         throw new RuntimeException("Not implemented");
+    }
+    
+    public void setLobby(){
+    	//lobbyView.setAvailableGames(serverConnection.getGamelist());
+    	//lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+    	
+    	List<String> list = new ArrayList<>();
+    	for(int i = 0; i < 50; i++){
+    		list.add("TeGekkeGame");
+    	}
+    	lobbyView.setAvailableGames(list);
+    	
+    	List<String> list2 = new ArrayList<>();
+    	for(int i = 0; i < 50; i++){
+    		list2.add("Ikzelf");
+    	}
+    	lobbyView.setAvailablePlayers(list2);
+    	containerView.pack();
     }
 }
