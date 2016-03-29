@@ -1,5 +1,7 @@
 package view;
 
-public abstract class View {
+import java.awt.event.ActionListener;
+
+public abstract class View implements ActionListener{
 
 }
