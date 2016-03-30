@@ -10,7 +10,8 @@ import java.util.List;
 public class LobbyView extends JPanel implements View {
     ArrayList<JButton> buttons;
     JTable table;
-    JList playerList, gameList;
+    JList<String> playerList;
+    JList<String> gameList;
     DefaultListModel<String> playerListModel, gameListModel;
     JPanel playPanel, lobbyPanel, playerPanel, challengePanel, gamePanel;
     JButton btnSpeel;
@@ -53,12 +54,12 @@ public class LobbyView extends JPanel implements View {
         gamePlayerPanel = new JPanel();
         lobbyPanel.add(gamePlayerPanel, BorderLayout.CENTER);
         gamePlayerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gameList = new JList(gameListModel);
+        gameList = new JList<>(gameListModel);
         gamePanel = new JPanel();
         gamePanel.add(new JScrollPane(gameList));
         gamePlayerPanel.add(gamePanel);
 
-        playerList = new JList(playerListModel);
+        playerList = new JList<>(playerListModel);
         playerPanel = new JPanel();
         gamePlayerPanel.add(playerPanel);
         playerPanel.add(new JScrollPane(playerList));
