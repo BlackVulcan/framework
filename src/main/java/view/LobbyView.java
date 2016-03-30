@@ -28,7 +28,7 @@ public class LobbyView extends JPanel implements View{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		//dosomething
 
 	}
 

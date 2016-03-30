@@ -79,7 +79,6 @@ public class Controller implements ActionListener {
     }
 
     public void acceptMatch() {
-        //todo: implement method.
         throw new RuntimeException("Not implemented");
     }
     
