@@ -7,13 +7,13 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Model {
-
+    public static final int SERVER_CONNECTION_SET = 2;
     public static final int GAME_CHANGED = 3;
 
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 	private ClientAbstractGameModule gameModule;
     private String clientName;
-
+    private String serverAddress;
 
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
@@ -43,5 +43,14 @@ public class Model {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+    
+    public void setServerAddress(String serverAdress){
+    	this.serverAddress = serverAdress;
+    	processEvent(new ActionEvent(this, SERVER_CONNECTION_SET, null));
+    }
+    
+    public String getServerAddress(){
+    	return this.serverAddress;
     }
 }
