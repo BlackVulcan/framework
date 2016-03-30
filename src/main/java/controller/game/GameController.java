@@ -1,6 +1,8 @@
 package controller.game;
 
+import com.sun.corba.se.spi.activation.Server;
 import model.Model;
+import model.ServerConnection;
 import nl.abstractteam.gamemodule.ClientAbstractGameModule;
 import nl.abstractteam.gamemodule.MoveListener;
 import nl.hanze.t23i.gamemodule.extern.AbstractGameModule;
@@ -15,10 +17,12 @@ public class GameController implements GameListener,MoveListener {
 
     public static final String MODULE_PATH = "modules";
     private GameModuleLoader loader = new GameModuleLoader(new File(MODULE_PATH));
+    private ServerConnection serverConnection;
     private Model model;
 
-    public GameController(Model model) {
+    public GameController(Model model, ServerConnection serverConnection) {
         this.model = model;
+        this.serverConnection = serverConnection;
     }
 
     @Override
@@ -38,7 +42,7 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void move(String player, String move, String details) {
-
+        model.getGameModule().doPlayerMove(player,move);
     }
 
     @Override
@@ -68,6 +72,14 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void movePerformed(String s) {
+        if(serverConnection==null){
+            System.err.println("Not connected to a server");
+        }
+        model.getGameModule().doPlayerMove(model.getClientName(),s);
+        serverConnection.move(s);
+    }
 
+    public void setServerConnection(ServerConnection serverConnection) {
+        this.serverConnection = serverConnection;
     }
 }

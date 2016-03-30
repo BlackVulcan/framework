@@ -1,7 +1,9 @@
 package controller;
 
+import controller.game.GameController;
 import model.Model;
 import model.ServerConnection;
+import nl.abstractteam.gamemodule.ClientAbstractGameModule;
 import view.*;
 
 import java.awt.event.ActionEvent;
@@ -12,6 +14,7 @@ import java.util.List;
 
 public class Controller implements ActionListener {
     private ServerConnection serverConnection;
+    private GameController gameController;
     ContainerView containerView;
     MenuView menuView;
     LobbyView lobbyView;
@@ -20,12 +23,13 @@ public class Controller implements ActionListener {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
         this.lobbyView = new LobbyView();
-        
+
         model.addActionListener(this);
         model.addActionListener(lobbyView);
 
         containerView.setJMenuBar(menuView);
 
+        gameController = new GameController(model,serverConnection);
         //maybe for later in the project
 //        //add actionListeners to control buttons
 //        for (JButton button : containerView.getButtons()) {
@@ -44,6 +48,7 @@ public class Controller implements ActionListener {
         if (source instanceof Model) {
             Model model = (Model) e.getSource();
             if(e.getID()==Model.GAME_CHANGED){
+                model.getGameModule().addMoveListener(gameController);
                 containerView.showView(model.getGameModule().getView());
             }
         } else if (source instanceof LobbyView) {
@@ -55,6 +60,7 @@ public class Controller implements ActionListener {
     public boolean connect(String hostname, int port) {
         try {
             serverConnection = new ServerConnection(hostname, port);
+            gameController.setServerConnection(serverConnection);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
