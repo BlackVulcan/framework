@@ -26,19 +26,13 @@ public class Controller implements ActionListener {
 
         model.addActionListener(this);
         model.addActionListener(lobbyView);
+        menuView.addActionListener(this);
 
         containerView.setJMenuBar(menuView);
 
         gameController = new GameController(model,serverConnection);
-        //maybe for later in the project
-//        //add actionListeners to control buttons
-//        for (JButton button : containerView.getButtons()) {
-//            button.addActionListener(this);
-//        }
         
-        setLobby();
         this.containerView.showView(lobbyView);
-        
         this.containerView.setVisible(true);
     }
 
@@ -47,14 +41,22 @@ public class Controller implements ActionListener {
         Object source = e.getSource();
         if (source instanceof Model) {
             Model model = (Model) e.getSource();
-            if(e.getID()==Model.GAME_CHANGED){
+            if (e.getID()== Model.GAME_CHANGED) {
                 model.getGameModule().addMoveListener(gameController);
                 containerView.showView(model.getGameModule().getView());
             }
         } else if (source instanceof LobbyView) {
             //do stuff
+        } else if (source instanceof MenuView) {
+        	int sourceID = e.getID();
+        	if (sourceID == MenuView.SERVER_CONNECTION_SET) {
+        		setLobby();
+        	} else if (sourceID == MenuView.DISCONNECTED_FROM_SERVER) {
+        		lobbyView = new LobbyView();
+        		this.containerView.showView(lobbyView);
+        		System.out.println("reset lobby");
+        	}
         }
-
     }
 
     public boolean connect(String hostname, int port) {
@@ -95,25 +97,33 @@ public class Controller implements ActionListener {
         throw new RuntimeException("Not implemented");
     }
     
-    public void setLobby(){
-    	//lobbyView.setAvailableGames(serverConnection.getGamelist());
-    	//lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
-    	
-    	List<String> list = new ArrayList<>();
-    	for(int i = 0; i < 50; i++){
-    		list.add("TeGekkeGame");
-    	}
-    	lobbyView.setAvailableGames(list);
-    	
-    	List<String> list2 = new ArrayList<>();
-    	for(int i = 0; i < 50; i++){
-    		list2.add("Ikzelf");
-    	}
-    	lobbyView.setAvailablePlayers(list2);
-    	containerView.pack();
-    	
-    	for(int i = 0; i < 50; i++){
-    		lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
+    /**
+     * Sets the lobby with available games and players if connected with a server.
+     * 
+     * Contains test data. Needs to be removed when connection with a server is possible
+     */
+    public void setLobby() {
+    	//Needs to be changed when the registration of the ServerConnection class is moved to the Model class.
+    	boolean connected = true;
+    	if(connected) {
+        	//lobbyView.setAvailableGames(serverConnection.getGamelist());
+        	//lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+        	
+        	List<String> list = new ArrayList<>();
+        	for(int i = 0; i < 50; i++) {
+        		list.add("TeGekkeGame");
+        	}
+        	lobbyView.setAvailableGames(list);
+        	
+        	List<String> list2 = new ArrayList<>();
+        	for(int i = 0; i < 50; i++) {
+        		list2.add("Ikzelf");
+        	}
+        	lobbyView.setAvailablePlayers(list2);
+        	
+        	for(int i = 0; i < 50; i++){
+        		lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
+        	}
     	}
     }
 }
