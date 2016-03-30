@@ -12,6 +12,7 @@ public class ContainerView extends JFrame implements View {
 
     public ContainerView() {
         container = new JPanel();
+        container.setLayout(new BorderLayout(0, 0));
         this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);

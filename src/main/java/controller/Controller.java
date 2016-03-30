@@ -101,5 +101,7 @@ public class Controller implements ActionListener {
     	}
     	lobbyView.setAvailablePlayers(list2);
     	containerView.pack();
+    	
+    	lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
     }
 }

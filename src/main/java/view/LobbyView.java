@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyView extends JPanel implements View {
-    ArrayList<JButton> buttons;
+	private static final long serialVersionUID = 1L;
+	ArrayList<JButton> buttons;
     JTable table;
     JList<String> playerList;
     JList<String> gameList;
@@ -37,11 +38,28 @@ public class LobbyView extends JPanel implements View {
 
         playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         playPanel.add(btnSpeel);
-
-        lobbyPanel.setLayout(new BorderLayout(0, 0));
-        lobbyPanel.add(challengePanel, BorderLayout.SOUTH);
+        lobbyPanel.setLayout(new GridLayout(0, 1, 0, 0));
+        
+                gamePlayerPanel = new JPanel();
+                lobbyPanel.add(gamePlayerPanel);
+                gamePlayerPanel.setLayout(new GridLayout(1, 0, 0, 0));
+                gameList = new JList<>(gameListModel);
+                gamePanel = new JPanel();
+                gamePanel.setLayout(new BorderLayout(0, 0));
+                gamePanel.add(new JScrollPane(gameList), BorderLayout.CENTER);
+                gamePlayerPanel.add(gamePanel);
+                
+                        playerList = new JList<>(playerListModel);
+                        playerPanel = new JPanel();
+                        gamePlayerPanel.add(playerPanel);
+                        playerPanel.setLayout(new BorderLayout(0, 0));
+                        playerPanel.add(new JScrollPane(playerList));
+        lobbyPanel.add(challengePanel);
+        challengePanel.setLayout(new BorderLayout(0, 0));
 
         table = new JTable();
+        table.setPreferredScrollableViewportSize(table.getPreferredSize());
+        table.setFillsViewportHeight(true);
         table.setModel(new DefaultTableModel(
                 new Object[][]{
                 },
@@ -49,20 +67,7 @@ public class LobbyView extends JPanel implements View {
                         "Spel", "Accepteren", "Weigeren", "Speler"
                 }
         ));
-        challengePanel.add(new JScrollPane(table));
-
-        gamePlayerPanel = new JPanel();
-        lobbyPanel.add(gamePlayerPanel, BorderLayout.CENTER);
-        gamePlayerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-        gameList = new JList<>(gameListModel);
-        gamePanel = new JPanel();
-        gamePanel.add(new JScrollPane(gameList));
-        gamePlayerPanel.add(gamePanel);
-
-        playerList = new JList<>(playerListModel);
-        playerPanel = new JPanel();
-        gamePlayerPanel.add(playerPanel);
-        playerPanel.add(new JScrollPane(playerList));
+        challengePanel.add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
     public ArrayList<JButton> getButtons() {
@@ -79,5 +84,10 @@ public class LobbyView extends JPanel implements View {
         for (String player : players) {
             playerListModel.addElement(player);
         }
+    }
+    
+    public void setChallenge(String game, String player){
+    	DefaultTableModel model = (DefaultTableModel) table.getModel();
+    	model.addRow(new Object[]{game, player, "hoi", "hoi"});
     }
 }
