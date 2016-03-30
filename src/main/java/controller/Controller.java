@@ -19,7 +19,6 @@ public class Controller implements ActionListener {
     public Controller(Model model) {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
-
         containerView.setJMenuBar(menuView);
 
         //add actionListeners to control buttons
