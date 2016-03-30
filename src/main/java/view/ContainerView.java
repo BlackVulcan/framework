@@ -29,7 +29,7 @@ public class ContainerView extends JFrame implements View {
         return buttons;
     }
 
-    public void showView(JPanel panel) {
-        container.add(panel, BorderLayout.CENTER);
+    public void showView(Component component) {
+        container.add(component, BorderLayout.CENTER);
     }
 }
