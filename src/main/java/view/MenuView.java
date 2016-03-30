@@ -32,16 +32,12 @@ public class MenuView extends JMenuBar implements View {
         JMenuItem mennuItemdisConnect = new JMenuItem("Disconnect");
         mennuItemdisConnect.setMnemonic(KeyEvent.VK_D);
         mennuItemdisConnect.setToolTipText("Disconnect from the current server");
-        mennuItemdisConnect.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                //todo: implement this.
-                //do stuff -> of vang het af in controller door een event te lanceren
-            	
-            	//if we are now disconnected from a server:
-                if(true)
-                	processEvent(new ActionEvent(this, DISCONNECTED_FROM_SERVER, null));
-            }
+        mennuItemdisConnect.addActionListener(event -> {
+            //todo: implement disconnection from server.
+            
+            //if we are now disconnected from a server:
+            if(true)
+            	processEvent(new ActionEvent(this, DISCONNECTED_FROM_SERVER,null));
         });
         file.add(mennuItemdisConnect);
 

@@ -88,6 +88,25 @@ public class LobbyView extends JPanel implements View {
 
 	public void setChallenge(String game, String player){
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
+		
+		//needs to be modified to accept or reject a challenge instead of "hoi"...
 		model.addRow(new Object[]{game, player, "hoi", "hoi"});
+	}
+	
+	public void reset(){
+		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+			tableModel.removeRow(i);
+		}
+		
+		DefaultListModel<String> playerListModel = (DefaultListModel<String>) playerList.getModel();
+		for (int i = playerListModel.size() - 1; i >= 0; i--) {
+			playerListModel.remove(i);
+		}
+		
+		DefaultListModel<String> gameListModel = (DefaultListModel<String>) gameList.getModel();
+		for (int i = gameListModel.size() - 1; i >= 0; i--) {
+			gameListModel.remove(i);
+		}
 	}
 }

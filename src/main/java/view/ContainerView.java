@@ -32,7 +32,6 @@ public class ContainerView extends JFrame implements View {
     public void showView(Component component) {
         container.removeAll();
         container.add(component);
-        pack();
     }
     
     public void setFullScreen(){

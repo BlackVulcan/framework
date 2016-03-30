@@ -39,7 +39,6 @@ public class Controller implements ActionListener {
 //            button.addActionListener(this);
 //        }
         
-        setLobby();
         this.containerView.showView(lobbyView);
         
         this.containerView.setVisible(true);
@@ -61,9 +60,7 @@ public class Controller implements ActionListener {
         	if (sourceID == MenuView.SERVER_CONNECTION_SET) {
         		setLobby();
         	} else if (sourceID == MenuView.DISCONNECTED_FROM_SERVER) {
-        		lobbyView = new LobbyView();
-        		this.containerView.showView(lobbyView);
-        		System.out.println("reset lobby");
+        		lobbyView.reset();
         	}
         }
 
