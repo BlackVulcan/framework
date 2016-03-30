@@ -27,21 +27,30 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void match(String playerToMove, String gametype, String opponent) {
+        System.out.println("GameController.match");
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
         AbstractGameModule module = loader.loadGameModule(gametype,playerOne,playerTwo);
         if(module instanceof ClientAbstractGameModule){
+            System.out.println("found an instance");
             model.setGameModule((ClientAbstractGameModule)module);
+            model.getGameModule().start();
+        }else{
+            System.out.println("Was not an instance");
         }
     }
 
     @Override
     public void yourTurn(String turnmessage) {
-
+        System.out.println("yourturn");
+        System.out.printf("TurnMessage = %s\n",turnmessage);
     }
 
     @Override
     public void move(String player, String move, String details) {
+        System.out.println(model.getGameModule());
+        System.out.println(player);
+        System.out.println(move);
         model.getGameModule().doPlayerMove(player,move);
     }
 
@@ -57,25 +66,29 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void loss(String playerOneScore, String playerTwoScore, String comment) {
-
+        System.out.println("ServerConnectionTest.loss");
+        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
-
+        System.out.println("ServerConnectionTest.win");
+        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void draw(String playerOneScore, String playerTwoScore, String comment) {
-
+        System.out.println("ServerConnectionTest.draw");
+        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void movePerformed(String s) {
         if(serverConnection==null){
             System.err.println("Not connected to a server");
+            return;
         }
-        model.getGameModule().doPlayerMove(model.getClientName(),s);
+//        model.getGameModule().doPlayerMove(model.getClientName(),s);
         serverConnection.move(s);
     }
 
