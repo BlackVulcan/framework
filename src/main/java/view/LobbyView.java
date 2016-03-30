@@ -1,82 +1,83 @@
 package view;
 
-import java.awt.BorderLayout;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JTable;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
-import javax.swing.table.DefaultTableModel;
-import java.awt.FlowLayout;
+public class LobbyView extends JPanel implements View {
+    ArrayList<JButton> buttons;
+    JTable table;
+    JList<String> playerList;
+    JList<String> gameList;
+    DefaultListModel<String> playerListModel, gameListModel;
+    JPanel playPanel, lobbyPanel, playerPanel, challengePanel, gamePanel;
+    JButton btnSpeel;
+    private JPanel gamePlayerPanel;
 
-public class LobbyView implements View{
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        //todo: do something
+    }
 
-	ArrayList<JButton> buttons;
-	JTable table;
-	JList playerList, gameList;
-	JPanel container, playPanel, panel, playerPanel, challengePanel, gamePanel;
-	JButton btnSpeel;
-	JScrollPane gameScrollPane, playerScrollPane, challengeScrollPane;
-	
-	
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	public LobbyView(){
-	playerList = new JList();
-	gameList = new JList();
-	container = new JPanel();
-	playPanel = new JPanel();
-	panel = new JPanel();
-	playerPanel = new JPanel();
-	challengePanel = new JPanel();
-	btnSpeel = new JButton("Speel");
-	gamePanel = new JPanel();
-	gameScrollPane = new JScrollPane();
-	playerScrollPane = new JScrollPane();
-	challengeScrollPane = new JScrollPane();
-	
-	container.setLayout(new BorderLayout(0, 0));
-	container.add(playPanel, BorderLayout.SOUTH);
-	container.add(panel, BorderLayout.CENTER);
-	
-	playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-	playPanel.add(btnSpeel);
-	
-	panel.setLayout(new BorderLayout(0, 0));
-	panel.add(gamePanel, BorderLayout.WEST);
-	panel.add(playerPanel, BorderLayout.EAST);
-	panel.add(challengePanel, BorderLayout.SOUTH);
+    public LobbyView() {
+        playerListModel = new DefaultListModel<>();
+        gameListModel = new DefaultListModel<>();
+        playPanel = new JPanel();
+        lobbyPanel = new JPanel();
+        challengePanel = new JPanel();
+        btnSpeel = new JButton("Speel");
+        //challengeScrollPane = new JScrollPane();
 
-	gamePanel.add(gameScrollPane);
-	gamePanel.add(gameList);
+        this.setLayout(new BorderLayout(0, 0));
+        this.add(playPanel, BorderLayout.SOUTH);
+        this.add(lobbyPanel, BorderLayout.CENTER);
 
-	playerPanel.add(playerScrollPane);
-	playerPanel.add(playerList);
-	
-	challengePanel.add(challengeScrollPane);
-	
-	table = new JTable();
-	table.setModel(new DefaultTableModel(
-		new Object[][] {
-		},
-		new String[] {
-			"Spel", "Accepteren", "Weigeren", "Speler"
-		}
-	));
-	challengePanel.add(table);
-	
-	}
-	
-	public ArrayList<JButton> getButtons(){
-		return buttons;
-	}
+        playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        playPanel.add(btnSpeel);
 
+        lobbyPanel.setLayout(new BorderLayout(0, 0));
+        lobbyPanel.add(challengePanel, BorderLayout.SOUTH);
+
+        table = new JTable();
+        table.setModel(new DefaultTableModel(
+                new Object[][]{
+                },
+                new String[]{
+                        "Spel", "Accepteren", "Weigeren", "Speler"
+                }
+        ));
+        challengePanel.add(new JScrollPane(table));
+
+        gamePlayerPanel = new JPanel();
+        lobbyPanel.add(gamePlayerPanel, BorderLayout.CENTER);
+        gamePlayerPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        gameList = new JList<>(gameListModel);
+        gamePanel = new JPanel();
+        gamePanel.add(new JScrollPane(gameList));
+        gamePlayerPanel.add(gamePanel);
+
+        playerList = new JList<>(playerListModel);
+        playerPanel = new JPanel();
+        gamePlayerPanel.add(playerPanel);
+        playerPanel.add(new JScrollPane(playerList));
+    }
+
+    public ArrayList<JButton> getButtons() {
+        return buttons;
+    }
+
+    public void setAvailableGames(List<String> games) {
+        for (String game : games) {
+            gameListModel.addElement(game);
+        }
+    }
+
+    public void setAvailablePlayers(List<String> players) {
+        for (String player : players) {
+            playerListModel.addElement(player);
+        }
+    }
 }
