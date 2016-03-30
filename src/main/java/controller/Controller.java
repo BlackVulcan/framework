@@ -21,6 +21,9 @@ public class Controller implements ActionListener {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
         this.lobbyView = new LobbyView();
+        
+        model.addActionListener(this);
+        model.addActionListener(lobbyView);
 
         containerView.setJMenuBar(menuView);
 
