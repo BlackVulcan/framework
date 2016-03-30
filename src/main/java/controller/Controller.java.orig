@@ -4,6 +4,7 @@ import model.Model;
 import model.ServerConnection;
 import view.*;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -19,11 +20,14 @@ public class Controller implements ActionListener {
     public Controller(Model model) {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
+<<<<<<< HEAD
+=======
         this.lobbyView = new LobbyView();
         
         model.addActionListener(this);
         model.addActionListener(lobbyView);
 
+>>>>>>> 431fda2b6d3e49fc8756c4f76f3f9a4610c80765
         containerView.setJMenuBar(menuView);
 
         //maybe for later in the project
@@ -42,14 +46,10 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source instanceof Model) {
-            Model model = (Model) e.getSource();
-            if(e.getID()==Model.GAME_CHANGED){
-                containerView.showView(model.getGameModule().getView());
-            }
+            //do stuff
         } else if (source instanceof LobbyView) {
             //do stuff
         }
-
     }
 
     public boolean connect(String hostname, int port) {
@@ -85,7 +85,6 @@ public class Controller implements ActionListener {
     }
 
     public void acceptMatch() {
-        //todo: implement method.
         throw new RuntimeException("Not implemented");
     }
     
@@ -105,9 +104,5 @@ public class Controller implements ActionListener {
     	}
     	lobbyView.setAvailablePlayers(list2);
     	containerView.pack();
-    	
-    	for(int i = 0; i < 50; i++){
-    		lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
-    	}
     }
 }

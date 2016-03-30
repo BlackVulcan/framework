@@ -1,4 +1,4 @@
-package controller;
+package controller.game;
 
 /**
  * This Interface represents messages that the server can send. By implementing it, you can react to server messages
