@@ -11,10 +11,11 @@ public class MenuView extends JMenuBar implements View {
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
     public static final int SERVER_CONNECTION_SET = 1;
     public static final int DISCONNECTED_FROM_SERVER = 2;
+    public static final int PLAY_WITH_AI = 3;
 
     public MenuView() {
-        JMenu file = new JMenu("Start");
-        file.setMnemonic(KeyEvent.VK_S);
+        JMenu start = new JMenu("Start");
+        start.setMnemonic(KeyEvent.VK_S);
         JMenuItem mennuItemConnect = new JMenuItem("Connect");
         mennuItemConnect.setMnemonic(KeyEvent.VK_C);
         mennuItemConnect.setToolTipText("Connect to a server");
@@ -27,7 +28,7 @@ public class MenuView extends JMenuBar implements View {
             if(true)
             	processEvent(new ActionEvent(this, SERVER_CONNECTION_SET,null));
         });
-        file.add(mennuItemConnect);
+        start.add(mennuItemConnect);
 
         JMenuItem mennuItemdisConnect = new JMenuItem("Disconnect");
         mennuItemdisConnect.setMnemonic(KeyEvent.VK_D);
@@ -39,15 +40,28 @@ public class MenuView extends JMenuBar implements View {
             if(true)
             	processEvent(new ActionEvent(this, DISCONNECTED_FROM_SERVER,null));
         });
-        file.add(mennuItemdisConnect);
+        start.add(mennuItemdisConnect);
 
         JMenuItem enuItemExit = new JMenuItem("Exit");
         enuItemExit.setMnemonic(KeyEvent.VK_E);
         enuItemExit.setToolTipText("Exit application");
         enuItemExit.addActionListener(event -> System.exit(0));
-        file.add(enuItemExit);
+        start.add(enuItemExit);
+        
+        JMenu intelligence = new JMenu("Intelligence");
+        intelligence.setMnemonic(KeyEvent.VK_I);
+        JMenuItem mennuItemPlayWithAI = new JMenuItem("Play with AI");
+        mennuItemPlayWithAI.setMnemonic(KeyEvent.VK_P);
+        mennuItemPlayWithAI.setToolTipText("Activate AI to play for you");
+        mennuItemPlayWithAI.addActionListener(event -> {
+            //if gamemodule is loaded:
+            if(true)
+            	processEvent(new ActionEvent(this, PLAY_WITH_AI, null));
+        });
+        intelligence.add(mennuItemPlayWithAI);
 
-        this.add(file);
+        this.add(start);
+        this.add(intelligence);
     }
     
     public void addActionListener(ActionListener actionListener) {

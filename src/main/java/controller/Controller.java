@@ -28,6 +28,7 @@ public class Controller implements ActionListener {
 
         model.addActionListener(this);
         model.addActionListener(lobbyView);
+        model.addActionListener(containerView);
         menuView.addActionListener(this);
 
         containerView.setJMenuBar(menuView);
@@ -61,6 +62,9 @@ public class Controller implements ActionListener {
         		setLobby();
         	} else if (sourceID == MenuView.DISCONNECTED_FROM_SERVER) {
         		lobbyView.reset();
+        	} else if (sourceID == MenuView.PLAY_WITH_AI) {
+        		//Activate AI
+        		System.out.println("Activating AI is not yet implemented");
         	}
         }
 

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Model {
+	public static final int TURN_SWITCHED = 1;
     public static final int SERVER_CONNECTION_SET = 2;
     public static final int GAME_CHANGED = 3;
 
@@ -14,6 +15,7 @@ public class Model {
 	private ClientAbstractGameModule gameModule;
     private String clientName;
     private String serverAddress;
+    private boolean myTurn = false;
 
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
@@ -52,5 +54,14 @@ public class Model {
     
     public String getServerAddress(){
     	return this.serverAddress;
+    }
+    
+    public void setTurn(boolean myTurn){
+    	this.myTurn = myTurn;
+    	processEvent(new ActionEvent(this, TURN_SWITCHED, null));
+    }
+    
+    public boolean getTurn(){
+    	return this.myTurn;
     }
 }
