@@ -91,10 +91,18 @@ public class LobbyView extends JPanel implements View {
 		}
 	}
 
-	public void setAvailablePlayers(List<String> players) {
-		resetPlayerList();
-		for (String player : players) {
-			playerListModel.addElement(player);
+	public void setAvailablePlayers(List<String> players, String clientName) {
+		
+		for(int i = playerListModel.size() - 1; i >= 0; i--) {
+			if(!players.contains(playerListModel.get(i))){
+				playerListModel.remove(i);
+			}
+		}
+		
+		for(int i = 0; i < players.size(); i++){
+			if(!playerListModel.contains(players.get(i)) && !players.get(i).equals(clientName)){
+				playerListModel.addElement(players.get(i));
+			}
 		}
 	}
 

@@ -72,11 +72,11 @@ public class Controller implements ActionListener {
 				close();
 			} else if (sourceID == MenuView.PLAY_WITH_AI) {
 				//Activate AI
+				System.out.println("AI is not yet implemented...");
 			}
 		} else if (source instanceof LobbyView) {
-			System.out.println("lobbyview has called me...");
 			if(sourceID == LobbyView.LOBBY_REFRESH){
-				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 			} else if (sourceID == LobbyView.PLAY_GAME){
 			}
 		} else if (source instanceof LoginBox) {
@@ -98,9 +98,6 @@ public class Controller implements ActionListener {
 				}
 				loginBox.showConnectError();
 			}
-		}
-		else{
-			System.out.println("I don't know what has called me... :(");
 		}
 	}
 
@@ -158,7 +155,7 @@ public class Controller implements ActionListener {
 	 */
 	public void setLobby() {
 		lobbyView.setAvailableGames(serverConnection.getGamelist());
-		lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+		lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 		lobbyView.automaticRefresh();
 
 		// need to build something for getting challenges!!

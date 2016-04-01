@@ -16,39 +16,39 @@ public class MenuView extends JMenuBar implements View {
     public MenuView() {
         JMenu start = new JMenu("Start");
         start.setMnemonic(KeyEvent.VK_S);
-        JMenuItem mennuItemConnect = new JMenuItem("Connect");
-        mennuItemConnect.setMnemonic(KeyEvent.VK_C);
-        mennuItemConnect.setToolTipText("Connect to a server");
-        mennuItemConnect.addActionListener(event -> {
+        JMenuItem menuItemConnect = new JMenuItem("Connect");
+        menuItemConnect.setMnemonic(KeyEvent.VK_C);
+        menuItemConnect.setToolTipText("Connect to a server");
+        menuItemConnect.addActionListener(event -> {
             processEvent(new ActionEvent(this, SERVER_CONNECTION_SHOW, null));
         });
-        start.add(mennuItemConnect);
+        start.add(menuItemConnect);
 
-        JMenuItem mennuItemdisConnect = new JMenuItem("Disconnect");
-        mennuItemdisConnect.setMnemonic(KeyEvent.VK_D);
-        mennuItemdisConnect.setToolTipText("Disconnect from the current server");
-        mennuItemdisConnect.addActionListener(event -> {
+        JMenuItem menuItemdisConnect = new JMenuItem("Disconnect");
+        menuItemdisConnect.setMnemonic(KeyEvent.VK_D);
+        menuItemdisConnect.setToolTipText("Disconnect from the current server");
+        menuItemdisConnect.addActionListener(event -> {
             processEvent(new ActionEvent(this, DiSCONNECT_FROM_SERVER, null));
         });
-        start.add(mennuItemdisConnect);
+        start.add(menuItemdisConnect);
 
-        JMenuItem enuItemExit = new JMenuItem("Exit");
-        enuItemExit.setMnemonic(KeyEvent.VK_E);
-        enuItemExit.setToolTipText("Exit application");
-        enuItemExit.addActionListener(event -> System.exit(0));
-        start.add(enuItemExit);
+        JMenuItem menuItemExit = new JMenuItem("Exit");
+        menuItemExit.setMnemonic(KeyEvent.VK_E);
+        menuItemExit.setToolTipText("Exit application");
+        menuItemExit.addActionListener(event -> System.exit(0));
+        start.add(menuItemExit);
         
         JMenu intelligence = new JMenu("Intelligence");
         intelligence.setMnemonic(KeyEvent.VK_I);
-        JMenuItem mennuItemPlayWithAI = new JMenuItem("Play with AI");
-        mennuItemPlayWithAI.setMnemonic(KeyEvent.VK_P);
-        mennuItemPlayWithAI.setToolTipText("Activate AI to play for you");
-        mennuItemPlayWithAI.addActionListener(event -> {
+        JMenuItem menuItemPlayWithAI = new JMenuItem("Let AI play");
+        menuItemPlayWithAI.setMnemonic(KeyEvent.VK_L);
+        menuItemPlayWithAI.setToolTipText("Activate AI to play for you");
+        menuItemPlayWithAI.addActionListener(event -> {
             //if gamemodule is loaded:
             if(true)
             	processEvent(new ActionEvent(this, PLAY_WITH_AI, null));
         });
-        intelligence.add(mennuItemPlayWithAI);
+        intelligence.add(menuItemPlayWithAI);
 
         this.add(start);
         this.add(intelligence);
