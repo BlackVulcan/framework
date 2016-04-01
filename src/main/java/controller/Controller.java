@@ -75,6 +75,10 @@ public class Controller implements ActionListener {
             }
         } else if (source instanceof LoginBox) {
             if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
+            	
+            	//for testing, needs to be deleted after testing!!
+            	setLobby();
+            	
                 if (connect(loginBox.getHost(), loginBox.getPort())) {
                     if (login(loginBox.getName())) {
                         setLobby();
@@ -163,6 +167,9 @@ public class Controller implements ActionListener {
             for (int i = 0; i < 50; i++) {
                 lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
             }
+            
+            model.setTurn(true);
+            containerView.setTime(20000, model);
         }
     }
 }
