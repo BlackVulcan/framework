@@ -15,6 +15,9 @@ import java.util.List;
 
 public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
+    private static final String EMPTY_INPUT_ERROR = "No valid input.";
+    private static final String CONNECT_ERROR = "Error when connecting.";
+
     private JPanel contentPane;
     private JTextField hostField;
     private JTextField portField;
@@ -85,7 +88,17 @@ public class LoginBox extends JDialog {
             l.actionPerformed(e);
     }
 
+    public boolean hasInput() {
+        return nameField.getText().length() > 0 && portField.getText().length() > 0 && hostField.getText().length() > 0;
+    }
+
     public void showConnectError() {
+        loginError.setText(CONNECT_ERROR);
+        loginError.setVisible(true);
+    }
+
+    public void showEmptyError() {
+        loginError.setText(EMPTY_INPUT_ERROR);
         loginError.setVisible(true);
     }
 
