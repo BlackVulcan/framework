@@ -15,154 +15,160 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller implements ActionListener {
-    private final Model model;
-    ContainerView containerView;
-    MenuView menuView;
-    LobbyView lobbyView;
-    LoginBox loginBox;
-    private ServerConnection serverConnection;
-    private GameController gameController;
+	private final Model model;
+	ContainerView containerView;
+	MenuView menuView;
+	LobbyView lobbyView;
+	LoginBox loginBox;
+	private ServerConnection serverConnection;
+	private GameController gameController;
 
-    public Controller(Model model) {
-        this.model = model;
-        this.containerView = new ContainerView();
-        this.menuView = new MenuView();
-        this.lobbyView = new LobbyView();
-        this.loginBox = new LoginBox(containerView);
+	public Controller(Model model) {
+		this.model = model;
+		this.containerView = new ContainerView();
+		this.menuView = new MenuView();
+		this.lobbyView = new LobbyView();
+		
+		System.out.println(lobbyView.getClass().getName());
+		this.loginBox = new LoginBox(containerView);
 
-        model.addActionListener(this);
-        model.addActionListener(lobbyView);
-        model.addActionListener(containerView);
+		model.addActionListener(this);
+		model.addActionListener(lobbyView);
+		model.addActionListener(containerView);
+		menuView.addActionListener(this);
+		loginBox.addActionListener(this);
+		lobbyView.addActionListener(this);
 
-        menuView.addActionListener(this);
-        loginBox.addActionListener(this);
+		containerView.setJMenuBar(menuView);
 
-        containerView.setJMenuBar(menuView);
+		gameController = new GameController(model, serverConnection);
+		//maybe for later in the project
+		//        //add actionListeners to control buttons
+		//        for (JButton button : containerView.getButtons()) {
+		//            button.addActionListener(this);
+		//        }
 
-        gameController = new GameController(model, serverConnection);
-        //maybe for later in the project
-//        //add actionListeners to control buttons
-//        for (JButton button : containerView.getButtons()) {
-//            button.addActionListener(this);
-//        }
+		this.containerView.showView(lobbyView);
+		System.out.println(lobbyView.getClass().getName());
+		this.containerView.setVisible(true);
+	}
 
-        this.containerView.showView(lobbyView);
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		int sourceID = e.getID();
+		if (source instanceof Model) {
+			Model model = (Model) e.getSource();
+			if (sourceID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
+				model.getGameModule().addMoveListener(gameController);
+				lobbyView.stopAutomatichRefresh();
+				containerView.showView(model.getGameModule().getView());
+			}
+		} else if (source instanceof MenuView) {
+			if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
+				loginBox.setVisible(true);
+			} else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
+				lobbyView.reset();
+				close();
+			} else if (sourceID == MenuView.PLAY_WITH_AI) {
+				//Activate AI
+			}
+		} else if (source instanceof LobbyView) {
+			System.out.println("lobbyview has called me...");
+			if(sourceID == LobbyView.LOBBY_REFRESH){
+				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+			} else if (sourceID == LobbyView.PLAY_GAME){
+			}
+		} else if (source instanceof LoginBox) {
+			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
+				if (!loginBox.hasInput()) {
+					loginBox.showEmptyError();
+					return;
+				}
 
-        this.containerView.setVisible(true);
-    }
+				if (connect(loginBox.getHost(), loginBox.getPort())) {
+					if (login(loginBox.getName())) {
+						setLobby();
+						loginBox.resetError();
+						loginBox.setVisible(false);
+						return;
+					} else {
+						close();
+					}
+				}
+				loginBox.showConnectError();
+			}
+		}
+		else{
+			System.out.println("I don't know what has called me... :(");
+		}
+	}
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        int sourceID = e.getID();
-        if (source instanceof Model) {
-            Model model = (Model) e.getSource();
-            if (sourceID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
-                model.getGameModule().addMoveListener(gameController);
-                containerView.showView(model.getGameModule().getView());
-            }
-        } else if (source instanceof LobbyView) {
-            //do stuff
-        } else if (source instanceof MenuView) {
-            if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
-                loginBox.setVisible(true);
-            } else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
-                lobbyView.reset();
-                close();
-            } else if (sourceID == MenuView.PLAY_WITH_AI) {
-                //Activate AI
-                System.out.println("Activating AI is not yet implemented");
-            }
-        } else if (source instanceof LoginBox) {
-            if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
-                if (!loginBox.hasInput()) {
-                    loginBox.showEmptyError();
-                    return;
-                }
+	private void close() {
+		serverConnection.close();
+	}
 
-                if (connect(loginBox.getHost(), loginBox.getPort())) {
-                    if (login(loginBox.getName())) {
-                        setLobby();
-                        loginBox.resetError();
-                        loginBox.setVisible(false);
-                        return;
-                    } else {
-                        close();
-                    }
-                }
-                loginBox.showConnectError();
-            }
-        }
-    }
+	public boolean connect(String hostname, int port) {
+		try {
+			serverConnection = new ServerConnection(hostname, port);
+			gameController.setServerConnection(serverConnection);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 
-    private void close() {
-        serverConnection.close();
-    }
+	public boolean login(String username) {
+		if (serverConnection.login(username)) {
+			model.setClientName(username);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    public boolean connect(String hostname, int port) {
-        try {
-            serverConnection = new ServerConnection(hostname, port);
-            gameController.setServerConnection(serverConnection);
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	public boolean logout() {
+		//todo: implement method.
+		throw new RuntimeException("Not implemented");
+		//        return serverConnection.logout();
+	}
 
-    public boolean login(String username) {
-        if (serverConnection.login(username)) {
-            model.setClientName(username);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	public boolean subscribe(String gameName) {
+		return serverConnection.subscribe(gameName);
+	}
 
-    public boolean logout() {
-        //todo: implement method.
-        throw new RuntimeException("Not implemented");
-//        return serverConnection.logout();
-    }
+	public void challenge(String player, String gameMode) {
+		serverConnection.challenge(player, gameMode);
+	}
 
-    public boolean subscribe(String gameName) {
-        return serverConnection.subscribe(gameName);
-    }
+	public void acceptChallenge(String challengeId) {
+		serverConnection.acceptChallenge(challengeId);
+	}
 
-    public void challenge(String player, String gameMode) {
-        serverConnection.challenge(player, gameMode);
-    }
+	public void acceptMatch() {
+		//todo: implement method.
+		throw new RuntimeException("Not implemented");
+	}
 
-    public void acceptChallenge(String challengeId) {
-        serverConnection.acceptChallenge(challengeId);
-    }
+	/**
+	 * Sets the lobby with available games and players if connected with a server.
+	 * 
+	 * Contains test data. Needs to be removed when connection with a server is possible
+	 */
+	public void setLobby() {
+		lobbyView.setAvailableGames(serverConnection.getGamelist());
+		lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+		lobbyView.automaticRefresh();
 
-    public void acceptMatch() {
-        //todo: implement method.
-        throw new RuntimeException("Not implemented");
-    }
+		// need to build something for getting challenges!!
 
-    /**
-     * Sets the lobby with available games and players if connected with a server.
-     * 
-     * Contains test data. Needs to be removed when connection with a server is possible
-     */
-    public void setLobby() {
-        //Needs to be changed when the registration of the ServerConnection class is moved to the Model class.
-        boolean connected = true;
-        if (connected) {
-            lobbyView.setAvailableGames(serverConnection.getGamelist());
-            lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
-        	
-            // need to build something for getting challenges!!
-            
-            // begin test code
-//            model.setOpponent("Yokovaski");
-//            model.setTurn(model.getClientName());
-//            containerView.setTime(20000, model);
-            // end test code
-        }
-    }
-    
-    //public void setInfoPanel(String opponent, turn)
+		// begin test code
+		//            model.setOpponent("Yokovaski");
+		//            model.setTurn(model.getClientName());
+		//            containerView.setTime(20000, model);
+		// end test code
+	}
+
+	//public void setInfoPanel(String opponent, turn)
 }
