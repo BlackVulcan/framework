@@ -70,6 +70,12 @@ public class Controller implements ActionListener {
 			} else if (sourceID == LobbyView.PLAY_GAME){
 				//Problem with gameModule
 				//model.setGameModule(model.getGameModuleLoader().loadGameModule("guessgame" , "erwin" , "wiet"));
+			} else if (sourceID == LobbyView.CHALLENGE_PLAYER){
+				String player = lobbyView.getSelectedPlayer();
+				String game = lobbyView.getSelectedGame();
+				if(player != null && game != null){
+					serverConnection.challenge(player, game);
+				}
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {

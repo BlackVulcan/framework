@@ -13,13 +13,14 @@ import java.awt.event.MouseEvent;
 public class LobbyView extends JPanel implements View {
 	public static final int LOBBY_REFRESH = 1;
 	public static final int PLAY_GAME = 2;
+	public static final int CHALLENGE_PLAYER = 3;
 	private static final long serialVersionUID = 1L;
-	JTable challengeTable;
-	JList<String> playerList;
-	JList<String> gameList;
-	DefaultListModel<String> playerListModel, gameListModel;
-	JPanel playPanel, lobbyPanel, playerPanel, challengePanel, gamePanel;
-	JButton btnSpeel;
+	private JTable challengeTable;
+	private JList<String> playerList;
+	private JList<String> gameList;
+	private DefaultListModel<String> playerListModel, gameListModel;
+	private JPanel playPanel, lobbyPanel, playerPanel, challengePanel, gamePanel;
+	private JButton play, challenge;
 	private JPanel gamePlayerPanel;
 	private boolean automaticRefresh = false;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
@@ -35,23 +36,33 @@ public class LobbyView extends JPanel implements View {
 		playPanel = new JPanel();
 		lobbyPanel = new JPanel();
 		challengePanel = new JPanel();
-		btnSpeel = new JButton("Speel");
-		ActionEvent actionEvent = new ActionEvent(this, PLAY_GAME, null);
-		btnSpeel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				processEvent(actionEvent);
-			}
-		});
-		
-		//challengeScrollPane = new JScrollPane();
 
 		this.setLayout(new BorderLayout(0, 0));
 		this.add(playPanel, BorderLayout.SOUTH);
 		this.add(lobbyPanel, BorderLayout.CENTER);
 
 		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		playPanel.add(btnSpeel);
+		playPanel.add(play);
+		
+
+		play = new JButton("Play");
+		ActionEvent playGame = new ActionEvent(this, PLAY_GAME, null);
+		play.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				processEvent(playGame);
+			}
+		});
+		
+		challenge = new JButton("Challenge");
+		ActionEvent challengePlayer = new ActionEvent(this, CHALLENGE_PLAYER, null);
+		challenge.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				processEvent(challengePlayer);
+			}
+		});
+		playPanel.add(challenge);
 		lobbyPanel.setLayout(new GridLayout(0, 1, 0, 0));
 
 		gamePlayerPanel = new JPanel();
@@ -78,10 +89,14 @@ public class LobbyView extends JPanel implements View {
 				new Object[][]{
 				},
 				new String[]{
-						"Spel", "Speler", "Accepteren", "Weigeren"
+						"Game", "Player", "Accept", "Deny"
 				}
 				));
 		challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
+	}
+
+	public String getSelectedGame(){
+		return gameListModel.getElementAt(gameList.getSelectedIndex());
 	}
 
 	public void setAvailableGames(List<String> games) {
@@ -89,6 +104,10 @@ public class LobbyView extends JPanel implements View {
 		for (String game : games) {
 			gameListModel.addElement(game);
 		}
+	}
+	
+	public String getSelectedPlayer(){
+		return playerListModel.getElementAt(playerList.getSelectedIndex());
 	}
 
 	public void setAvailablePlayers(List<String> players, String clientName) {
@@ -146,12 +165,12 @@ public class LobbyView extends JPanel implements View {
 	
 	public void automaticRefresh(){
 		automaticRefresh = true;
-		ActionEvent actionEvent = new ActionEvent(this, LOBBY_REFRESH, null);
+		ActionEvent refreshLobby = new ActionEvent(this, LOBBY_REFRESH, null);
 		Runnable thread = new Runnable(){
 			public void run(){
 				while(automaticRefresh){
 					try {
-						processEvent(actionEvent);
+						processEvent(refreshLobby);
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
