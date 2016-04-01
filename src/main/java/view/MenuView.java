@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class MenuView extends JMenuBar implements View {
-    public static final int DISCONNECTED_FROM_SERVER = 1;
+    public static final int DiSCONNECT_FROM_SERVER = 1;
     public static final int PLAY_WITH_AI = 2;
     public static final int SERVER_CONNECTION_SHOW = 3;
     private static final long serialVersionUID = 1L;
@@ -28,11 +28,7 @@ public class MenuView extends JMenuBar implements View {
         mennuItemdisConnect.setMnemonic(KeyEvent.VK_D);
         mennuItemdisConnect.setToolTipText("Disconnect from the current server");
         mennuItemdisConnect.addActionListener(event -> {
-            //todo: implement disconnection from server.
-            
-            //if we are now disconnected from a server:
-            if(true)
-            	processEvent(new ActionEvent(this, DISCONNECTED_FROM_SERVER,null));
+            processEvent(new ActionEvent(this, DiSCONNECT_FROM_SERVER, null));
         });
         start.add(mennuItemdisConnect);
 

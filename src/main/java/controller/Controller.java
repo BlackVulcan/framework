@@ -66,8 +66,9 @@ public class Controller implements ActionListener {
         } else if (source instanceof MenuView) {
             if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
                 loginBox.setVisible(true);
-            } else if (sourceID == MenuView.DISCONNECTED_FROM_SERVER) {
+            } else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
                 lobbyView.reset();
+                close();
             } else if (sourceID == MenuView.PLAY_WITH_AI) {
                 //Activate AI
                 System.out.println("Activating AI is not yet implemented");
