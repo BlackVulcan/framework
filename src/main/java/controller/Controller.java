@@ -68,6 +68,8 @@ public class Controller implements ActionListener {
 			if(sourceID == LobbyView.LOBBY_REFRESH){
 				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 			} else if (sourceID == LobbyView.PLAY_GAME){
+				//Problem with gameModule
+				//model.setGameModule(model.getGameModuleLoader().loadGameModule("guessgame" , "erwin" , "wiet"));
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
@@ -156,6 +158,4 @@ public class Controller implements ActionListener {
 		//            containerView.setTime(20000, model);
 		// end test code
 	}
-
-	//public void setInfoPanel(String opponent, turn)
 }

@@ -21,6 +21,7 @@ public class GameController implements GameListener,MoveListener {
 
     public GameController(Model model, ServerConnection serverConnection) {
         this.model = model;
+        this.model.setGameModuleLoader(loader);
         this.serverConnection = serverConnection;
     }
 

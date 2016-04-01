@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+import controller.game.GameModuleLoader;
+
 public class Model {
 	public static final int TURN_SWITCHED = 1;
     public static final int SERVER_CONNECTION_SET = 2;
@@ -23,6 +25,7 @@ public class Model {
     private String clientName, opponent, serverAddress;
     private int gameResult = 0;
     private boolean myTurn = false;
+    private GameModuleLoader gameModuleLoader;
 
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
@@ -45,6 +48,14 @@ public class Model {
         this.gameModule = gameModule;
         gameModule.setClientBegins(gameModule.getPlayerToMove().equals(clientName));
         processEvent(new ActionEvent(this, GAME_CHANGED,null));
+    }
+    
+    public void setGameModuleLoader(GameModuleLoader gameModuleLoader){
+    	this.gameModuleLoader = gameModuleLoader;
+    }
+    
+    public GameModuleLoader getGameModuleLoader(){
+    	return this.gameModuleLoader;
     }
 
     public String getClientName() {
