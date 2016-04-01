@@ -75,10 +75,6 @@ public class Controller implements ActionListener {
             }
         } else if (source instanceof LoginBox) {
             if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
-
-            	//for testing, needs to be deleted after testing!!
-            	//setLobby();
-            	
                 if (!loginBox.hasInput()) {
                     loginBox.showEmptyError();
                     return;
@@ -155,30 +151,15 @@ public class Controller implements ActionListener {
         //Needs to be changed when the registration of the ServerConnection class is moved to the Model class.
         boolean connected = true;
         if (connected) {
-            //lobbyView.setAvailableGames(serverConnection.getGamelist());
-            //lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
+            lobbyView.setAvailableGames(serverConnection.getGamelist());
+            lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
         	
-        	
-        	// begin test code
-            List<String> list = new ArrayList<>();
-            for (int i = 0; i < 50; i++) {
-                list.add("TeGekkeGame");
-            }
-            lobbyView.setAvailableGames(list);
-
-            List<String> list2 = new ArrayList<>();
-            for (int i = 0; i < 50; i++) {
-                list2.add("Ikzelf");
-            }
-            lobbyView.setAvailablePlayers(list2);
-
-            for (int i = 0; i < 50; i++) {
-                lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
-            }
+            // need to build something for getting challenges!!
             
-            model.setOpponent("Yokovaski");
-            model.setTurn(model.getClientName());
-            containerView.setTime(20000, model);
+            // begin test code
+//            model.setOpponent("Yokovaski");
+//            model.setTurn(model.getClientName());
+//            containerView.setTime(20000, model);
             // end test code
         }
     }
