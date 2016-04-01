@@ -7,11 +7,11 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class MenuView extends JMenuBar implements View {
+    public static final int DiSCONNECT_FROM_SERVER = 1;
+    public static final int PLAY_WITH_AI = 2;
+    public static final int SERVER_CONNECTION_SHOW = 3;
     private static final long serialVersionUID = 1L;
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
-    public static final int SERVER_CONNECTION_SET = 1;
-    public static final int DISCONNECTED_FROM_SERVER = 2;
-    public static final int PLAY_WITH_AI = 3;
 
     public MenuView() {
         JMenu start = new JMenu("Start");
@@ -20,13 +20,7 @@ public class MenuView extends JMenuBar implements View {
         mennuItemConnect.setMnemonic(KeyEvent.VK_C);
         mennuItemConnect.setToolTipText("Connect to a server");
         mennuItemConnect.addActionListener(event -> {
-            //todo: extend this to support other things.
-            LoginBox loginBox = new LoginBox();
-            loginBox.setVisible(true);
-            
-            //if we are now connected to a server:
-            if(true)
-            	processEvent(new ActionEvent(this, SERVER_CONNECTION_SET,null));
+            processEvent(new ActionEvent(this, SERVER_CONNECTION_SHOW, null));
         });
         start.add(mennuItemConnect);
 
@@ -34,11 +28,7 @@ public class MenuView extends JMenuBar implements View {
         mennuItemdisConnect.setMnemonic(KeyEvent.VK_D);
         mennuItemdisConnect.setToolTipText("Disconnect from the current server");
         mennuItemdisConnect.addActionListener(event -> {
-            //todo: implement disconnection from server.
-            
-            //if we are now disconnected from a server:
-            if(true)
-            	processEvent(new ActionEvent(this, DISCONNECTED_FROM_SERVER,null));
+            processEvent(new ActionEvent(this, DiSCONNECT_FROM_SERVER, null));
         });
         start.add(mennuItemdisConnect);
 
