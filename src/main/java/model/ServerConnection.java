@@ -110,7 +110,8 @@ public class ServerConnection {
      */
     public void close(){
         reader.stop();
-        write("logout");
+        writer.println("logout");
+        writer.flush();
         try {
             socket.close();
         } catch (IOException e) {

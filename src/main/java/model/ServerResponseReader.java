@@ -95,6 +95,9 @@ public class ServerResponseReader implements Runnable {
      * @return true if a Line containing information for listeners has been found, false otherwise
      */
     private boolean parse(String s) {
+    	if(s == null)
+    		return false;
+    	
         if (s.equals("Strategic Game Server [Version 1.0]") || s.equals("(C) Copyright 2009 Hanze Hogeschool Groningen")) {
             return true;
         }
