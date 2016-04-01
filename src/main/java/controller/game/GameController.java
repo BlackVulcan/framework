@@ -1,6 +1,5 @@
 package controller.game;
 
-import com.sun.corba.se.spi.activation.Server;
 import model.Model;
 import model.ServerConnection;
 import nl.abstractteam.gamemodule.ClientAbstractGameModule;

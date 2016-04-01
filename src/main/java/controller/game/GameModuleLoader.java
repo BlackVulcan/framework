@@ -1,5 +1,7 @@
 package controller.game;
 
+import nl.hanze.t23i.gamemodule.extern.AbstractGameModule;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -12,8 +14,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import nl.hanze.t23i.gamemodule.extern.AbstractGameModule;
 
 public class GameModuleLoader {
 
@@ -158,6 +158,10 @@ public class GameModuleLoader {
 
     private ArrayList<File> getJarFiles(File modulePath) {
         ArrayList<File> jarList = new ArrayList<File>();
+
+        if (modulePath == null || !modulePath.exists()) {
+            return new ArrayList<>();
+        }
 
         for(File file: modulePath.listFiles()) {
             String filename = file.getAbsolutePath();
