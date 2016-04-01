@@ -29,8 +29,8 @@ public class Controller implements ActionListener {
         model.addActionListener(this);
         model.addActionListener(lobbyView);
         model.addActionListener(containerView);
-        menuView.addActionListener(this);
 
+        menuView.addActionListener(this);
         containerView.setJMenuBar(menuView);
 
         gameController = new GameController(model,serverConnection);
@@ -67,7 +67,6 @@ public class Controller implements ActionListener {
         		System.out.println("Activating AI is not yet implemented");
         	}
         }
-
     }
 
     public boolean connect(String hostname, int port) {

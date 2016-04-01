@@ -31,6 +31,7 @@ public class GameController implements GameListener,MoveListener {
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
         AbstractGameModule module = loader.loadGameModule(gametype,playerOne,playerTwo);
+
         if(module instanceof ClientAbstractGameModule){
             System.out.println("found an instance");
             model.setGameModule((ClientAbstractGameModule)module);
