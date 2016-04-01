@@ -10,11 +10,18 @@ public class Model {
 	public static final int TURN_SWITCHED = 1;
     public static final int SERVER_CONNECTION_SET = 2;
     public static final int GAME_CHANGED = 3;
+    public static final int GAME_DRAW = 4;
+    public static final int GAME_WIN = 5;
+    public static final int GAME_LOSS = 6;
+    
+    public static final String GAMEMODULE_SET = "gamemodule is set";
+    public static final String OPPONENT_SET = "opponent is set";
+    
 
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 	private ClientAbstractGameModule gameModule;
-    private String clientName;
-    private String serverAddress;
+    private String clientName, opponent, serverAddress;
+    private int gameResult = 0;
     private boolean myTurn = false;
 
     public void addActionListener(ActionListener actionListener) {
@@ -36,7 +43,7 @@ public class Model {
 
     public void setGameModule(ClientAbstractGameModule gameModule) {
         this.gameModule = gameModule;
-        processEvent(new ActionEvent(this, GAME_CHANGED,null));
+        processEvent(new ActionEvent(this, GAME_CHANGED, GAMEMODULE_SET));
     }
 
     public String getClientName() {
@@ -45,6 +52,15 @@ public class Model {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+    
+    public String getOpponent() {
+        return opponent;
+    }
+
+    public void setOpponent(String opponent) {
+        this.opponent = opponent;
+        processEvent(new ActionEvent(this, GAME_CHANGED, OPPONENT_SET));
     }
     
     public void setServerAddress(String serverAdress){
@@ -56,12 +72,20 @@ public class Model {
     	return this.serverAddress;
     }
     
-    public void setTurn(boolean myTurn){
-    	this.myTurn = myTurn;
+    public void setTurn(String player){
+    	if(player.equals(this.clientName))
+        	this.myTurn = true;
+    	else
+    		this.myTurn = false;
     	processEvent(new ActionEvent(this, TURN_SWITCHED, null));
     }
     
     public boolean getTurn(){
     	return this.myTurn;
+    }
+    
+    public void setGameResult(int gameResult){
+    	this.gameResult = gameResult;
+    	processEvent(new ActionEvent(this, gameResult, null));
     }
 }

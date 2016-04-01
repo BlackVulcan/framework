@@ -26,10 +26,16 @@ public class GameController implements GameListener,MoveListener {
     }
 
     @Override
-    public void match(String playerToMove, String gametype, String opponent) {
+    public void match(String playerToMove, String gametype, String opponent) {        
+        if(playerToMove.equals(model.getClientName()))
+        	model.setOpponent(opponent);
+        else
+        	model.setOpponent(playerToMove);
+        
         System.out.println("GameController.match");
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
+        
         AbstractGameModule module = loader.loadGameModule(gametype,playerOne,playerTwo);
 
         if(module instanceof ClientAbstractGameModule){
@@ -52,6 +58,7 @@ public class GameController implements GameListener,MoveListener {
         System.out.println(model.getGameModule());
         System.out.println(player);
         System.out.println(move);
+        model.setTurn(player);
         model.getGameModule().doPlayerMove(player,move);
     }
 
@@ -67,18 +74,21 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void loss(String playerOneScore, String playerTwoScore, String comment) {
+    	this.model.setGameResult(Model.GAME_LOSS);
         System.out.println("ServerConnectionTest.loss");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
+    	this.model.setGameResult(Model.GAME_WIN);
         System.out.println("ServerConnectionTest.win");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void draw(String playerOneScore, String playerTwoScore, String comment) {
+    	this.model.setGameResult(Model.GAME_DRAW);
         System.out.println("ServerConnectionTest.draw");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }

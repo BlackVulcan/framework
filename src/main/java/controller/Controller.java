@@ -57,7 +57,7 @@ public class Controller implements ActionListener {
         int sourceID = e.getID();
         if (source instanceof Model) {
             Model model = (Model) e.getSource();
-            if (sourceID == Model.GAME_CHANGED) {
+            if (sourceID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
                 model.getGameModule().addMoveListener(gameController);
                 containerView.showView(model.getGameModule().getView());
             }
@@ -75,13 +75,14 @@ public class Controller implements ActionListener {
             }
         } else if (source instanceof LoginBox) {
             if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
+
+            	//for testing, needs to be deleted after testing!!
+            	//setLobby();
+            	
                 if (!loginBox.hasInput()) {
                     loginBox.showEmptyError();
                     return;
                 }
-
-            	//for testing, needs to be deleted after testing!!
-            	setLobby();
 
                 if (connect(loginBox.getHost(), loginBox.getPort())) {
                     if (login(loginBox.getName())) {
@@ -156,7 +157,9 @@ public class Controller implements ActionListener {
         if (connected) {
             //lobbyView.setAvailableGames(serverConnection.getGamelist());
             //lobbyView.setAvailablePlayers(serverConnection.getPlayerlist());
-
+        	
+        	
+        	// begin test code
             List<String> list = new ArrayList<>();
             for (int i = 0; i < 50; i++) {
                 list.add("TeGekkeGame");
@@ -172,9 +175,13 @@ public class Controller implements ActionListener {
             for (int i = 0; i < 50; i++) {
                 lobbyView.setChallenge("TeGekkeGame", "Ikzelf");
             }
-
-            model.setTurn(true);
+            
+            model.setOpponent("Yokovaski");
+            model.setTurn(model.getClientName());
             containerView.setTime(20000, model);
+            // end test code
         }
     }
+    
+    //public void setInfoPanel(String opponent, turn)
 }

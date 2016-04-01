@@ -22,9 +22,11 @@ public class ContainerView extends JFrame implements View {
 		JPanel informationPanel = new JPanel();
 		getContentPane().add(informationPanel, BorderLayout.NORTH);
 		informationPanel.setLayout(new GridLayout(0, 3, 0, 0));
-		turn = opponent = time = new JLabel();
-		informationPanel.add(turn);
+		opponent = new JLabel("", SwingConstants.CENTER);
+		turn = new JLabel("", SwingConstants.CENTER);
+		time = new JLabel("", SwingConstants.CENTER);
 		informationPanel.add(opponent);
+		informationPanel.add(turn);
 		informationPanel.add(time);
 		setFullScreen();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -34,13 +36,25 @@ public class ContainerView extends JFrame implements View {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object object = e.getSource();
+		int objectID = e.getID();
 		if(object instanceof Model){
 			Model model = (Model) object;
-			if(e.getID() == Model.TURN_SWITCHED){
+			if(objectID == Model.TURN_SWITCHED){
 				setTurn(model.getTurn());
 			}
+			else if(objectID == Model.GAME_DRAW){
+				this.turn.setText("You have won the game!");
+			}
+			else if(objectID == Model.GAME_LOSS){
+				this.turn.setText("You have lost the game!");
+			}
+			else if(objectID == Model.GAME_WIN){
+				this.turn.setText("It's a draw!");
+			}
+			else if(objectID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.OPPONENT_SET)){
+				this.opponent.setText(model.getOpponent());
+			}
 		}
-
 	}
 
 	public ArrayList<JButton> getButtons() {
@@ -60,9 +74,9 @@ public class ContainerView extends JFrame implements View {
 		System.out.println("setting turn");
 		String turnInformation = "";
 		if(myTurn)
-			turnInformation = "It's your turn!";
+			turnInformation = "Your turn!";
 		else
-			turnInformation = "Wait for opponent!";
+			turnInformation = opponent.getText() + "'s turn!";
 		this.turn.setText(turnInformation);
 	}
 
@@ -75,8 +89,10 @@ public class ContainerView extends JFrame implements View {
 	}
 
 	public void setTime(int timeInMilis, Model model){
+		System.out.println("time is set");
 		Runnable thread = new Runnable(){
 			public void run(){
+				setTimeBox("");
 				int timeInTens = timeInMilis / 100;
 				boolean timeIsRunning = model.getTurn();
 				while(timeIsRunning){
@@ -91,6 +107,7 @@ public class ContainerView extends JFrame implements View {
 						}
 						else{
 							timeIsRunning = false;
+							setTimeBox("");
 							break;
 						}
 					}
@@ -99,10 +116,16 @@ public class ContainerView extends JFrame implements View {
 						setTimeBox("Time has run out");
 					}
 					else
-						setTurnEmpty();
+						setTimeBox("");
 				}
 			}        
 		};
 		new Thread(thread).start();
+	}
+	
+	public void reset(){
+		this.turn.setText("");
+		this.time.setText("");
+		this.opponent.setText("");
 	}
 }
