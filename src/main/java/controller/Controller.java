@@ -28,7 +28,7 @@ public class Controller implements ActionListener {
         this.containerView = new ContainerView();
         this.menuView = new MenuView();
         this.lobbyView = new LobbyView();
-        this.loginBox = new LoginBox();
+        this.loginBox = new LoginBox(containerView);
 
         model.addActionListener(this);
         model.addActionListener(lobbyView);
@@ -86,6 +86,7 @@ public class Controller implements ActionListener {
                 if (connect(loginBox.getHost(), loginBox.getPort())) {
                     if (login(loginBox.getName())) {
                         setLobby();
+                        loginBox.resetError();
                         loginBox.setVisible(false);
                         return;
                     } else {

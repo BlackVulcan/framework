@@ -33,7 +33,8 @@ public class LoginBox extends JDialog {
         $$$setupUI$$$();
     }
 
-    public LoginBox() {
+    public LoginBox(JFrame owner) {
+        super(owner);
         actionListenerList = new ArrayList<>();
         setContentPane(contentPane);
         setMinimumSize(contentPane.getMinimumSize());
@@ -100,6 +101,10 @@ public class LoginBox extends JDialog {
     public void showEmptyError() {
         loginError.setText(EMPTY_INPUT_ERROR);
         loginError.setVisible(true);
+    }
+
+    public void resetError() {
+        loginError.setVisible(false);
     }
 
     /**
