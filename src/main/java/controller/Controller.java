@@ -25,32 +25,22 @@ public class Controller implements ActionListener {
 
 	public Controller(Model model) {
 		this.model = model;
-		this.containerView = new ContainerView();
-		this.menuView = new MenuView();
-		this.lobbyView = new LobbyView();
-		
-		System.out.println(lobbyView.getClass().getName());
-		this.loginBox = new LoginBox(containerView);
+		containerView = new ContainerView();
+		menuView = new MenuView();
+		lobbyView = new LobbyView();
+		loginBox = new LoginBox(containerView);
+		gameController = new GameController(model, serverConnection);
 
-		model.addActionListener(this);
-		model.addActionListener(lobbyView);
-		model.addActionListener(containerView);
+		this.model.addActionListener(this);
+		this.model.addActionListener(lobbyView);
+		this.model.addActionListener(containerView);
 		menuView.addActionListener(this);
 		loginBox.addActionListener(this);
 		lobbyView.addActionListener(this);
 
 		containerView.setJMenuBar(menuView);
-
-		gameController = new GameController(model, serverConnection);
-		//maybe for later in the project
-		//        //add actionListeners to control buttons
-		//        for (JButton button : containerView.getButtons()) {
-		//            button.addActionListener(this);
-		//        }
-
-		this.containerView.showView(lobbyView);
-		System.out.println(lobbyView.getClass().getName());
-		this.containerView.setVisible(true);
+		containerView.showView(lobbyView);
+		containerView.setVisible(true);
 	}
 
 	@Override
