@@ -11,8 +11,6 @@ import view.MenuView;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Controller implements ActionListener {
 	private final Model model;
@@ -105,7 +103,7 @@ public class Controller implements ActionListener {
 
 	public boolean connect(String hostname, int port) {
 		try {
-			serverConnection = new ServerConnection(hostname, port);
+			serverConnection = new ServerConnection(hostname, port, model);
 			gameController.setServerConnection(serverConnection);
 			return true;
 		} catch (IOException e) {

@@ -2,10 +2,14 @@ package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import model.Model;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -27,7 +31,15 @@ public class LobbyView extends JPanel implements View {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//todo: do something
+		Object object = e.getSource();
+		int sourceID = e.getID();
+		if(object instanceof Model){
+			Model model = (Model) object;
+			if (sourceID == Model.NEW_CHALLENGE){
+				int index = Integer.parseInt(e.getActionCommand());
+				setChallenge(model.getChallenge(index));
+			}
+		}
 	}
 
 	public LobbyView() {
@@ -41,9 +53,7 @@ public class LobbyView extends JPanel implements View {
 		this.add(playPanel, BorderLayout.SOUTH);
 		this.add(lobbyPanel, BorderLayout.CENTER);
 
-		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		playPanel.add(play);
-		
+		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));		
 
 		play = new JButton("Play");
 		ActionEvent playGame = new ActionEvent(this, PLAY_GAME, null);
@@ -53,6 +63,7 @@ public class LobbyView extends JPanel implements View {
 				processEvent(playGame);
 			}
 		});
+		playPanel.add(play);
 		
 		challenge = new JButton("Challenge");
 		ActionEvent challengePlayer = new ActionEvent(this, CHALLENGE_PLAYER, null);
@@ -111,7 +122,6 @@ public class LobbyView extends JPanel implements View {
 	}
 
 	public void setAvailablePlayers(List<String> players, String clientName) {
-		
 		for(int i = playerListModel.size() - 1; i >= 0; i--) {
 			if(!players.contains(playerListModel.get(i))){
 				playerListModel.remove(i);
@@ -125,11 +135,12 @@ public class LobbyView extends JPanel implements View {
 		}
 	}
 
-	private void setChallenge(String game, String player){
+	private void setChallenge(HashMap<String, String> challenge){
 		DefaultTableModel model = (DefaultTableModel) challengeTable.getModel();
 		
-		//needs to be modified to accept or reject a challenge instead of "hoi"...
-		model.addRow(new Object[]{game, player, "hoi", "hoi"});
+		//needs to be modified to accept or reject a challenge
+		model.addRow(new Object[]{challenge.get(Model.CHALLENGE_GAME_TYPE), 
+				challenge.get(Model.CHALLENGE_PLAYER), "", ""});
 	}
 	
 	private void resetChallenge(){
@@ -171,7 +182,7 @@ public class LobbyView extends JPanel implements View {
 				while(automaticRefresh){
 					try {
 						processEvent(refreshLobby);
-						Thread.sleep(1000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

@@ -20,6 +20,7 @@ public class ServerConnection {
     private ServerResponseReader reader;
     private PrintWriter writer;
     private final Socket socket;
+    private Model model;
 
     /**
      * Creates a connection to a server with the specified IP address and port
@@ -27,9 +28,10 @@ public class ServerConnection {
      * @param port The port of the game server
      * @throws IOException
      */
-    public ServerConnection(String ip, int port) throws IOException {
+    public ServerConnection(String ip, int port, Model model) throws IOException {
         socket = new Socket(ip, port);
-        reader = new ServerResponseReader(socket);
+        this.model = model;
+        reader = new ServerResponseReader(socket, model);
         new Thread(reader).start();
         writer = new PrintWriter(socket.getOutputStream());
     }

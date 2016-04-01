@@ -56,14 +56,16 @@ public class ServerResponseReader implements Runnable {
      * A boolean indicating if this thread should run
      */
     boolean running = true;
+    private Model model;
 
     /**
      *
      * @param socket The socket on which's inputStream to read.
      * @throws IOException
      */
-    public ServerResponseReader(Socket socket) throws IOException {
+    public ServerResponseReader(Socket socket, Model model) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.model = model;
     }
 
     /**
@@ -135,10 +137,17 @@ public class ServerResponseReader implements Runnable {
                     return true;
                 }
                 JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
-
+                
+                String challenger = jsonObject.getString(CHALLENGER_VARNAME);
+                String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
+                String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
+                
                 for (GameListener gameListener : listeners) {
-                    gameListener.challenge(jsonObject.getString(CHALLENGER_VARNAME), jsonObject.getString(CHALLENGENUMBER_VARNAME), jsonObject.getString(GAMETYPE_VARNAME));
+                    gameListener.challenge(challenger, challengeNumber, challengeGameType);
                 }
+                
+                model.setNewChallenge(challengeGameType, challenger, challengeNumber);
+                
             } else if (s.startsWith(WIN_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
 
