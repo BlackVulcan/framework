@@ -111,10 +111,15 @@ public class ServerResponseReader implements Runnable {
 
             if (s.startsWith(MATCH_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
-
+                
+                String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
+                String gameType = jsonObject.getString(GAMETYPE_VARNAME);
+                String opponent = jsonObject.getString(OPPONENT_VARNAME);
+                
                 for (GameListener gameListener : listeners) {
-                    gameListener.match(jsonObject.getString(PLAYERTOMOVE_VARNAME), jsonObject.getString(GAMETYPE_VARNAME), jsonObject.getString(OPPONENT_VARNAME));
+                    gameListener.match(playerMove, gameType, opponent);
                 }
+                model.loadGame(playerMove, gameType, opponent);
             } else if (s.startsWith(YOURTURN_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
 
@@ -134,6 +139,7 @@ public class ServerResponseReader implements Runnable {
                     for (GameListener gameListener : listeners) {
                         gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
                     }
+                    model.cancelChallenge(jsonObject.getString(CHALLENGENUMBER_VARNAME));
                     return true;
                 }
                 JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));

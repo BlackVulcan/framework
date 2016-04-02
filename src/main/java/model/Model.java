@@ -17,6 +17,7 @@ public class Model {
     public static final int GAME_WIN = 5;
     public static final int GAME_LOSS = 6;
     public static final int NEW_CHALLENGE = 7;
+    public static final int CANCEL_CHALLENGE = 8;
     
     public static final String GAMEMODULE_SET = "gamemodule is set";
     public static final String OPPONENT_SET = "opponent is set";
@@ -45,6 +46,14 @@ public class Model {
         for (ActionListener l : actionListenerList)
             l.actionPerformed(e);
     }
+    
+    public void setGameModuleLoader(GameModuleLoader gameModuleLoader){
+    	this.gameModuleLoader = gameModuleLoader;
+    }
+    
+    public GameModuleLoader getGameModuleLoader(){
+    	return this.gameModuleLoader;
+    }
 
     public ClientAbstractGameModule getGameModule() {
         return gameModule;
@@ -56,12 +65,16 @@ public class Model {
         processEvent(new ActionEvent(this, GAME_CHANGED,null));
     }
     
-    public void setGameModuleLoader(GameModuleLoader gameModuleLoader){
-    	this.gameModuleLoader = gameModuleLoader;
-    }
-    
-    public GameModuleLoader getGameModuleLoader(){
-    	return this.gameModuleLoader;
+    public void loadGame(String playerMove, String gameType, String opponent){
+    	System.out.println("The gamemodule needs to be loaded");
+//    	setOpponent(opponent);
+//    	setTurn(playerMove);
+    	
+    	//needs attention! something is going wrong
+//    	if(playerMove.equals(clientName))
+//    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType , clientName , opponent));
+//    	else
+//    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType ,  opponent, clientName));
     }
 
     public String getClientName() {
@@ -124,5 +137,9 @@ public class Model {
     	challenge.put(CHALLENGE_PLAYER, challengePlayers.get(index));
     	challenge.put(CHALLENGE_GAME_NUMBER, challengeNumbers.get(index));
     	return challenge;
+    }
+    
+    public void cancelChallenge(String challengeNumber){
+    	processEvent(new ActionEvent(this, CANCEL_CHALLENGE, challengeNumber));
     }
 }

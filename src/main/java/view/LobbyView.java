@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import model.Model;
 
@@ -18,29 +19,19 @@ public class LobbyView extends JPanel implements View {
 	public static final int LOBBY_REFRESH = 1;
 	public static final int PLAY_GAME = 2;
 	public static final int CHALLENGE_PLAYER = 3;
+	public static final int CHALLENGE_RESPONSE = 4;
+	public static final String CHALLENGE_ACCEPTED = "Accept";
+	public static final String CHALLENGE_REJECTED = "Reject";
 	private static final long serialVersionUID = 1L;
 	private JTable challengeTable;
 	private JList<String> playerList;
 	private JList<String> gameList;
 	private DefaultListModel<String> playerListModel, gameListModel;
 	private JPanel playPanel, lobbyPanel, playerPanel, challengePanel, gamePanel;
-	private JButton play, challenge;
+	private JButton subscribe, challenge;
 	private JPanel gamePlayerPanel;
 	private boolean automaticRefresh = false;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object object = e.getSource();
-		int sourceID = e.getID();
-		if(object instanceof Model){
-			Model model = (Model) object;
-			if (sourceID == Model.NEW_CHALLENGE){
-				int index = Integer.parseInt(e.getActionCommand());
-				setChallenge(model.getChallenge(index));
-			}
-		}
-	}
 
 	public LobbyView() {
 		playerListModel = new DefaultListModel<>();
@@ -55,16 +46,16 @@ public class LobbyView extends JPanel implements View {
 
 		playPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));		
 
-		play = new JButton("Play");
+		subscribe = new JButton("Subscribe");
 		ActionEvent playGame = new ActionEvent(this, PLAY_GAME, null);
-		play.addMouseListener(new MouseAdapter() {
+		subscribe.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				processEvent(playGame);
 			}
 		});
-		playPanel.add(play);
-		
+		playPanel.add(subscribe);
+
 		challenge = new JButton("Challenge");
 		ActionEvent challengePlayer = new ActionEvent(this, CHALLENGE_PLAYER, null);
 		challenge.addMouseListener(new MouseAdapter() {
@@ -100,10 +91,32 @@ public class LobbyView extends JPanel implements View {
 				new Object[][]{
 				},
 				new String[]{
-						"Game", "Player", "Accept", "Deny"
+						"ID", "Game", "Player", CHALLENGE_ACCEPTED, CHALLENGE_REJECTED
 				}
 				));
+
+		challengeTable.getColumn(CHALLENGE_ACCEPTED).setCellRenderer(new ButtonRenderer());
+		challengeTable.getColumn(CHALLENGE_ACCEPTED).setCellEditor(
+				new ButtonEditor(new JCheckBox()));
+		challengeTable.getColumn(CHALLENGE_REJECTED).setCellRenderer(new ButtonRenderer());
+		challengeTable.getColumn(CHALLENGE_REJECTED).setCellEditor(
+				new ButtonEditor(new JCheckBox()));
 		challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object object = e.getSource();
+		int sourceID = e.getID();
+		if(object instanceof Model){
+			Model model = (Model) object;
+			if (sourceID == Model.NEW_CHALLENGE){
+				int index = Integer.parseInt(e.getActionCommand());
+				setChallenge(model.getChallenge(index));
+			} else if(sourceID == Model.CANCEL_CHALLENGE){
+				deleteChallenge(e.getActionCommand());
+			}
+		}
 	}
 
 	public String getSelectedGame(){
@@ -116,7 +129,7 @@ public class LobbyView extends JPanel implements View {
 			gameListModel.addElement(game);
 		}
 	}
-	
+
 	public String getSelectedPlayer(){
 		return playerListModel.getElementAt(playerList.getSelectedIndex());
 	}
@@ -127,7 +140,7 @@ public class LobbyView extends JPanel implements View {
 				playerListModel.remove(i);
 			}
 		}
-		
+
 		for(int i = 0; i < players.size(); i++){
 			if(!playerListModel.contains(players.get(i)) && !players.get(i).equals(clientName)){
 				playerListModel.addElement(players.get(i));
@@ -137,43 +150,63 @@ public class LobbyView extends JPanel implements View {
 
 	private void setChallenge(HashMap<String, String> challenge){
 		DefaultTableModel model = (DefaultTableModel) challengeTable.getModel();
-		
+
 		//needs to be modified to accept or reject a challenge
-		model.addRow(new Object[]{challenge.get(Model.CHALLENGE_GAME_TYPE), 
-				challenge.get(Model.CHALLENGE_PLAYER), "", ""});
+		model.addRow(new Object[]{challenge.get(Model.CHALLENGE_GAME_NUMBER), challenge.get(Model.CHALLENGE_GAME_TYPE), 
+				challenge.get(Model.CHALLENGE_PLAYER), CHALLENGE_ACCEPTED, CHALLENGE_REJECTED, });
 	}
 	
+	private void acceptChallenge(){
+		processEvent(new ActionEvent(this, CHALLENGE_RESPONSE, CHALLENGE_ACCEPTED));
+	}
+	
+	private void rejectChallenge(){
+		if(challengeTable.getSelectedRow() != -1){
+			DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
+			deleteChallenge((String)challengeTableModel.getValueAt(challengeTable.getSelectedRow(), 0));
+		}
+	}
+
+	public void deleteChallenge(String challengeNumber){
+		DefaultTableModel tableModel = (DefaultTableModel) challengeTable.getModel();
+		for(int i = tableModel.getRowCount() - 1; i >= 0; i--){
+			if(challengeNumber.equals(tableModel.getValueAt(i,0))){
+				tableModel.removeRow(i);
+			}
+		}
+	}
+
 	private void resetChallenge(){
 		DefaultTableModel tableModel = (DefaultTableModel) challengeTable.getModel();
 		for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
 			tableModel.removeRow(i);
 		}
 	}
-	
+
 	private void resetPlayerList(){
 		DefaultListModel<String> playerListModel = (DefaultListModel<String>) playerList.getModel();
 		for (int i = playerListModel.size() - 1; i >= 0; i--) {
 			playerListModel.remove(i);
 		}
 	}
-	
+
 	private void resetGameList(){
 		DefaultListModel<String> gameListModel = (DefaultListModel<String>) gameList.getModel();
 		for (int i = gameListModel.size() - 1; i >= 0; i--) {
 			gameListModel.remove(i);
 		}
 	}
-	
+
 	public void reset(){
 		resetChallenge();
 		resetPlayerList();
 		resetGameList();
 	}
-	
-	public void stopAutomatichRefresh(){
+
+	public void stopAutomaticRefresh(){
 		automaticRefresh = false;
 	}
-	
+
 	public void automaticRefresh(){
 		automaticRefresh = true;
 		ActionEvent refreshLobby = new ActionEvent(this, LOBBY_REFRESH, null);
@@ -191,13 +224,95 @@ public class LobbyView extends JPanel implements View {
 		};
 		new Thread(thread).start();
 	}
-	
+
 	private void processEvent(ActionEvent e) {
-        for (ActionListener l : actionListenerList)
-            l.actionPerformed(e);
-    }
-	
+		for (ActionListener l : actionListenerList)
+			l.actionPerformed(e);
+	}
+
 	public void addActionListener(ActionListener actionListener) {
-        actionListenerList.add(actionListener);
-    }
+		actionListenerList.add(actionListener);
+	}
+
+	class ButtonRenderer extends JButton implements TableCellRenderer {
+
+		public ButtonRenderer() {
+			setOpaque(true);
+		}
+
+		public Component getTableCellRendererComponent(JTable table, Object value,
+				boolean isSelected, boolean hasFocus, int row, int column) {
+			if (isSelected) {
+				setForeground(table.getSelectionForeground());
+				setBackground(table.getSelectionBackground());
+			} else {
+				setForeground(table.getForeground());
+				setBackground(UIManager.getColor("Button.background"));
+			}
+			setText((value == null) ? "" : value.toString());
+			return this;
+		}
+	}
+
+	/**
+	 * @version 1.0 11/09/98
+	 */
+
+	class ButtonEditor extends DefaultCellEditor {
+		protected JButton button;
+
+		private String label;
+
+		private boolean isPushed;
+
+		public ButtonEditor(JCheckBox checkBox) {
+			super(checkBox);
+			button = new JButton();
+			button.setOpaque(true);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					fireEditingStopped();
+				}
+			});
+		}
+
+		public Component getTableCellEditorComponent(JTable table, Object value,
+				boolean isSelected, int row, int column) {
+			if (isSelected) {
+				button.setForeground(table.getSelectionForeground());
+				button.setBackground(table.getSelectionBackground());
+			} else {
+				button.setForeground(table.getForeground());
+				button.setBackground(table.getBackground());
+			}
+			label = (value == null) ? "" : value.toString();
+			button.setText(label);
+			isPushed = true;
+			return button;
+		}
+
+		public Object getCellEditorValue() {
+			if (isPushed) {
+				int result = JOptionPane.showConfirmDialog(null, 
+						label,null, JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.YES_OPTION) {
+					if(label.equals(CHALLENGE_ACCEPTED))
+						acceptChallenge();
+					else
+						rejectChallenge();
+				}
+			}
+			isPushed = false;
+			return new String(label);
+		}
+
+		public boolean stopCellEditing() {
+			isPushed = false;
+			return super.stopCellEditing();
+		}
+
+		protected void fireEditingStopped() {
+			super.fireEditingStopped();
+		}
+	}
 }

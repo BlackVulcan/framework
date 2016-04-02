@@ -49,7 +49,7 @@ public class Controller implements ActionListener {
 			Model model = (Model) e.getSource();
 			if (sourceID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
 				model.getGameModule().addMoveListener(gameController);
-				lobbyView.stopAutomatichRefresh();
+				lobbyView.stopAutomaticRefresh();
 				containerView.showView(model.getGameModule().getView());
 			}
 		} else if (source instanceof MenuView) {
@@ -66,14 +66,16 @@ public class Controller implements ActionListener {
 			if(sourceID == LobbyView.LOBBY_REFRESH){
 				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 			} else if (sourceID == LobbyView.PLAY_GAME){
+				String gameType = lobbyView.getSelectedGame();
+				if(gameType != null)
+					subscribe(gameType);
 				//Problem with gameModule
-				//model.setGameModule(model.getGameModuleLoader().loadGameModule("guessgame" , "erwin" , "wiet"));
+				//model.setGameModule(model.getGameModuleLoader().loadGameModule("Guess Game" , "erwin" , "wiet"));
 			} else if (sourceID == LobbyView.CHALLENGE_PLAYER){
 				String player = lobbyView.getSelectedPlayer();
-				String game = lobbyView.getSelectedGame();
-				if(player != null && game != null){
-					serverConnection.challenge(player, game);
-				}
+				String gameType = lobbyView.getSelectedGame();
+				if(player != null && gameType != null)
+					challenge(player, gameType);
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
@@ -127,12 +129,12 @@ public class Controller implements ActionListener {
 		//        return serverConnection.logout();
 	}
 
-	public boolean subscribe(String gameName) {
-		return serverConnection.subscribe(gameName);
+	public boolean subscribe(String gameType) {
+		return serverConnection.subscribe(gameType);
 	}
 
-	public void challenge(String player, String gameMode) {
-		serverConnection.challenge(player, gameMode);
+	public void challenge(String player, String gameType) {
+		serverConnection.challenge(player, gameType);
 	}
 
 	public void acceptChallenge(String challengeId) {

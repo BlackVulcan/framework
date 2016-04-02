@@ -6,15 +6,23 @@ import model.Model;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class ContainerView extends JFrame implements View {
 	private static final long serialVersionUID = 1L;
+	private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
 	private JPanel container;
 	private ArrayList<JButton> buttons = new ArrayList<>();
 	private JLabel turn, opponent, time;
 
 	public ContainerView() {
+		super("Two player game framework");
+		ImageIcon img = new ImageIcon(ICON_PATH);
+		this.setIconImage(img.getImage());
+		
 		container = new JPanel();
 		container.setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
@@ -32,6 +40,11 @@ public class ContainerView extends JFrame implements View {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(400, 300));
 	}
+	
+	public static String pathComponent(String filename) {
+	      int i = filename.lastIndexOf(File.separator);
+	      return (i > -1) ? filename.substring(0, i) : filename;
+	  }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
