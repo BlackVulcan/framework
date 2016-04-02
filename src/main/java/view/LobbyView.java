@@ -19,9 +19,9 @@ public class LobbyView extends JPanel implements View {
 	public static final int LOBBY_REFRESH = 1;
 	public static final int PLAY_GAME = 2;
 	public static final int CHALLENGE_PLAYER = 3;
-	public static final int CHALLENGE_RESPONSE = 4;
-	public static final String CHALLENGE_ACCEPTED = "Accept";
-	public static final String CHALLENGE_REJECTED = "Reject";
+	public static final int CHALLENGE_ACCEPTED = 4;
+	public static final String CHALLENGE_ACCEPT = "Accept";
+	public static final String CHALLENGE_REJECT = "Reject";
 	private static final long serialVersionUID = 1L;
 	private JTable challengeTable;
 	private JList<String> playerList;
@@ -31,6 +31,7 @@ public class LobbyView extends JPanel implements View {
 	private JButton subscribe, challenge;
 	private JPanel gamePlayerPanel;
 	private boolean automaticRefresh = false;
+	private boolean challengeDeletionFlag = false;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
 	public LobbyView() {
@@ -91,16 +92,39 @@ public class LobbyView extends JPanel implements View {
 				new Object[][]{
 				},
 				new String[]{
-						"ID", "Game", "Player", CHALLENGE_ACCEPTED, CHALLENGE_REJECTED
+						"ID", "Game", "Player", CHALLENGE_ACCEPT, CHALLENGE_REJECT
 				}
 				));
+		
+		Action acceptChallenge = new AbstractAction(){
+			public void actionPerformed(ActionEvent e){
+		    	int result = JOptionPane.showConfirmDialog(null, 
+		    			CHALLENGE_ACCEPT + " challenge?",null, JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.YES_OPTION) {
+					JTable table = (JTable)e.getSource();
+			        int modelRow = Integer.valueOf( e.getActionCommand() );
+			        acceptChallenge((String)table.getValueAt(modelRow, 0));
+				}
+		    }
+		};
+		
+		Action rejectChallenge = new AbstractAction(){
+			private static final long serialVersionUID = 1L;
 
-		challengeTable.getColumn(CHALLENGE_ACCEPTED).setCellRenderer(new ButtonRenderer());
-		challengeTable.getColumn(CHALLENGE_ACCEPTED).setCellEditor(
-				new ButtonEditor(new JCheckBox()));
-		challengeTable.getColumn(CHALLENGE_REJECTED).setCellRenderer(new ButtonRenderer());
-		challengeTable.getColumn(CHALLENGE_REJECTED).setCellEditor(
-				new ButtonEditor(new JCheckBox()));
+			public void actionPerformed(ActionEvent e){
+		    	int result = JOptionPane.showConfirmDialog(null, 
+		    			CHALLENGE_REJECT + " challenge?",null, JOptionPane.YES_NO_OPTION);
+				if(result == JOptionPane.YES_OPTION) {
+					JTable table = (JTable)e.getSource();
+			        int modelRow = Integer.valueOf( e.getActionCommand() );
+			        ((DefaultTableModel)table.getModel()).removeRow(modelRow);
+				}
+		    }
+		};
+		
+		ButtonColumn buttonColumnAcceptChallenge = new ButtonColumn(challengeTable, acceptChallenge, 3);
+		ButtonColumn buttonColumnRejectChallenge = new ButtonColumn(challengeTable, rejectChallenge, 4);
+
 		challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
 	}
 
@@ -153,33 +177,34 @@ public class LobbyView extends JPanel implements View {
 
 		//needs to be modified to accept or reject a challenge
 		model.addRow(new Object[]{challenge.get(Model.CHALLENGE_GAME_NUMBER), challenge.get(Model.CHALLENGE_GAME_TYPE), 
-				challenge.get(Model.CHALLENGE_PLAYER), CHALLENGE_ACCEPTED, CHALLENGE_REJECTED, });
+				challenge.get(Model.CHALLENGE_PLAYER), CHALLENGE_ACCEPT, CHALLENGE_REJECT, });
 	}
-	
-	private void acceptChallenge(){
-		processEvent(new ActionEvent(this, CHALLENGE_RESPONSE, CHALLENGE_ACCEPTED));
-	}
-	
-	private void rejectChallenge(){
-		if(challengeTable.getSelectedRow() != -1){
-			DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
-			deleteChallenge((String)challengeTableModel.getValueAt(challengeTable.getSelectedRow(), 0));
-		}
+
+	private void acceptChallenge(String challengeNumber){
+		processEvent(new ActionEvent(this, CHALLENGE_ACCEPTED, challengeNumber));
 	}
 
 	public void deleteChallenge(String challengeNumber){
-		DefaultTableModel tableModel = (DefaultTableModel) challengeTable.getModel();
-		for(int i = tableModel.getRowCount() - 1; i >= 0; i--){
-			if(challengeNumber.equals(tableModel.getValueAt(i,0))){
-				tableModel.removeRow(i);
+		DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
+		for(int i = challengeTableModel.getRowCount() - 1; i >= 0; i--){
+			if(challengeNumber.equals(challengeTableModel.getValueAt(i,0))){
+				challengeTableModel.removeRow(i);
 			}
 		}
 	}
 
+	private boolean getChallengeDeletionFlag(){
+		return challengeDeletionFlag;
+	}
+
+	private void setChallengeDeletionFlag(boolean challengeDeletionFlag){
+		this.challengeDeletionFlag = challengeDeletionFlag;
+	}
+
 	private void resetChallenge(){
-		DefaultTableModel tableModel = (DefaultTableModel) challengeTable.getModel();
-		for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
-			tableModel.removeRow(i);
+		DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
+		for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
+			challengeTableModel.removeRow(i);
 		}
 	}
 
@@ -232,87 +257,5 @@ public class LobbyView extends JPanel implements View {
 
 	public void addActionListener(ActionListener actionListener) {
 		actionListenerList.add(actionListener);
-	}
-
-	class ButtonRenderer extends JButton implements TableCellRenderer {
-
-		public ButtonRenderer() {
-			setOpaque(true);
-		}
-
-		public Component getTableCellRendererComponent(JTable table, Object value,
-				boolean isSelected, boolean hasFocus, int row, int column) {
-			if (isSelected) {
-				setForeground(table.getSelectionForeground());
-				setBackground(table.getSelectionBackground());
-			} else {
-				setForeground(table.getForeground());
-				setBackground(UIManager.getColor("Button.background"));
-			}
-			setText((value == null) ? "" : value.toString());
-			return this;
-		}
-	}
-
-	/**
-	 * @version 1.0 11/09/98
-	 */
-
-	class ButtonEditor extends DefaultCellEditor {
-		protected JButton button;
-
-		private String label;
-
-		private boolean isPushed;
-
-		public ButtonEditor(JCheckBox checkBox) {
-			super(checkBox);
-			button = new JButton();
-			button.setOpaque(true);
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					fireEditingStopped();
-				}
-			});
-		}
-
-		public Component getTableCellEditorComponent(JTable table, Object value,
-				boolean isSelected, int row, int column) {
-			if (isSelected) {
-				button.setForeground(table.getSelectionForeground());
-				button.setBackground(table.getSelectionBackground());
-			} else {
-				button.setForeground(table.getForeground());
-				button.setBackground(table.getBackground());
-			}
-			label = (value == null) ? "" : value.toString();
-			button.setText(label);
-			isPushed = true;
-			return button;
-		}
-
-		public Object getCellEditorValue() {
-			if (isPushed) {
-				int result = JOptionPane.showConfirmDialog(null, 
-						label,null, JOptionPane.YES_NO_OPTION);
-				if(result == JOptionPane.YES_OPTION) {
-					if(label.equals(CHALLENGE_ACCEPTED))
-						acceptChallenge();
-					else
-						rejectChallenge();
-				}
-			}
-			isPushed = false;
-			return new String(label);
-		}
-
-		public boolean stopCellEditing() {
-			isPushed = false;
-			return super.stopCellEditing();
-		}
-
-		protected void fireEditingStopped() {
-			super.fireEditingStopped();
-		}
 	}
 }

@@ -67,14 +67,17 @@ public class Model {
     
     public void loadGame(String playerMove, String gameType, String opponent){
     	System.out.println("The gamemodule needs to be loaded");
-//    	setOpponent(opponent);
-//    	setTurn(playerMove);
+    	
+    	/*this needs a fix
+    	setOpponent(opponent);
+    	setTurn(playerMove);
     	
     	//needs attention! something is going wrong
-//    	if(playerMove.equals(clientName))
-//    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType , clientName , opponent));
-//    	else
-//    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType ,  opponent, clientName));
+    	if(playerMove.equals(clientName))
+    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType , clientName , opponent));
+    	else
+    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType ,  opponent, clientName));
+    	 */
     }
 
     public String getClientName() {

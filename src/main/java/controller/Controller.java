@@ -69,13 +69,13 @@ public class Controller implements ActionListener {
 				String gameType = lobbyView.getSelectedGame();
 				if(gameType != null)
 					subscribe(gameType);
-				//Problem with gameModule
-				//model.setGameModule(model.getGameModuleLoader().loadGameModule("Guess Game" , "erwin" , "wiet"));
 			} else if (sourceID == LobbyView.CHALLENGE_PLAYER){
 				String player = lobbyView.getSelectedPlayer();
 				String gameType = lobbyView.getSelectedGame();
 				if(player != null && gameType != null)
 					challenge(player, gameType);
+			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED){
+				acceptChallenge(e.getActionCommand());
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
