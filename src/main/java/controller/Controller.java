@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 public class Controller implements ActionListener {
 	private final Model model;
 	ContainerView containerView;
@@ -67,13 +69,21 @@ public class Controller implements ActionListener {
 				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 			} else if (sourceID == LobbyView.PLAY_GAME){
 				String gameType = lobbyView.getSelectedGame();
-				if(gameType != null)
-					subscribe(gameType);
+				if(gameType != null){
+					int result = JOptionPane.showConfirmDialog(null, 
+							"Subcribe to " + gameType + "?",null, JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.YES_OPTION)
+						subscribe(gameType);
+				}
 			} else if (sourceID == LobbyView.CHALLENGE_PLAYER){
 				String player = lobbyView.getSelectedPlayer();
 				String gameType = lobbyView.getSelectedGame();
-				if(player != null && gameType != null)
-					challenge(player, gameType);
+				if(player != null && gameType != null){
+					int result = JOptionPane.showConfirmDialog(null, 
+							"Challenge " + player + " to play " + gameType + "?" ,null, JOptionPane.YES_NO_OPTION);
+					if(result == JOptionPane.YES_OPTION)
+						challenge(player, gameType);
+				}
 			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED){
 				acceptChallenge(e.getActionCommand());
 			}

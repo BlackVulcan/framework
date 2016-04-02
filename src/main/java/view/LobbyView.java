@@ -145,7 +145,10 @@ public class LobbyView extends JPanel implements View {
 	}
 
 	public String getSelectedGame(){
-		return gameListModel.getElementAt(gameList.getSelectedIndex());
+		int gameIndex = gameList.getSelectedIndex();
+		if(gameIndex >= 0)
+			return gameListModel.getElementAt(gameIndex);
+		return null;
 	}
 
 	public void setAvailableGames(List<String> games) {
@@ -156,7 +159,10 @@ public class LobbyView extends JPanel implements View {
 	}
 
 	public String getSelectedPlayer(){
-		return playerListModel.getElementAt(playerList.getSelectedIndex());
+		int playerIndex = playerList.getSelectedIndex();
+		if(playerIndex >= 0)
+			return playerListModel.getElementAt(playerIndex);
+		return null;
 	}
 
 	public void setAvailablePlayers(List<String> players, String clientName) {
