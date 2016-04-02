@@ -160,18 +160,21 @@ public class ServerResponseReader implements Runnable {
                 for (GameListener gameListener : listeners) {
                     gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
+                model.setGameResult(Model.GAME_WIN);
             } else if (s.startsWith(LOSS_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
 
                 for (GameListener gameListener : listeners) {
                     gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
+                model.setGameResult(Model.GAME_LOSS);
             } else if (s.startsWith(DRAW_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
 
                 for (GameListener gameListener : listeners) {
                     gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
+                model.setGameResult(Model.GAME_DRAW);
             }
         } else {
             return false;

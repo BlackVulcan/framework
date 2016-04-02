@@ -104,6 +104,7 @@ public class LobbyView extends JPanel implements View {
 					JTable table = (JTable)e.getSource();
 			        int modelRow = Integer.valueOf( e.getActionCommand() );
 			        acceptChallenge((String)table.getValueAt(modelRow, 0));
+			        ((DefaultTableModel)table.getModel()).removeRow(modelRow);
 				}
 		    }
 		};

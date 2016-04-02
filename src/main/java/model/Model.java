@@ -66,7 +66,7 @@ public class Model {
     }
     
     public void loadGame(String playerMove, String gameType, String opponent){
-    	System.out.println("The gamemodule needs to be loaded");
+    	System.out.println("The gamemodule " + gameType + " needs to be loaded");
     	
     	/*this needs a fix
     	setOpponent(opponent);
