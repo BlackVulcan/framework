@@ -109,7 +109,8 @@ public class GameController implements GameListener,MoveListener {
             return;
         }
 //        model.getGameModule().doPlayerMove(model.getClientName(),s);
-        serverConnection.move(s);
+        if(model.getTurn())
+            serverConnection.move(s);
     }
 
     public void setServerConnection(ServerConnection serverConnection) {
