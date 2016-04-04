@@ -115,7 +115,7 @@ public class Controller implements ActionListener {
 
 	public boolean connect(String hostname, int port) {
 		try {
-			serverConnection = new ServerConnection(hostname, port, model);
+			serverConnection = new ServerConnection(hostname, port);
 			gameController.setServerConnection(serverConnection);
 			return true;
 		} catch (IOException e) {
