@@ -2,6 +2,8 @@ package controller;
 
 import model.Model;
 
+import javax.swing.*;
+
 public class Main {
 	public Main(){
 		Model model = new Model();

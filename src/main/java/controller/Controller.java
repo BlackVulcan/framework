@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class Controller implements ActionListener {
+
 	private final Model model;
 	ContainerView containerView;
 	MenuView menuView;
