@@ -36,6 +36,7 @@ public class ServerResponseReader implements Runnable {
     private static final String CHALLENGER_VARNAME = "CHALLENGER", CHALLENGENUMBER_VARNAME = "CHALLENGENUMBER";
     private static final String PLAYERONESCORE_VARNAME = "PLAYERONESCORE", PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE", COMMENT_VARNAME = "COMMENT";
     public static final String CANCELLED_PREFIX = "CANCELLED ";
+    private Object stopLock = new Object();
 
     /**
      * All gameListeners which will be notified of events
@@ -87,6 +88,9 @@ public class ServerResponseReader implements Runnable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        synchronized (stopLock){
+            stopLock.notifyAll();
         }
     }
 
@@ -194,7 +198,14 @@ public class ServerResponseReader implements Runnable {
      * Stop the thread reading from the server
      */
     public void stop() {
-        running = false;
+        synchronized (stopLock){
+            running = false;
+            try {
+                stopLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
