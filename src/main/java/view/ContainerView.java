@@ -83,6 +83,7 @@ public class ContainerView extends JFrame implements View {
 	}
 
 	public void showView(Component component) {
+		reset();
 		container.removeAll();
 		container.add(component);
 		revalidate();
@@ -152,6 +153,7 @@ public class ContainerView extends JFrame implements View {
 	
 	public void reset(){
 		this.turn.setText("");
+		this.turnMessage.setText("");
 		this.time.setText("");
 		this.opponent.setText("");
 	}
