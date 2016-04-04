@@ -55,6 +55,7 @@ public class GameController implements GameListener,MoveListener {
     public void yourTurn(String turnmessage) {
         System.out.println("yourturn");
         System.out.printf("TurnMessage = %s\n",turnmessage);
+        model.setTurnMessage(turnmessage);
         model.setTurn(model.getClientName());
     }
 
