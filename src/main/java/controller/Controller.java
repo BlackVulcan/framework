@@ -59,9 +59,10 @@ public class Controller implements ActionListener {
 			} else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
 				lobbyView.reset();
 				close();
-			} else if (sourceID == MenuView.PLAY_WITH_AI) {
-				//Activate AI
-				System.out.println("AI is not yet implemented...");
+			} else if (sourceID == MenuView.ENABLE_AI) {
+				model.setPlayWithAI(true);
+			} else if (sourceID == MenuView.DISABLE_AI){
+				model.setPlayWithAI(false);
 			}
 		} else if (source instanceof LobbyView) {
 			if(sourceID == LobbyView.LOBBY_REFRESH){

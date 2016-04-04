@@ -31,6 +31,7 @@ public class Model {
     private String clientName, opponent, serverAddress, turnMessage;
     private int gameResult = 0;
     private boolean myTurn = false;
+    private boolean playWithAI = false;
     private GameModuleLoader gameModuleLoader;
     private ArrayList<String> challengeGameTypes = new ArrayList<>(), 
     		challengePlayers = new ArrayList<>(), challengeNumbers = new ArrayList<>();
@@ -134,6 +135,15 @@ public class Model {
     
     public int getGameResult(){
     	return gameResult;
+    }
+    
+    public void setPlayWithAI(boolean playWithAI){
+    	this.playWithAI = playWithAI;
+    	System.out.println("AI is active: " + this.playWithAI);
+    }
+    
+    public boolean getPlayWithAI(){
+    	return playWithAI;
     }
     
     public void setNewChallenge(String gameType, String player, String challengeNumber){
