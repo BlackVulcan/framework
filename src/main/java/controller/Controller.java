@@ -8,11 +8,10 @@ import view.LobbyView;
 import view.LoginBox;
 import view.MenuView;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
-import javax.swing.JOptionPane;
 
 public class Controller implements ActionListener {
 	private final Model model;
@@ -91,6 +90,11 @@ public class Controller implements ActionListener {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
 				if (!loginBox.hasInput()) {
 					loginBox.showEmptyError();
+					return;
+				}
+
+				if (serverConnection != null && serverConnection.isConnected()) {
+					loginBox.showAlreadyConnected();
 					return;
 				}
 
