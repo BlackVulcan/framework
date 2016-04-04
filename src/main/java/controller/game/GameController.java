@@ -26,7 +26,7 @@ public class GameController implements GameListener,MoveListener {
     }
 
     @Override
-    public void match(String playerToMove, String gametype, String opponent) {        
+    public void match(String playerToMove, String gameType, String opponent) {
         if(playerToMove.equals(model.getClientName()))
         	model.setOpponent(opponent);
         else
@@ -36,7 +36,7 @@ public class GameController implements GameListener,MoveListener {
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
         
-        AbstractGameModule module = loader.loadGameModule(gametype,playerOne,playerTwo);
+        AbstractGameModule module = loader.loadGameModule(gameType,playerOne,playerTwo);
 
         if(module instanceof ClientAbstractGameModule){
             System.out.println("found an instance");
@@ -45,6 +45,7 @@ public class GameController implements GameListener,MoveListener {
         }else{
             System.out.println("Was not an instance");
         }
+        model.loadGame(playerToMove, gameType, opponent);
     }
 
     @Override
@@ -64,12 +65,12 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void challenge(String challenger, String challengeNumber, String gametype) {
-
+        model.setNewChallenge(gametype, challenger, challengeNumber);
     }
 
     @Override
     public void challengeCancelled(String challengeNumber) {
-
+        model.cancelChallenge(challengeNumber);
     }
 
     @Override
@@ -77,11 +78,13 @@ public class GameController implements GameListener,MoveListener {
     	this.model.setGameResult(Model.GAME_LOSS);
         System.out.println("ServerConnectionTest.loss");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
+        model.setGameResult(Model.GAME_LOSS);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
     	this.model.setGameResult(Model.GAME_WIN);
+        model.setGameResult(Model.GAME_WIN);
         System.out.println("ServerConnectionTest.win");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
@@ -91,6 +94,7 @@ public class GameController implements GameListener,MoveListener {
     	this.model.setGameResult(Model.GAME_DRAW);
         System.out.println("ServerConnectionTest.draw");
         System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
+        model.setGameResult(Model.GAME_DRAW);
     }
 
     @Override

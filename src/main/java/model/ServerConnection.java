@@ -28,10 +28,10 @@ public class ServerConnection {
      * @param port The port of the game server
      * @throws IOException
      */
-    public ServerConnection(String ip, int port, Model model) throws IOException {
+    public ServerConnection(String ip, int port) throws IOException {
         socket = new Socket(ip, port);
         this.model = model;
-        reader = new ServerResponseReader(socket, model);
+        reader = new ServerResponseReader(socket);
         new Thread(reader).start();
         writer = new PrintWriter(socket.getOutputStream());
     }

@@ -57,16 +57,14 @@ public class ServerResponseReader implements Runnable {
      * A boolean indicating if this thread should run
      */
     boolean running = true;
-    private Model model;
 
     /**
      *
      * @param socket The socket on which's inputStream to read.
      * @throws IOException
      */
-    public ServerResponseReader(Socket socket, Model model) throws IOException {
+    public ServerResponseReader(Socket socket) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.model = model;
     }
 
     /**
@@ -123,7 +121,6 @@ public class ServerResponseReader implements Runnable {
                 for (GameListener gameListener : listeners) {
                     gameListener.match(playerMove, gameType, opponent);
                 }
-                model.loadGame(playerMove, gameType, opponent);
             } else if (s.startsWith(YOURTURN_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
 
@@ -143,7 +140,7 @@ public class ServerResponseReader implements Runnable {
                     for (GameListener gameListener : listeners) {
                         gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
                     }
-                    model.cancelChallenge(jsonObject.getString(CHALLENGENUMBER_VARNAME));
+
                     return true;
                 }
                 JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
@@ -155,8 +152,7 @@ public class ServerResponseReader implements Runnable {
                 for (GameListener gameListener : listeners) {
                     gameListener.challenge(challenger, challengeNumber, challengeGameType);
                 }
-                
-                model.setNewChallenge(challengeGameType, challenger, challengeNumber);
+
                 
             } else if (s.startsWith(WIN_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
@@ -164,21 +160,18 @@ public class ServerResponseReader implements Runnable {
                 for (GameListener gameListener : listeners) {
                     gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
-                model.setGameResult(Model.GAME_WIN);
             } else if (s.startsWith(LOSS_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
 
                 for (GameListener gameListener : listeners) {
                     gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
-                model.setGameResult(Model.GAME_LOSS);
             } else if (s.startsWith(DRAW_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
 
                 for (GameListener gameListener : listeners) {
                     gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME),jsonObject.getString(COMMENT_VARNAME));
                 }
-                model.setGameResult(Model.GAME_DRAW);
             }
         } else {
             return false;
