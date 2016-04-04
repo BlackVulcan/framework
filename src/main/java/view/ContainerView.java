@@ -29,13 +29,14 @@ public class ContainerView extends JFrame implements View {
 
 		JPanel informationPanel = new JPanel();
 		getContentPane().add(informationPanel, BorderLayout.NORTH);
-		informationPanel.setLayout(new GridLayout(0, 3, 0, 0));
+		informationPanel.setLayout(new GridLayout(0, 4, 0, 0));
 		opponent = new JLabel("", SwingConstants.CENTER);
 		turn = new JLabel("", SwingConstants.CENTER);
 		turnMessage = new JLabel("", SwingConstants.CENTER);
 		time = new JLabel("", SwingConstants.CENTER);
 		informationPanel.add(opponent);
 		informationPanel.add(turn);
+		informationPanel.add(turnMessage);
 		informationPanel.add(time);
 		setFullScreen();
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
