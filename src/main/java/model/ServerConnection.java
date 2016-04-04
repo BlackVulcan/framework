@@ -109,9 +109,9 @@ public class ServerConnection {
      * Logs the user out and closes the connection
      */
     public void close(){
-        reader.stop();
         writer.println("logout");
         writer.flush();
+        reader.stop();
         try {
             socket.close();
         } catch (IOException e) {
