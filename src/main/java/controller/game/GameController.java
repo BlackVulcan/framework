@@ -33,6 +33,7 @@ public class GameController implements GameListener,MoveListener {
         	model.setOpponent(playerToMove);
         
         System.out.println("GameController.match");
+        model.setTurn(playerToMove);
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
         
