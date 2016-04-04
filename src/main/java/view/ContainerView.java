@@ -16,7 +16,7 @@ public class ContainerView extends JFrame implements View {
 	private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
 	private JPanel container;
 	private ArrayList<JButton> buttons = new ArrayList<>();
-	private JLabel turn, opponent, time;
+	private JLabel turn, turnMessage, opponent, time;
 
 	public ContainerView() {
 		super("Two player game framework");
@@ -32,6 +32,7 @@ public class ContainerView extends JFrame implements View {
 		informationPanel.setLayout(new GridLayout(0, 3, 0, 0));
 		opponent = new JLabel("", SwingConstants.CENTER);
 		turn = new JLabel("", SwingConstants.CENTER);
+		turnMessage = new JLabel("", SwingConstants.CENTER);
 		time = new JLabel("", SwingConstants.CENTER);
 		informationPanel.add(opponent);
 		informationPanel.add(turn);
@@ -68,6 +69,9 @@ public class ContainerView extends JFrame implements View {
 			else if(objectID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.OPPONENT_SET)){
 				this.opponent.setText("Opponent: " + model.getOpponent());
 			}
+			else if(objectID == Model.TURN_MESSAGE_CHANGED){
+				this.setTurnMessage(model.getTurnMessage());
+			}
 		}
 	}
 
@@ -97,6 +101,10 @@ public class ContainerView extends JFrame implements View {
 
 	public void setTurnEmpty(){
 		this.turn.setText("");
+	}
+	
+	public void setTurnMessage(String message){
+		this.turnMessage.setText(message);
 	}
 
 	private void setTimeBox(String time){

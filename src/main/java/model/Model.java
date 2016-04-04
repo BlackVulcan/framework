@@ -18,6 +18,7 @@ public class Model {
     public static final int GAME_LOSS = 6;
     public static final int NEW_CHALLENGE = 7;
     public static final int CANCEL_CHALLENGE = 8;
+    public static final int TURN_MESSAGE_CHANGED = 9;
     
     public static final String GAMEMODULE_SET = "gamemodule is set";
     public static final String OPPONENT_SET = "opponent is set";
@@ -27,7 +28,7 @@ public class Model {
     
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 	private ClientAbstractGameModule gameModule;
-    private String clientName, opponent, serverAddress;
+    private String clientName, opponent, serverAddress, turnMessage;
     private int gameResult = 0;
     private boolean myTurn = false;
     private GameModuleLoader gameModuleLoader;
@@ -115,6 +116,15 @@ public class Model {
     
     public boolean getTurn(){
     	return this.myTurn;
+    }
+    
+    public void setTurnMessage(String message){
+    	turnMessage = message;
+    	processEvent(new ActionEvent(this, TURN_MESSAGE_CHANGED, null));
+    }
+    
+    public String getTurnMessage(){
+    	return turnMessage;
     }
     
     public void setGameResult(int gameResult){
