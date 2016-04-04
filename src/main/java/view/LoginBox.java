@@ -17,9 +17,10 @@ public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
     private static final String EMPTY_INPUT_ERROR = "No valid input.";
     private static final String CONNECT_ERROR = "Error when connecting.";
+	private static final String ALREADY_CONNECTED = "Already Connected";
 
-    private JPanel contentPane;
-    private JTextField hostField;
+	private JPanel contentPane;
+	private JTextField hostField;
     private JTextField portField;
     private JButton connectButton;
     private JTextField nameField;
@@ -114,6 +115,11 @@ public class LoginBox extends JDialog {
         loginError.setText(EMPTY_INPUT_ERROR);
         loginError.setVisible(true);
     }
+
+	public void showAlreadyConnected() {
+		loginError.setText(ALREADY_CONNECTED);
+		loginError.setVisible(true);
+	}
 
     public void resetError() {
         loginError.setVisible(false);

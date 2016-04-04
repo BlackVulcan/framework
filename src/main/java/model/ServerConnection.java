@@ -16,10 +16,9 @@ public class ServerConnection {
 
     private static final String GAMELIST = "gamelist";
     private static final String PLAYERLIST = "playerlist";
-
-    private ServerResponseReader reader;
+	private final Socket socket;
+	private ServerResponseReader reader;
     private PrintWriter writer;
-    private final Socket socket;
 
     /**
      * Creates a connection to a server with the specified IP address and port
@@ -155,5 +154,7 @@ public class ServerConnection {
         return write("forfeit");
     }
 
-
+	public boolean isConnected() {
+		return socket.isConnected() && !socket.isClosed();
+	}
 }
