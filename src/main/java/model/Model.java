@@ -20,6 +20,7 @@ public class Model {
     public static final int CANCEL_CHALLENGE = 8;
     public static final int TURN_MESSAGE_CHANGED = 9;
     
+    public static final String GAME_IS_CLOSED = "game is closed";
     public static final String GAMEMODULE_SET = "gamemodule is set";
     public static final String OPPONENT_SET = "opponent is set";
     public static final String CHALLENGE_GAME_TYPE = "gametype";
@@ -32,6 +33,7 @@ public class Model {
     private int gameResult = 0;
     private boolean myTurn = false;
     private boolean playWithAI = false;
+    private boolean playingGame = false;
     private GameModuleLoader gameModuleLoader;
     private ArrayList<String> challengeGameTypes = new ArrayList<>(), 
     		challengePlayers = new ArrayList<>(), challengeNumbers = new ArrayList<>();
@@ -59,6 +61,16 @@ public class Model {
 
     public ClientAbstractGameModule getGameModule() {
         return gameModule;
+    }
+    
+    public void setPlayingGame(boolean playingGame){
+    	this.playingGame = playingGame;
+    	if(!playingGame)
+    		processEvent(new ActionEvent(this, GAME_CHANGED, GAME_IS_CLOSED));
+    }
+    
+    public boolean getPlayingGame(){
+    	return playingGame;
     }
 
     public void setGameModule(ClientAbstractGameModule gameModule) {
@@ -129,6 +141,7 @@ public class Model {
     }
     
     public void setGameResult(int gameResult){
+    	System.out.println("The game is: " + gameResult);
     	this.gameResult = gameResult;
     	processEvent(new ActionEvent(this, gameResult, null));
     }

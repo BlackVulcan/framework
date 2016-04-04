@@ -32,7 +32,6 @@ public class GameController implements GameListener,MoveListener {
         else
         	model.setOpponent(playerToMove);
         
-        System.out.println("GameController.match");
         model.setTurn(playerToMove);
         String playerOne = playerToMove;
         String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
@@ -40,7 +39,6 @@ public class GameController implements GameListener,MoveListener {
         AbstractGameModule module = loader.loadGameModule(gameType,playerOne,playerTwo);
 
         if(module instanceof ClientAbstractGameModule){
-            System.out.println("found an instance");
             ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule)module;
             clientAbstractGameModule.start();
             clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
@@ -53,8 +51,6 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void yourTurn(String turnmessage) {
-//        System.out.println("yourturn");
-//        System.out.printf("TurnMessage = %s\n",turnmessage);
         model.setTurnMessage(turnmessage);
         model.setTurn(model.getClientName());
         if (model.getPlayWithAI()) {
@@ -64,16 +60,12 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void move(String player, String move, String details) {
-        System.out.println(model.getGameModule());
-        System.out.println(player);
-        System.out.println(move);
         model.getGameModule().doPlayerMove(player,move);
         model.setTurn(model.getGameModule().getPlayerToMove());
     }
 
     @Override
     public void challenge(String challenger, String challengeNumber, String gametype) {
-        System.out.println("We have been challenged");
         model.setNewChallenge(gametype, challenger, challengeNumber);
     }
 
@@ -85,25 +77,16 @@ public class GameController implements GameListener,MoveListener {
     @Override
     public void loss(String playerOneScore, String playerTwoScore, String comment) {
     	this.model.setGameResult(Model.GAME_LOSS);
-        System.out.println("ServerConnectionTest.loss");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
-        model.setGameResult(Model.GAME_LOSS);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
     	this.model.setGameResult(Model.GAME_WIN);
-        model.setGameResult(Model.GAME_WIN);
-        System.out.println("ServerConnectionTest.win");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
     }
 
     @Override
     public void draw(String playerOneScore, String playerTwoScore, String comment) {
     	this.model.setGameResult(Model.GAME_DRAW);
-        System.out.println("ServerConnectionTest.draw");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
-        model.setGameResult(Model.GAME_DRAW);
     }
 
     @Override
@@ -114,7 +97,7 @@ public class GameController implements GameListener,MoveListener {
         }
 //        model.getGameModule().doPlayerMove(model.getClientName(),s);
         if(model.getTurn())
-            new Thread(()->serverConnection.move(s)).start();
+            serverConnection.move(s);
     }
 
     public void setServerConnection(ServerConnection serverConnection) {

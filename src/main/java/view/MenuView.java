@@ -11,6 +11,7 @@ public class MenuView extends JMenuBar implements View {
 	public static final int ENABLE_AI = 2;
 	public static final int DISABLE_AI = 3;
 	public static final int SERVER_CONNECTION_SHOW = 4;
+	public static final int RETURN_TO_LOBBY = 5;
 	private static final long serialVersionUID = 1L;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
@@ -32,6 +33,14 @@ public class MenuView extends JMenuBar implements View {
 			processEvent(new ActionEvent(this, DiSCONNECT_FROM_SERVER, null));
 		});
 		start.add(menuItemdisConnect);
+		
+		JMenuItem menuReturnToLobby = new JMenuItem("Return to lobby");
+		menuReturnToLobby.setMnemonic(KeyEvent.VK_R);
+		menuReturnToLobby.setToolTipText("Return to the lobby");
+		menuReturnToLobby.addActionListener(event -> {
+			processEvent(new ActionEvent(this, RETURN_TO_LOBBY, null));
+		});
+		start.add(menuReturnToLobby);
 
 		JMenuItem menuItemExit = new JMenuItem("Exit");
 		menuItemExit.setMnemonic(KeyEvent.VK_E);
@@ -55,7 +64,7 @@ public class MenuView extends JMenuBar implements View {
 		menuItemDisableAI.addActionListener(event -> {
 			processEvent(new ActionEvent(this, DISABLE_AI, null));
 		});
-		intelligence.add(menuItemDisableAI);
+		intelligence.add(menuItemDisableAI);		
 
 		this.add(start);
 		this.add(intelligence);
