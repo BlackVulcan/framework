@@ -71,38 +71,39 @@ public class Controller implements ActionListener {
 			}
 		}else if (source instanceof MenuView) {
 			if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
+				loginBox.resetError();
 				loginBox.setVisible(true);
 			} else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
 				lobbyView.reset();
 				close();
 			} else if (sourceID == MenuView.ENABLE_AI) {
 				model.setPlayWithAI(true);
-			} else if (sourceID == MenuView.DISABLE_AI){
+			} else if (sourceID == MenuView.DISABLE_AI) {
 				model.setPlayWithAI(false);
 			} else if (sourceID == MenuView.RETURN_TO_LOBBY){
 				model.setPlayingGame(false);
 			}
 		} else if (source instanceof LobbyView) {
-			if(sourceID == LobbyView.LOBBY_REFRESH){
+			if (sourceID == LobbyView.LOBBY_REFRESH) {
 				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
-			} else if (sourceID == LobbyView.PLAY_GAME){
+			} else if (sourceID == LobbyView.PLAY_GAME) {
 				String gameType = lobbyView.getSelectedGame();
-				if(gameType != null){
-					int result = JOptionPane.showConfirmDialog(null, 
-							"Subcribe to " + gameType + "?",null, JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.YES_OPTION)
+				if (gameType != null) {
+					int result = JOptionPane.showConfirmDialog(null,
+							"Subcribe to " + gameType + "?", null, JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION)
 						subscribe(gameType);
 				}
-			} else if (sourceID == LobbyView.CHALLENGE_PLAYER){
+			} else if (sourceID == LobbyView.CHALLENGE_PLAYER) {
 				String player = lobbyView.getSelectedPlayer();
 				String gameType = lobbyView.getSelectedGame();
-				if(player != null && gameType != null){
-					int result = JOptionPane.showConfirmDialog(null, 
-							"Challenge " + player + " to play " + gameType + "?" ,null, JOptionPane.YES_NO_OPTION);
-					if(result == JOptionPane.YES_OPTION)
+				if (player != null && gameType != null) {
+					int result = JOptionPane.showConfirmDialog(null,
+							"Challenge " + player + " to play " + gameType + "?", null, JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION)
 						challenge(player, gameType);
 				}
-			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED){
+			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED) {
 				acceptChallenge(e.getActionCommand());
 			}
 		} else if (source instanceof LoginBox) {
