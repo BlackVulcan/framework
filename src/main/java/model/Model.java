@@ -141,7 +141,6 @@ public class Model {
     }
     
     public void setGameResult(int gameResult){
-    	System.out.println("The game is: " + gameResult);
     	this.gameResult = gameResult;
     	processEvent(new ActionEvent(this, gameResult, null));
     }

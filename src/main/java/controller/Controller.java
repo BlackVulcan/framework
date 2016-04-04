@@ -55,10 +55,12 @@ public class Controller implements ActionListener {
 				lobbyView.stopAutomaticRefresh();
 				containerView.showView(model.getGameModule().getView());
 				model.setPlayingGame(true);
+				containerView.setTime(10000, model);
 			} else if (sourceID == Model.GAME_CHANGED && e.getActionCommand() != null 
 					&& e.getActionCommand().equals(Model.GAME_IS_CLOSED)){
 				loadLobby();
 				containerView.showView(lobbyView);
+				containerView.reset();
 			}
 		} else if (source instanceof ContainerView) {
 			if (sourceID == ContainerView.RETURN_TO_LOBBY && model.getPlayingGame()){
