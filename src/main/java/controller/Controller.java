@@ -54,7 +54,12 @@ public class Controller implements ActionListener {
 				lobbyView.stopAutomaticRefresh();
 				containerView.showView(model.getGameModule().getView());
 			}
-		} else if (source instanceof MenuView) {
+		} else if (source instanceof ContainerView) {
+			if (sourceID == ContainerView.RETURN_TO_LOBBY){
+				containerView.showView(lobbyView);
+				loadLobby();
+			}
+		}else if (source instanceof MenuView) {
 			if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
 				loginBox.setVisible(true);
 			} else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
@@ -102,7 +107,7 @@ public class Controller implements ActionListener {
 
 				if (connect(loginBox.getHost(), loginBox.getPort())) {
 					if (login(loginBox.getName())) {
-						setLobby();
+						loadLobby();
 						loginBox.resetError();
 						loginBox.setVisible(false);
 						return;
@@ -164,21 +169,11 @@ public class Controller implements ActionListener {
 	}
 
 	/**
-	 * Sets the lobby with available games and players if connected with a server.
-	 * 
-	 * Contains test data. Needs to be removed when connection with a server is possible
+	 * Sets the lobby with available games and players.
 	 */
-	public void setLobby() {
+	public void loadLobby() {
 		lobbyView.setAvailableGames(serverConnection.getGamelist());
 		lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 		lobbyView.automaticRefresh();
-
-		// need to build something for getting challenges!!
-
-		// begin test code
-		//            model.setOpponent("Yokovaski");
-		//            model.setTurn(model.getClientName());
-		//            containerView.setTime(20000, model);
-		// end test code
 	}
 }

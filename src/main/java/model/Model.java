@@ -139,7 +139,6 @@ public class Model {
     
     public void setPlayWithAI(boolean playWithAI){
     	this.playWithAI = playWithAI;
-    	System.out.println("AI is active: " + this.playWithAI);
     }
     
     public boolean getPlayWithAI(){

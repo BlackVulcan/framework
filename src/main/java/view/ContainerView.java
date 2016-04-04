@@ -6,17 +6,21 @@ import model.Model;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ContainerView extends JFrame implements View {
+	public static final int RETURN_TO_LOBBY = 1;
 	private static final long serialVersionUID = 1L;
+	private static final String RESULT_DRAW = "It's a draw!";
+	private static final String RESULT_LOSS = "You have lost the game!";
+	private static final String RESULT_WIN = "You have won the game!";
 	private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
 	private JPanel container;
 	private ArrayList<JButton> buttons = new ArrayList<>();
 	private JLabel turn, turnMessage, opponent, time;
+	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
 	public ContainerView() {
 		super("Two player game framework");
@@ -58,14 +62,16 @@ public class ContainerView extends JFrame implements View {
 				setTurn(model.getTurn());
 			}
 			else if(objectID == Model.GAME_DRAW){
-				this.turn.setText("It's a draw!");
+				this.turn.setText(RESULT_DRAW);
+				showReturnToLobby(RESULT_DRAW);
 			}
 			else if(objectID == Model.GAME_LOSS){
-				System.out.println("You NOOB! You have lost the game!");
-				this.turn.setText("You have lost the game!");
+				this.turn.setText(RESULT_LOSS);
+				showReturnToLobby(RESULT_LOSS);
 			}
 			else if(objectID == Model.GAME_WIN){
-				this.turn.setText("You have won the game!");
+				this.turn.setText(RESULT_WIN);
+				showReturnToLobby(RESULT_WIN);
 			}
 			else if(objectID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.OPPONENT_SET)){
 				this.opponent.setText("Opponent: " + model.getOpponent());
@@ -73,6 +79,14 @@ public class ContainerView extends JFrame implements View {
 			else if(objectID == Model.TURN_MESSAGE_CHANGED){
 				this.setTurnMessage(model.getTurnMessage());
 			}
+		}
+	}
+	
+	public void showReturnToLobby(String message){
+		int result = JOptionPane.showConfirmDialog(null, 
+    			message + " Return to lobby?", null, JOptionPane.YES_NO_OPTION);
+		if(result == JOptionPane.YES_OPTION) {
+			processEvent(new ActionEvent(this, RETURN_TO_LOBBY, null));
 		}
 	}
 
@@ -151,5 +165,14 @@ public class ContainerView extends JFrame implements View {
 		this.turn.setText("");
 		this.time.setText("");
 		this.opponent.setText("");
+	}
+
+	private void processEvent(ActionEvent e) {
+		for (ActionListener l : actionListenerList)
+			l.actionPerformed(e);
+	}
+
+	public void addActionListener(ActionListener actionListener) {
+		actionListenerList.add(actionListener);
 	}
 }

@@ -2,7 +2,6 @@ package view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import model.Model;
 
@@ -31,7 +30,6 @@ public class LobbyView extends JPanel implements View {
 	private JButton subscribe, challenge;
 	private JPanel gamePlayerPanel;
 	private boolean automaticRefresh = false;
-	private boolean challengeDeletionFlag = false;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
 	public LobbyView() {
@@ -123,8 +121,8 @@ public class LobbyView extends JPanel implements View {
 		    }
 		};
 		
-		ButtonColumn buttonColumnAcceptChallenge = new ButtonColumn(challengeTable, acceptChallenge, 3);
-		ButtonColumn buttonColumnRejectChallenge = new ButtonColumn(challengeTable, rejectChallenge, 4);
+		new ButtonColumn(challengeTable, acceptChallenge, 3);
+		new ButtonColumn(challengeTable, rejectChallenge, 4);
 
 		challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
 	}
@@ -198,14 +196,6 @@ public class LobbyView extends JPanel implements View {
 				challengeTableModel.removeRow(i);
 			}
 		}
-	}
-
-	private boolean getChallengeDeletionFlag(){
-		return challengeDeletionFlag;
-	}
-
-	private void setChallengeDeletionFlag(boolean challengeDeletionFlag){
-		this.challengeDeletionFlag = challengeDeletionFlag;
 	}
 
 	private void resetChallenge(){
