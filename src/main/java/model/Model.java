@@ -61,7 +61,7 @@ public class Model {
 
     public void setGameModule(ClientAbstractGameModule gameModule) {
         this.gameModule = gameModule;
-        processEvent(new ActionEvent(this, GAME_CHANGED,null));
+        processEvent(new ActionEvent(this, GAME_CHANGED,GAMEMODULE_SET));
     }
     
     public void loadGame(String playerMove, String gameType, String opponent){

@@ -49,7 +49,7 @@ public class Controller implements ActionListener {
 		int sourceID = e.getID();
 		if (source instanceof Model) {
 			Model model = (Model) e.getSource();
-			if (sourceID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
+			if (sourceID == Model.GAME_CHANGED && e.getActionCommand() != null && e.getActionCommand().equals(Model.GAMEMODULE_SET)) {
 				model.getGameModule().addMoveListener(gameController);
 				lobbyView.stopAutomaticRefresh();
 				containerView.showView(model.getGameModule().getView());
