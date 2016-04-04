@@ -40,8 +40,10 @@ public class GameController implements GameListener,MoveListener {
 
         if(module instanceof ClientAbstractGameModule){
             System.out.println("found an instance");
-            model.setGameModule((ClientAbstractGameModule)module);
-            model.getGameModule().start();
+            ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule)module;
+            clientAbstractGameModule.start();
+            clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
+            model.setGameModule(clientAbstractGameModule);
         }else{
             System.out.println("Was not an instance");
         }

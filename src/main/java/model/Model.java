@@ -61,7 +61,6 @@ public class Model {
 
     public void setGameModule(ClientAbstractGameModule gameModule) {
         this.gameModule = gameModule;
-        gameModule.setClientBegins(gameModule.getPlayerToMove().equals(clientName));
         processEvent(new ActionEvent(this, GAME_CHANGED,null));
     }
     
