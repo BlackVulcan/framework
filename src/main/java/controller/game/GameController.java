@@ -97,7 +97,7 @@ public class GameController implements GameListener,MoveListener {
         }
 //        model.getGameModule().doPlayerMove(model.getClientName(),s);
         if(model.getTurn())
-            serverConnection.move(s);
+        	new Thread(()->serverConnection.move(s)).start();
     }
 
     public void setServerConnection(ServerConnection serverConnection) {
