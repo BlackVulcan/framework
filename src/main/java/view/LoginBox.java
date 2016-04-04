@@ -43,6 +43,18 @@ public class LoginBox extends JDialog {
         pack();
         portField.setDocument(new LoginBox.JTextFieldLimit(5));
 
+        hostField.addActionListener(event -> {
+            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
+        });
+
+        portField.addActionListener(event -> {
+            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
+        });
+
+        nameField.addActionListener(event -> {
+            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
+        });
+
         connectButton.addActionListener(event -> {
             processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
         });
