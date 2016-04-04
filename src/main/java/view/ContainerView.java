@@ -56,14 +56,14 @@ public class ContainerView extends JFrame implements View {
 				setTurn(model.getTurn());
 			}
 			else if(objectID == Model.GAME_DRAW){
-				this.turn.setText("You have won the game!");
+				this.turn.setText("It's a draw!");
 			}
 			else if(objectID == Model.GAME_LOSS){
 				System.out.println("You NOOB! You have lost the game!");
 				this.turn.setText("You have lost the game!");
 			}
 			else if(objectID == Model.GAME_WIN){
-				this.turn.setText("It's a draw!");
+				this.turn.setText("You have won the game!");
 			}
 			else if(objectID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.OPPONENT_SET)){
 				this.opponent.setText("Opponent: " + model.getOpponent());
