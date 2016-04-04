@@ -34,7 +34,6 @@ public class Controller implements ActionListener {
 		this.model.addActionListener(this);
 		this.model.addActionListener(lobbyView);
 		this.model.addActionListener(containerView);
-		containerView.addActionListener(this);
 		menuView.addActionListener(this);
 		loginBox.addActionListener(this);
 		lobbyView.addActionListener(this);
@@ -47,7 +46,6 @@ public class Controller implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
-		System.out.println(source.getClass().toString());
 		int sourceID = e.getID();
 		if (source instanceof Model) {
 			Model model = (Model) e.getSource();
@@ -59,15 +57,12 @@ public class Controller implements ActionListener {
 				model.setPlayingGame(true);
 			} else if (sourceID == Model.GAME_CHANGED && e.getActionCommand() != null 
 					&& e.getActionCommand().equals(Model.GAME_IS_CLOSED)){
-				containerView.showView(lobbyView);
 				loadLobby();
+				containerView.showView(lobbyView);
 			}
 		} else if (source instanceof ContainerView) {
-			System.out.println("source is instanceof containerView");
 			if (sourceID == ContainerView.RETURN_TO_LOBBY && model.getPlayingGame()){
-				System.out.println("set view to lobbyview");
-				containerView.showView(lobbyView);
-				loadLobby();
+				model.setPlayingGame(false);
 			}
 		}else if (source instanceof MenuView) {
 			if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
