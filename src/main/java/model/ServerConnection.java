@@ -20,7 +20,6 @@ public class ServerConnection {
     private ServerResponseReader reader;
     private PrintWriter writer;
     private final Socket socket;
-    private Model model;
 
     /**
      * Creates a connection to a server with the specified IP address and port
@@ -30,7 +29,6 @@ public class ServerConnection {
      */
     public ServerConnection(String ip, int port) throws IOException {
         socket = new Socket(ip, port);
-        this.model = model;
         reader = new ServerResponseReader(socket);
         new Thread(reader).start();
         writer = new PrintWriter(socket.getOutputStream());
