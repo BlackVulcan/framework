@@ -99,9 +99,9 @@ public class ServerResponseReader implements Runnable {
      * @return true if a Line containing information for listeners has been found, false otherwise
      */
     private boolean parse(String s) {
-    	if(s == null)
-    		return false;
-    	
+        if(s == null)
+            return false;
+
         if (s.equals("Strategic Game Server [Version 1.0]") || s.equals("(C) Copyright 2009 Hanze Hogeschool Groningen")) {
             return true;
         }
@@ -113,11 +113,11 @@ public class ServerResponseReader implements Runnable {
 
             if (s.startsWith(MATCH_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
-                
+
                 String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
                 String gameType = jsonObject.getString(GAMETYPE_VARNAME);
                 String opponent = jsonObject.getString(OPPONENT_VARNAME);
-                
+
                 for (GameListener gameListener : listeners) {
                     gameListener.match(playerMove, gameType, opponent);
                 }
@@ -149,16 +149,16 @@ public class ServerResponseReader implements Runnable {
                     return true;
                 }
                 JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
-                
+
                 String challenger = jsonObject.getString(CHALLENGER_VARNAME);
                 String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
                 String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
-                
+
                 for (GameListener gameListener : listeners) {
                     gameListener.challenge(challenger, challengeNumber, challengeGameType);
                 }
 
-                
+
             } else if (s.startsWith(WIN_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
 
