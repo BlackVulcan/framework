@@ -125,7 +125,11 @@ public class ServerResponseReader implements Runnable {
                 JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
 
                 for (GameListener gameListener : listeners) {
-                    gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
+                    try {
+                        gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
+                    }catch (JSONException e){
+                        gameListener.yourTurn("");
+                    }
                 }
             } else if (s.startsWith(MOVE_PREFIX)) {
                 JSONObject jsonObject = new JSONObject(s.substring(MOVE_PREFIX.length()));
