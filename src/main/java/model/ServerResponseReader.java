@@ -134,6 +134,7 @@ public class ServerResponseReader implements Runnable {
                     gameListener.move(jsonObject.getString(PLAYER_VARNAME), jsonObject.getString(MOVE_VARNAME), jsonObject.getString(DETAILS_VARNAME));
                 }
             } else if (s.startsWith(CHALLENGE_PREFIX)) {
+                System.out.println(s);
                 if (s.substring(CHALLENGE_PREFIX.length()).startsWith(CANCELLED_PREFIX)) {
                     JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length() + CANCELLED_PREFIX.length()));
 

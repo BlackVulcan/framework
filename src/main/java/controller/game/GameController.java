@@ -65,6 +65,7 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void challenge(String challenger, String challengeNumber, String gametype) {
+        System.out.println("We have been challenged");
         model.setNewChallenge(gametype, challenger, challengeNumber);
     }
 

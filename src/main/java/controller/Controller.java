@@ -117,6 +117,7 @@ public class Controller implements ActionListener {
 		try {
 			serverConnection = new ServerConnection(hostname, port);
 			gameController.setServerConnection(serverConnection);
+			serverConnection.addGameListener(gameController);
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
