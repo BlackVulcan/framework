@@ -72,10 +72,9 @@ public class Controller implements ActionListener {
 					close();
 					containerView.showView(lobbyView);
 				}
-			} else if (sourceID == MenuView.ENABLE_AI) {
-				model.setPlayWithAI(true);
-			} else if (sourceID == MenuView.DISABLE_AI) {
-				model.setPlayWithAI(false);
+            } else if (sourceID == MenuView.TOGGLE_AI) {
+                model.setPlayWithAI(!model.getPlayWithAI());
+                menuView.setPlayWithAI(model.getPlayWithAI());
 			} else if (sourceID == MenuView.RETURN_TO_LOBBY){
 				if(serverConnection.isConnected())
 					model.setPlayingGame(false);
