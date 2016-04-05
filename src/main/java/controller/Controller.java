@@ -130,7 +130,7 @@ public class Controller implements ActionListener {
 		}
 	}
 
-	private void close() {
+	public void close() {
 		serverConnection.close();
 	}
 

@@ -2,15 +2,22 @@ package controller;
 
 import model.Model;
 
-import javax.swing.*;
-
 public class Main {
-	public Main(){
+	public Main(String[] args) {
 		Model model = new Model();
-		new Controller(model);
+		Controller controller = new Controller(model);
+		if (args.length >= 3) {
+			if (controller.connect(args[0], Integer.parseInt(args[1]))) {
+				if (controller.login(args[2])) {
+					controller.loadLobby();
+				} else {
+					controller.close();
+				}
+			}
+		}
 	}
 
 	public static void main(String[] args) {
-		new Main();
+		new Main(args);
 	}
 }
