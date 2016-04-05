@@ -52,7 +52,6 @@ public class GameController implements GameListener,MoveListener {
     @Override
     public void yourTurn(String turnmessage) {
         model.setTurnMessage(turnmessage);
-        model.setTurn(model.getClientName());
         if (model.getPlayWithAI()) {
             movePerformed(model.getGameModule().getAIMove());
         }

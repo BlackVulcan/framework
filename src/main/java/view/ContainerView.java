@@ -20,12 +20,13 @@ public class ContainerView extends JFrame implements View {
 	private JPanel container;
 	private ArrayList<JButton> buttons = new ArrayList<>();
 	private JLabel turn, turnMessage, opponent, time;
+	private boolean gameOver = false;
 
 	public ContainerView() {
 		super("Two player game framework");
 		ImageIcon img = new ImageIcon(ICON_PATH);
 		this.setIconImage(img.getImage());
-		
+
 		container = new JPanel();
 		container.setLayout(new BorderLayout(0, 0));
 		this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
@@ -45,11 +46,11 @@ public class ContainerView extends JFrame implements View {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setMinimumSize(new Dimension(400, 300));
 	}
-	
+
 	public static String pathComponent(String filename) {
-	      int i = filename.lastIndexOf(File.separator);
-	      return (i > -1) ? filename.substring(0, i) : filename;
-	  }
+		int i = filename.lastIndexOf(File.separator);
+		return (i > -1) ? filename.substring(0, i) : filename;
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -59,15 +60,19 @@ public class ContainerView extends JFrame implements View {
 			Model model = (Model) object;
 			if(objectID == Model.TURN_SWITCHED){
 				setTurn(model.getTurn());
+				setTime(10000, model);
 			}
 			else if(objectID == Model.GAME_DRAW && model.getPlayingGame()){
 				this.turn.setText(RESULT_DRAW);
+				gameOver = true;
 			}
 			else if(objectID == Model.GAME_LOSS && model.getPlayingGame()){
 				this.turn.setText(RESULT_LOSS);
+				gameOver = true;
 			}
 			else if(objectID == Model.GAME_WIN && model.getPlayingGame()){
 				this.turn.setText(RESULT_WIN);
+				gameOver = true;
 			}
 			else if(objectID == Model.GAME_CHANGED && e.getActionCommand().equals(Model.OPPONENT_SET)){
 				this.opponent.setText("Opponent: " + model.getOpponent());
@@ -94,7 +99,6 @@ public class ContainerView extends JFrame implements View {
 	}
 
 	private void setTurn(Boolean myTurn){
-		System.out.println("setting turn");
 		String turnInformation = "";
 		if(myTurn)
 			turnInformation = "Your turn!";
@@ -106,7 +110,7 @@ public class ContainerView extends JFrame implements View {
 	public void setTurnEmpty(){
 		this.turn.setText("");
 	}
-	
+
 	public void setTurnMessage(String message){
 		this.turnMessage.setText(message);
 	}
@@ -116,40 +120,37 @@ public class ContainerView extends JFrame implements View {
 	}
 
 	public void setTime(int timeInMilis, Model model){
-		System.out.println("time is set");
 		Runnable thread = new Runnable(){
 			public void run(){
 				setTimeBox("");
-				int timeInTens = timeInMilis / 100;
+				int timeInTens = timeInMilis;
 				boolean timeIsRunning = model.getTurn();
-				while(timeIsRunning){
-					for(int i = timeInTens; i >= 0; i--){
-						if(model.getTurn()){
-							try {
-								setTimeBox("Seconds left: " + (i/10) + "." + (i%10));
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						else{
-							timeIsRunning = false;
-							setTimeBox("");
-							break;
+				for(int i = timeInTens; i >= 0; i--){
+					if(model.getTurn() && !gameOver){
+						setTimeBox("Seconds left: " + (i/1000) + "." + ((i%1000)/100));
+						try {
+							Thread.sleep(1);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
 						}
 					}
-					if(timeIsRunning){
+					else{
 						timeIsRunning = false;
-						setTimeBox("Time has run out");
-					}
-					else
 						setTimeBox("");
+						break;
+					}
 				}
-			}        
+				if(timeIsRunning){
+					timeIsRunning = false;
+					setTimeBox("Time has run out");
+				}
+				else
+					setTimeBox("");
+			}    
 		};
 		new Thread(thread).start();
 	}
-	
+
 	public void reset(){
 		this.turn.setText("");
 		this.turnMessage.setText("");

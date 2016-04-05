@@ -120,6 +120,7 @@ public class Model {
     }
     
     public void setTurn(String player){
+    	System.out.println("Turn switched to: " + player);
     	if(player.equals(this.clientName))
         	this.myTurn = true;
     	else

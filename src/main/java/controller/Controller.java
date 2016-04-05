@@ -55,30 +55,30 @@ public class Controller implements ActionListener {
 				lobbyView.stopAutomaticRefresh();
 				containerView.showView(model.getGameModule().getView());
 				model.setPlayingGame(true);
-				containerView.setTime(10000, model);
 			} else if (sourceID == Model.GAME_CHANGED && e.getActionCommand() != null 
 					&& e.getActionCommand().equals(Model.GAME_IS_CLOSED)){
 				loadLobby();
 				containerView.showView(lobbyView);
 				containerView.reset();
 			}
-		} else if (source instanceof ContainerView) {
-			if (sourceID == ContainerView.RETURN_TO_LOBBY && model.getPlayingGame()){
-				model.setPlayingGame(false);
-			}
-		}else if (source instanceof MenuView) {
+		} else if (source instanceof MenuView) {
 			if (sourceID == view.MenuView.SERVER_CONNECTION_SHOW) {
 				loginBox.resetError();
 				loginBox.setVisible(true);
 			} else if (sourceID == MenuView.DiSCONNECT_FROM_SERVER) {
-				lobbyView.reset();
-				close();
+				if(serverConnection.isConnected()){
+					containerView.reset();
+					lobbyView.reset();
+					close();
+					containerView.showView(lobbyView);
+				}
 			} else if (sourceID == MenuView.ENABLE_AI) {
 				model.setPlayWithAI(true);
 			} else if (sourceID == MenuView.DISABLE_AI) {
 				model.setPlayWithAI(false);
 			} else if (sourceID == MenuView.RETURN_TO_LOBBY){
-				model.setPlayingGame(false);
+				if(serverConnection.isConnected())
+					model.setPlayingGame(false);
 			}
 		} else if (source instanceof LobbyView) {
 			if (sourceID == LobbyView.LOBBY_REFRESH) {
