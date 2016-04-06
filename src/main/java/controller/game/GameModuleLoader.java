@@ -1,5 +1,6 @@
 package controller.game;
 
+import model.Model;
 import nl.hanze.t23i.gamemodule.extern.AbstractGameModule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,9 +22,11 @@ public class GameModuleLoader {
 	private static final Logger logger = LogManager.getLogger(GameModuleLoader.class);
 	private HashMap<String, Class<? extends AbstractGameModule>> gameModuleMap;
     private ArrayList<String> gameTypeList;
+    private Model model;
 
-    public GameModuleLoader(File modulePath) {
-	    gameModuleMap = new HashMap<>();
+    public GameModuleLoader(File modulePath, Model model) {
+        this.model = model;
+	    gameModuleMap =  new HashMap<>();
 	    loadJarFiles(modulePath);
 
 	    gameTypeList = new ArrayList<>(gameModuleMap.keySet());
@@ -70,8 +73,20 @@ public class GameModuleLoader {
 	    for (Class<? extends AbstractGameModule> gameModuleClass : moduleClassList) {
 		    try {
                 String gameType = (String) gameModuleClass.getField("GAME_TYPE").get(null);
+                try {
+                    String[] pieces = (String[]) gameModuleClass.getField("GAME_PIECES").get(null);
+                    model.putGameModulePieces(gameType, pieces);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
 
-	            if (gameType == null || (gameType.trim().equals(""))) {
+                if (gameType == null || (gameType.trim().equals(""))) {
 		            continue;
                 }
 

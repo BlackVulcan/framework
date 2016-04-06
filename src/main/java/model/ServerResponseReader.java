@@ -96,7 +96,7 @@ public class ServerResponseReader implements Runnable {
             } catch (IOException e) {
 //                e.printStackTrace();
             } catch (JSONException e) {
-                
+
             }
         }
 	    synchronized (stopLock) {

@@ -41,6 +41,7 @@ public class Model {
 	private ArrayList<String> challengeGameTypes;
 	private ArrayList<String> challengePlayers;
 	private ArrayList<String> challengeNumbers;
+	private HashMap<String,String[]> gameSides = new HashMap<>();
 
 	public Model() {
 		challengeGameTypes = new ArrayList<>();
@@ -138,6 +139,10 @@ public class Model {
 		logger.trace("Setting current turn to: {}.", player);
 		this.myTurn = player.equals(this.clientName);
 		processEvent(new ActionEvent(this, TURN_SWITCHED, null));
+	}
+
+	public void putGameModulePieces(String gameType, String[] pieces){
+		gameSides.put(gameType, pieces);
 	}
 
 	public String getTurnMessage() {
