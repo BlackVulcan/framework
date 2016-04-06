@@ -16,6 +16,8 @@ repositories {
 }
 
 dependencies {
+    compile 'org.apache.logging.log4j:log4j-api:2.5'
+    compile 'org.apache.logging.log4j:log4j-core:2.5'
     compile 'com.intellij:forms_rt:7.0.3'
     compile name: 'json-20160212'
     compile name: 'gamemodule-1.0'
@@ -32,6 +34,7 @@ jar {
     dependsOn copyToLib
     manifest {
         attributes 'Main-Class': 'controller.Main',
-                   'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' ')
+                'Class-Path': configurations.runtime.files.collect { "lib/$it.name" }.join(' '),
+                'Implementation-Version': version
     }
 }

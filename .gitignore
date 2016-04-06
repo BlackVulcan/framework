@@ -117,3 +117,6 @@ composer.phar
 # | Gradle build dir |
 # +------------------+
 build/
+properties.xml
+othello*.jar
+tictactoe*.jar

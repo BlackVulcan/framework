@@ -5,76 +5,68 @@ import model.ServerConnection;
 import nl.abstractteam.gamemodule.ClientAbstractGameModule;
 import nl.abstractteam.gamemodule.MoveListener;
 import nl.hanze.t23i.gamemodule.extern.AbstractGameModule;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-/**
- * Created by Laurens on 30-3-2016.
- */
-public class GameController implements GameListener,MoveListener {
-
-
+public class GameController implements GameListener, MoveListener {
     public static final String MODULE_PATH = "modules";
-    private GameModuleLoader loader = new GameModuleLoader(new File(MODULE_PATH));
+	private static final Logger logger = LogManager.getLogger(GameController.class);
     private ServerConnection serverConnection;
     private Model model;
+	private GameModuleLoader loader;
 
     public GameController(Model model, ServerConnection serverConnection) {
         this.model = model;
+        loader = new GameModuleLoader(new File(MODULE_PATH), model);
         this.model.setGameModuleLoader(loader);
         this.serverConnection = serverConnection;
     }
 
     @Override
     public void match(String playerToMove, String gameType, String opponent) {
-        if(playerToMove.equals(model.getClientName()))
-        	model.setOpponent(opponent);
-        else
-        	model.setOpponent(playerToMove);
-        
-        System.out.println("GameController.match");
-        model.setTurn(playerToMove);
-        String playerOne = playerToMove;
-        String playerTwo = playerOne.equals(opponent)?model.getClientName():opponent;
-        
-        AbstractGameModule module = loader.loadGameModule(gameType,playerOne,playerTwo);
+	    if (playerToMove.equals(model.getClientName())) {
+		    model.setOpponent(opponent);
+	    } else {
+		    model.setOpponent(playerToMove);
+	    }
 
-        if(module instanceof ClientAbstractGameModule){
-            System.out.println("found an instance");
-            ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule)module;
-            clientAbstractGameModule.start();
+        model.setTurn(playerToMove);
+	    @SuppressWarnings("UnnecessaryLocalVariable") String playerOne = playerToMove;
+	    String playerTwo = playerOne.equals(opponent) ? model.getClientName() : opponent;
+
+	    AbstractGameModule module = loader.loadGameModule(gameType, playerOne, playerTwo);
+
+	    logger.trace("Starting {} match. Player one: {}. Player two: {}", gameType, playerOne, playerTwo);
+	    if (module instanceof ClientAbstractGameModule) {
+		    ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule) module;
+		    clientAbstractGameModule.start();
             clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
             model.setGameModule(clientAbstractGameModule);
-        }else{
-            System.out.println("Was not an instance");
-        }
+	    } else {
+		    logger.fatal("{} was not an instance of ClientAbstractGameModule", module.getClass().getName());
+	    }
         model.loadGame(playerToMove, gameType, opponent);
     }
 
     @Override
-    public void yourTurn(String turnmessage) {
-//        System.out.println("yourturn");
-//        System.out.printf("TurnMessage = %s\n",turnmessage);
-        model.setTurnMessage(turnmessage);
-        model.setTurn(model.getClientName());
-        if (model.getPlayWithAI()) {
+    public void yourTurn(String turnMessage) {
+	    model.setTurnMessage(turnMessage);
+	    if (model.getPlayWithAI()) {
             movePerformed(model.getGameModule().getAIMove());
         }
     }
 
     @Override
     public void move(String player, String move, String details) {
-        System.out.println(model.getGameModule());
-        System.out.println(player);
-        System.out.println(move);
-        model.getGameModule().doPlayerMove(player,move);
-        model.setTurn(model.getGameModule().getPlayerToMove());
+	    model.getGameModule().doPlayerMove(player, move);
+	    model.setTurn(model.getGameModule().getPlayerToMove());
     }
 
     @Override
-    public void challenge(String challenger, String challengeNumber, String gametype) {
-        System.out.println("We have been challenged");
-        model.setNewChallenge(gametype, challenger, challengeNumber);
+    public void challenge(String challenger, String challengeNumber, String gameType) {
+	    model.setNewChallenge(gameType, challenger, challengeNumber);
     }
 
     @Override
@@ -84,37 +76,28 @@ public class GameController implements GameListener,MoveListener {
 
     @Override
     public void loss(String playerOneScore, String playerTwoScore, String comment) {
-    	this.model.setGameResult(Model.GAME_LOSS);
-        System.out.println("ServerConnectionTest.loss");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
-        model.setGameResult(Model.GAME_LOSS);
+	    this.model.setGameResult(Model.GAME_LOSS);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
-    	this.model.setGameResult(Model.GAME_WIN);
-        model.setGameResult(Model.GAME_WIN);
-        System.out.println("ServerConnectionTest.win");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
+	    this.model.setGameResult(Model.GAME_WIN);
     }
 
     @Override
     public void draw(String playerOneScore, String playerTwoScore, String comment) {
-    	this.model.setGameResult(Model.GAME_DRAW);
-        System.out.println("ServerConnectionTest.draw");
-        System.out.printf("playerOneScore = %s playerTwoScore = %s comment = %s \n",playerOneScore,playerTwoScore,comment);
-        model.setGameResult(Model.GAME_DRAW);
+	    this.model.setGameResult(Model.GAME_DRAW);
     }
 
     @Override
     public void movePerformed(String s) {
-        if(serverConnection==null){
-            System.err.println("Not connected to a server");
+	    if (serverConnection == null) {
+		    System.err.println("Not connected to a server");
             return;
         }
 //        model.getGameModule().doPlayerMove(model.getClientName(),s);
-        if(model.getTurn())
-            new Thread(()->serverConnection.move(s)).start();
+	    if (model.getTurn())
+		    new Thread(() -> serverConnection.move(s)).start();
     }
 
     public void setServerConnection(ServerConnection serverConnection) {
