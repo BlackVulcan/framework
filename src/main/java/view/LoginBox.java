@@ -23,10 +23,10 @@ public class LoginBox extends JDialog {
     public static final String PROPERTIES_FILE = "properties.xml";
     private static final String EMPTY_INPUT_ERROR = "No valid input.";
     private static final String CONNECT_ERROR = "Error when connecting.";
-	private static final String ALREADY_CONNECTED = "Already Connected";
+    private static final String ALREADY_CONNECTED = "Already Connected";
     private final Properties properties;
     private JPanel contentPane;
-	private JTextField hostField;
+    private JTextField hostField;
     private JTextField portField;
     private JButton connectButton;
     private JTextField nameField;
@@ -149,10 +149,10 @@ public class LoginBox extends JDialog {
         loginError.setVisible(true);
     }
 
-	public void showAlreadyConnected() {
-		loginError.setText(ALREADY_CONNECTED);
-		loginError.setVisible(true);
-	}
+    public void showAlreadyConnected() {
+        loginError.setText(ALREADY_CONNECTED);
+        loginError.setVisible(true);
+    }
 
     public void resetError() {
         loginError.setVisible(false);

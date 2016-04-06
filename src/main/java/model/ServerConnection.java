@@ -13,17 +13,18 @@ import java.util.List;
  * Created by Jules on 29-3-2016.
  */
 public class ServerConnection {
-
     private static final String GAMELIST = "gamelist";
     private static final String PLAYERLIST = "playerlist";
-	private final Socket socket;
-	private ServerResponseReader reader;
+    private final Socket socket;
+    private ServerResponseReader reader;
     private PrintWriter writer;
 
     /**
      * Creates a connection to a server with the specified IP address and port
-     * @param ip The IP address of the server
+     *
+     * @param ip   The IP address of the server
      * @param port The port of the game server
+     *
      * @throws IOException
      */
     public ServerConnection(String ip, int port) throws IOException {
@@ -35,18 +36,21 @@ public class ServerConnection {
 
     /**
      * Add a new gamelistener
+     *
      * @param listener The listener which wishes to be notified of game events
      */
-    public void addGameListener(GameListener listener){
+    public void addGameListener(GameListener listener) {
         reader.addGameListener(listener);
     }
 
     /**
      * Writes a line to the server directly
+     *
      * @param line
+     *
      * @return
      */
-    public boolean write(String line){
+    public boolean write(String line) {
         writer.println(line);
         writer.flush();
         List<String> result = reader.read(1);
@@ -55,10 +59,12 @@ public class ServerConnection {
 
     /**
      * Returns a list of a certain type
+     *
      * @param type The type that needs to be returned
+     *
      * @return
      */
-    private List<String> get(String type){
+    private List<String> get(String type) {
         writer.println("get " + type);
         writer.flush();
         List<String> result = reader.read(2);
@@ -72,6 +78,7 @@ public class ServerConnection {
 
     /**
      * Returns the list of games available.
+     *
      * @return
      */
     public List<String> getGamelist() {
@@ -80,6 +87,7 @@ public class ServerConnection {
 
     /**
      * Returns the list of players currently logged in
+     *
      * @return
      */
     public List<String> getPlayerlist() {
@@ -88,7 +96,9 @@ public class ServerConnection {
 
     /**
      * Accepts the challenge with the specified challengenumber
+     *
      * @param challengeNumber
+     *
      * @return
      */
     public boolean acceptChallenge(String challengeNumber) {
@@ -97,7 +107,9 @@ public class ServerConnection {
 
     /**
      * Sends to the server that you are playing a move
+     *
      * @param s The move that you are playing
+     *
      * @return
      */
     public boolean move(String s) {
@@ -107,7 +119,7 @@ public class ServerConnection {
     /**
      * Logs the user out and closes the connection
      */
-    public void close(){
+    public void close() {
         writer.println("logout");
         writer.flush();
         reader.stop();
@@ -120,7 +132,9 @@ public class ServerConnection {
 
     /**
      * Logs the user in with the specified username
+     *
      * @param username
+     *
      * @return
      */
     public boolean login(String username) {
@@ -129,7 +143,9 @@ public class ServerConnection {
 
     /**
      * Subscribes the player to the specified gametype
+     *
      * @param gametype
+     *
      * @return
      */
     public boolean subscribe(String gametype) {
@@ -138,8 +154,10 @@ public class ServerConnection {
 
     /**
      * Allows the player to challenge another player with the specified gametype
+     *
      * @param player
      * @param gametype
+     *
      * @return
      */
     public boolean challenge(String player, String gametype) {
@@ -148,13 +166,14 @@ public class ServerConnection {
 
     /**
      * Forfeits the current game
+     *
      * @return
      */
     public boolean forfeit() {
         return write("forfeit");
     }
 
-	public boolean isConnected() {
-		return socket.isConnected() && !socket.isClosed();
-	}
+    public boolean isConnected() {
+        return socket.isConnected() && !socket.isClosed();
+    }
 }
