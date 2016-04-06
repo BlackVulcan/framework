@@ -124,7 +124,26 @@ public class Controller implements ActionListener {
 					}
 				}
 			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED) {
-				acceptChallenge(command);
+				String player = lobbyView.getSelectedPlayer();
+				String gameType = lobbyView.getSelectedGame();
+				if (player != null && gameType != null) {
+					String[] gameSides = model.getGameSides(gameType);
+					String[] buttons = new String[3];
+					
+					buttons[0] = gameSides[0];
+					buttons[1] = gameSides[1];
+					buttons[2] = "Cancel";
+					
+					int result = JOptionPane.showOptionDialog(null,
+							"Accept challenge by " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
+							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+					
+					if (result != -1 || result != 2) {
+						model.setChosenGameSides(gameType, buttons[result]);
+						acceptChallenge(command);
+					}
+				}
+				
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
