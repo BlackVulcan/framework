@@ -77,13 +77,13 @@ public class GameModuleLoader {
                     String[] pieces = (String[]) gameModuleClass.getField("GAME_PIECES").get(null);
                     model.putGameModulePieces(gameType, pieces);
                 } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 } catch (SecurityException e) {
-                    e.printStackTrace();
+//                    e.printStackTrace();
                 }
 
                 if (gameType == null || (gameType.trim().equals(""))) {

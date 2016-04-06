@@ -13,12 +13,13 @@ import java.io.File;
 public class GameController implements GameListener, MoveListener {
     public static final String MODULE_PATH = "modules";
 	private static final Logger logger = LogManager.getLogger(GameController.class);
-	private GameModuleLoader loader = new GameModuleLoader(new File(MODULE_PATH));
     private ServerConnection serverConnection;
     private Model model;
+	private GameModuleLoader loader;
 
     public GameController(Model model, ServerConnection serverConnection) {
         this.model = model;
+        loader = new GameModuleLoader(new File(MODULE_PATH), model);
         this.model.setGameModuleLoader(loader);
         this.serverConnection = serverConnection;
     }
