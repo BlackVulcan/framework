@@ -74,8 +74,8 @@ public class Controller implements ActionListener {
 					containerView.showView(lobbyView);
 				}
 			} else if (sourceID == MenuView.TOGGLE_AI) {
-                model.setPlayWithAI(!model.getPlayWithAI());
-                menuView.setPlayWithAI(model.getPlayWithAI());
+				model.setPlayWithAI(!model.getPlayWithAI());
+				menuView.setPlayWithAI(model.getPlayWithAI());
 			} else if (sourceID == MenuView.RETURN_TO_LOBBY) {
 				if (serverConnection.isConnected()) {
 					model.setPlayingGame(false);
@@ -87,8 +87,8 @@ public class Controller implements ActionListener {
 			} else if (sourceID == LobbyView.PLAY_GAME) {
 				String gameType = lobbyView.getSelectedGame();
 				if (gameType != null) {
-					int result = JOptionPane.showConfirmDialog(null,
-							"Subcribe to " + gameType + "?", null, JOptionPane.YES_NO_OPTION);
+					int result = JOptionPane.showConfirmDialog(null, "Subcribe to " + gameType + "?", null,
+							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
 						subscribe(gameType);
 					}
@@ -97,11 +97,27 @@ public class Controller implements ActionListener {
 				String player = lobbyView.getSelectedPlayer();
 				String gameType = lobbyView.getSelectedGame();
 				if (player != null && gameType != null) {
-					int result = JOptionPane.showConfirmDialog(null,
-							"Challenge " + player + " to play " + gameType + "?", null, JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION) {
+					String[] gameSides = model.getGameSides(gameType);
+					String[] buttons = new String[3];
+					
+					buttons[0] = model.getGameSides(gameType)[0];
+					buttons[1] = model.getGameSides(gameType)[1];
+					buttons[2] = "Cancel";
+					// int result = JOptionPane.showConfirmDialog(null,
+					// "Challenge " + player + " to play " + gameType + "?",
+					// null, buttons);
+					int result = JOptionPane.showOptionDialog(null,
+							"Challenging " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
+							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+					logger.trace("button is clicked: {}", result);
+					
+					if (result != -1 || result != 2) {
+						model.setChosenGameSides(gameType, buttons[result]);
 						challenge(player, gameType);
 					}
+					// if (result == JOptionPane.YES_OPTION) {
+					// challenge(player, gameType);
+					// }
 				}
 			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED) {
 				acceptChallenge(command);
@@ -162,9 +178,9 @@ public class Controller implements ActionListener {
 	}
 
 	public boolean logout() {
-		//todo: implement method.
+		// todo: implement method.
 		throw new RuntimeException("Not implemented");
-		//        return serverConnection.logout();
+		// return serverConnection.logout();
 	}
 
 	public boolean subscribe(String gameType) {
@@ -183,7 +199,7 @@ public class Controller implements ActionListener {
 	}
 
 	public void acceptMatch() {
-		//todo: implement method.
+		// todo: implement method.
 		throw new RuntimeException("Not implemented");
 	}
 

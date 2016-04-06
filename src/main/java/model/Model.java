@@ -42,11 +42,16 @@ public class Model {
 	private ArrayList<String> challengePlayers;
 	private ArrayList<String> challengeNumbers;
 	private HashMap<String,String[]> gameSides = new HashMap<>();
+	private HashMap<String, String> chosenGameSide = new HashMap<>();
 
 	public Model() {
 		challengeGameTypes = new ArrayList<>();
 		challengePlayers = new ArrayList<>();
 		challengeNumbers = new ArrayList<>();
+		
+		
+		String[] sides = {"X", "O"};
+		gameSides.put("Tic-tac-toe", sides);
 	}
 
     public void addActionListener(ActionListener actionListener) {
@@ -60,6 +65,22 @@ public class Model {
     private void processEvent(ActionEvent e) {
         for (ActionListener l : actionListenerList)
             l.actionPerformed(e);
+    }
+    
+    public String[] getGameSides(String gameType){
+    	return gameSides.get(gameType);
+    }
+    
+    public void setGameSides(String gameType, String[] sides){
+    	gameSides.put(gameType, sides);
+    }
+    
+    public String getChosenGameSides(String gameType){
+    	return chosenGameSide.get(gameType);
+    }
+    
+    public void setChosenGameSides(String gameType, String side){
+    	chosenGameSide.put(gameType, side);
     }
 
 	public GameModuleLoader getGameModuleLoader() {
