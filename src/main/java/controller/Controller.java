@@ -118,14 +118,15 @@ public class Controller implements ActionListener {
 							"Challenging " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
 							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
 					
-					if (result != -1 || result != 2) {
+					if (result != -1 && result != 2) {
 						model.setChosenGameSides(gameType, buttons[result]);
 						challenge(player, gameType);
 					}
 				}
 			} else if (sourceID == LobbyView.CHALLENGE_ACCEPTED) {
-				String player = lobbyView.getSelectedPlayer();
-				String gameType = lobbyView.getSelectedGame();
+				String challengeNumber = e.getActionCommand();
+				String player = lobbyView.getPlayerFromChallenge(challengeNumber);
+				String gameType = lobbyView.getGameTypeFromChallenge(challengeNumber);
 				if (player != null && gameType != null) {
 					String[] gameSides = model.getGameSides(gameType);
 					String[] buttons = new String[3];
@@ -138,7 +139,8 @@ public class Controller implements ActionListener {
 							"Accept challenge by " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
 							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
 					
-					if (result != -1 || result != 2) {
+					if (result != -1 && result != 2) {
+						lobbyView.deleteChallenge(e.getActionCommand());
 						model.setChosenGameSides(gameType, buttons[result]);
 						acceptChallenge(command);
 					}
