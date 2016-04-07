@@ -41,9 +41,9 @@ public class GameController implements GameListener, MoveListener {
 	    logger.trace("Starting {} match. Player one: {}. Player two: {}", gameType, playerOne, playerTwo);
 	    if (module instanceof ClientAbstractGameModule) {
 		    ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule) module;
-		    clientAbstractGameModule.start();
             clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
             clientAbstractGameModule.setClientPlayPiece(model.getChosenGameSides(gameType));
+		    clientAbstractGameModule.start();
             model.setGameModule(clientAbstractGameModule);
 	    } else {
 		    logger.fatal("{} was not an instance of ClientAbstractGameModule", module.getClass().getName());
