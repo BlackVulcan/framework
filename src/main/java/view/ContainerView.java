@@ -122,7 +122,7 @@ public class ContainerView extends JFrame implements View {
                 int timeInTens = timeInMilis;
                 boolean timeIsRunning = model.getTurn();
                 for (int i = timeInTens; i >= 0; i--) {
-                    if (model.getTurn() && !gameOver) {
+                    if (model.getTurn() && model.getPlayingGame() && !gameOver) {
                         setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
                         try {
                             Thread.sleep(1);
