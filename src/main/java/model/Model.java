@@ -9,23 +9,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Model {
 	public static final int TURN_SWITCHED = 1;
 	public static final int SERVER_CONNECTION_SET = 2;
-    public static final int GAME_CHANGED = 3;
-    public static final int GAME_DRAW = 4;
-    public static final int GAME_WIN = 5;
-    public static final int GAME_LOSS = 6;
-    public static final int NEW_CHALLENGE = 7;
-    public static final int CANCEL_CHALLENGE = 8;
-    public static final int TURN_MESSAGE_CHANGED = 9;
-    public static final String GAME_IS_CLOSED = "game is closed";
-    public static final String GAMEMODULE_SET = "gamemodule is set";
-    public static final String OPPONENT_SET = "opponent is set";
-    public static final String CHALLENGE_GAME_TYPE = "gametype";
-    public static final String CHALLENGE_PLAYER = "player";
-    public static final String CHALLENGE_GAME_NUMBER = "gamenumber";
+	public static final int GAME_CHANGED = 3;
+	public static final int GAME_DRAW = 4;
+	public static final int GAME_WIN = 5;
+	public static final int GAME_LOSS = 6;
+	public static final int NEW_CHALLENGE = 7;
+	public static final int CANCEL_CHALLENGE = 8;
+	public static final int TURN_MESSAGE_CHANGED = 9;
+	public static final String GAME_IS_CLOSED = "game is closed";
+	public static final String GAMEMODULE_SET = "gamemodule is set";
+	public static final String OPPONENT_SET = "opponent is set";
+	public static final String CHALLENGE_GAME_TYPE = "gametype";
+	public static final String CHALLENGE_PLAYER = "player";
+	public static final String CHALLENGE_GAME_NUMBER = "gamenumber";
 	private static final Logger logger = LogManager.getLogger(Model.class);
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 	private ClientAbstractGameModule gameModule;
@@ -34,54 +35,60 @@ public class Model {
 	private String serverAddress;
 	private String turnMessage;
 	private int gameResult = 0;
-    private boolean myTurn = false;
-    private boolean playWithAI = false;
-    private boolean playingGame = false;
-    private GameModuleLoader gameModuleLoader;
+	private boolean myTurn = false;
+	private boolean playWithAI = false;
+	private boolean playingGame = false;
+	private GameModuleLoader gameModuleLoader;
 	private ArrayList<String> challengeGameTypes;
 	private ArrayList<String> challengePlayers;
 	private ArrayList<String> challengeNumbers;
-	private HashMap<String,String[]> gameSides = new HashMap<>();
+	private HashMap<String, String[]> gameSides = new HashMap<>();
 	private HashMap<String, String> chosenGameSide = new HashMap<>();
+	private Random random = new Random();
 
 	public Model() {
 		challengeGameTypes = new ArrayList<>();
 		challengePlayers = new ArrayList<>();
 		challengeNumbers = new ArrayList<>();
-		
-		
-		String[] sides = {"X", "O"};
+
+		String[] sides = { "X", "O" };
 		gameSides.put("Tic-tac-toe", sides);
 	}
 
-    public void addActionListener(ActionListener actionListener) {
-        actionListenerList.add(actionListener);
-    }
+	public void addActionListener(ActionListener actionListener) {
+		actionListenerList.add(actionListener);
+	}
 
-    public void notifyListeners() {
-        processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
-    }
+	public void notifyListeners() {
+		processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+	}
 
-    private void processEvent(ActionEvent e) {
-        for (ActionListener l : actionListenerList)
-            l.actionPerformed(e);
-    }
-    
-    public String[] getGameSides(String gameType){
-    	return gameSides.get(gameType);
-    }
-    
-    public void setGameSides(String gameType, String[] sides){
-    	gameSides.put(gameType, sides);
-    }
-    
-    public String getChosenGameSides(String gameType){
-    	return chosenGameSide.get(gameType);
-    }
-    
-    public void setChosenGameSides(String gameType, String side){
-    	chosenGameSide.put(gameType, side);
-    }
+	private void processEvent(ActionEvent e) {
+		for (ActionListener l : actionListenerList)
+			l.actionPerformed(e);
+	}
+
+	public String[] getGameSides(String gameType) {
+		return gameSides.get(gameType);
+	}
+
+	public void setGameSides(String gameType, String[] sides) {
+		gameSides.put(gameType, sides);
+	}
+
+	public String getChosenGameSides(String gameType) {
+		if (chosenGameSide.get(gameType) == null) {
+			if (random.nextInt(3000) % 2 > 0)
+				setChosenGameSides(gameType, getGameSides(gameType)[0]);
+			else
+				setChosenGameSides(gameType, getGameSides(gameType)[1]);
+		}
+		return chosenGameSide.get(gameType);
+	}
+
+	public void setChosenGameSides(String gameType, String side) {
+		chosenGameSide.put(gameType, side);
+	}
 
 	public GameModuleLoader getGameModuleLoader() {
 		return this.gameModuleLoader;
@@ -91,15 +98,15 @@ public class Model {
 		this.gameModuleLoader = gameModuleLoader;
 	}
 
-    public ClientAbstractGameModule getGameModule() {
-        return gameModule;
-    }
+	public ClientAbstractGameModule getGameModule() {
+		return gameModule;
+	}
 
-    public void setGameModule(ClientAbstractGameModule gameModule) {
-	    logger.trace("Setting game module to {}.", gameModule.getClass().getName());
-	    this.gameModule = gameModule;
-	    processEvent(new ActionEvent(this, GAME_CHANGED, GAMEMODULE_SET));
-    }
+	public void setGameModule(ClientAbstractGameModule gameModule) {
+		logger.trace("Setting game module to {}.", gameModule.getClass().getName());
+		this.gameModule = gameModule;
+		processEvent(new ActionEvent(this, GAME_CHANGED, GAMEMODULE_SET));
+	}
 
 	public boolean getPlayingGame() {
 		return playingGame;
@@ -114,34 +121,34 @@ public class Model {
 	public void loadGame(String playerMove, String gameType, String opponent) {
 		logger.trace("The gamemodule {} needs to be loaded", gameType);
 
-    	/*this needs a fix
-    	setOpponent(opponent);
-    	setTurn(playerMove);
-    	
-    	//needs attention! something is going wrong
-    	if(playerMove.equals(clientName))
-    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType , clientName , opponent));
-    	else
-    		setGameModule((ClientAbstractGameModule)gameModuleLoader.loadGameModule(gameType ,  opponent, clientName));
-    	 */
-    }
+		/*
+		 * this needs a fix setOpponent(opponent); setTurn(playerMove);
+		 * 
+		 * //needs attention! something is going wrong
+		 * if(playerMove.equals(clientName))
+		 * setGameModule((ClientAbstractGameModule)gameModuleLoader.
+		 * loadGameModule(gameType , clientName , opponent)); else
+		 * setGameModule((ClientAbstractGameModule)gameModuleLoader.
+		 * loadGameModule(gameType , opponent, clientName));
+		 */
+	}
 
-    public String getClientName() {
-        return clientName;
-    }
+	public String getClientName() {
+		return clientName;
+	}
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
+	}
 
-    public String getOpponent() {
-        return opponent;
-    }
+	public String getOpponent() {
+		return opponent;
+	}
 
-    public void setOpponent(String opponent) {
-        this.opponent = opponent;
-        processEvent(new ActionEvent(this, GAME_CHANGED, OPPONENT_SET));
-    }
+	public void setOpponent(String opponent) {
+		this.opponent = opponent;
+		processEvent(new ActionEvent(this, GAME_CHANGED, OPPONENT_SET));
+	}
 
 	public String getServerAddress() {
 		return this.serverAddress;
@@ -162,7 +169,7 @@ public class Model {
 		processEvent(new ActionEvent(this, TURN_SWITCHED, null));
 	}
 
-	public void putGameModulePieces(String gameType, String[] pieces){
+	public void putGameModulePieces(String gameType, String[] pieces) {
 		gameSides.put(gameType, pieces);
 	}
 
