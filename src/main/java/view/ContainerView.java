@@ -17,7 +17,7 @@ public class ContainerView extends JFrame implements View {
     private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
     private JPanel container;
     private ArrayList<JButton> buttons = new ArrayList<>();
-    private JLabel turn, turnMessage, opponent, time;
+    private JLabel turn, turnMessage, opponent, time, serverConnection;
     private boolean gameOver = false;
 
     public ContainerView() {
@@ -27,10 +27,6 @@ public class ContainerView extends JFrame implements View {
             img = new ImageIcon(getClass().getResource("gameicon.png"));
         }
         this.setIconImage(img.getImage());
-
-        container = new JPanel();
-        container.setLayout(new BorderLayout(0, 0));
-        this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
 
         JPanel informationPanel = new JPanel();
         getContentPane().add(informationPanel, BorderLayout.NORTH);
@@ -46,6 +42,16 @@ public class ContainerView extends JFrame implements View {
         setFullScreen();
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setMinimumSize(new Dimension(400, 300));
+        
+        container = new JPanel();
+        container.setLayout(new BorderLayout(0, 0));
+        this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
+        
+        JPanel serverPanel = new JPanel();
+        getContentPane().add(serverPanel, BorderLayout.SOUTH);
+        serverPanel.setLayout(new FlowLayout());
+        serverConnection = new JLabel("");
+        serverPanel.add(serverConnection);
     }
 
     public static String pathComponent(String filename) {
@@ -113,6 +119,10 @@ public class ContainerView extends JFrame implements View {
 
     private void setTimeBox(String time) {
         this.time.setText(time);
+    }
+    
+    public void setServerConnection(String serverConnection) {
+    	this.serverConnection.setText(serverConnection);
     }
 
     public void setTime(int timeInMilis, Model model) {

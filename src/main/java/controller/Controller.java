@@ -72,6 +72,7 @@ public class Controller implements ActionListener {
 					lobbyView.reset();
 					close();
 					containerView.showView(lobbyView);
+					containerView.setServerConnection("");
 				}
 			} else if (sourceID == MenuView.TOGGLE_AI) {
 				model.setPlayWithAI(!model.getPlayWithAI());
@@ -172,6 +173,7 @@ public class Controller implements ActionListener {
 						loadLobby();
 						loginBox.resetError();
 						loginBox.setVisible(false);
+						containerView.setServerConnection("Connected with " + loginBox.getHost() + " as " + loginBox.getName());
 						return;
 					} else {
 						close();
