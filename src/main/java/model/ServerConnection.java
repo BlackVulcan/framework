@@ -54,6 +54,12 @@ public class ServerConnection {
         writer.println(line);
         writer.flush();
         List<String> result = reader.read(1);
+        if (result == null) {
+            return false;
+        }
+        if (result.size() == 1 && result.get(0).startsWith("(C) Copyright 2009-2016 Hanzehogeschool Groningen")) {
+            result = reader.read(1);
+        }
         return result.size() == 1 && result.get(0).startsWith("OK");
     }
 
