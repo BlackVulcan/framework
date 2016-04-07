@@ -14,12 +14,11 @@ public class MenuView extends JMenuBar implements View {
     public static final int SERVER_CONNECTION_SHOW = 4;
     public static final int RETURN_TO_LOBBY = 5;
     public static final int TOGGLE_AI = 6;
+    public static final int SURRENDER = 7;
 
     private static final long serialVersionUID = 1L;
-
-    private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
-
     private JCheckBoxMenuItem playWithAIMenuItem;
+    private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
     public MenuView() {
         JMenu start = new JMenu("Start");
@@ -54,8 +53,8 @@ public class MenuView extends JMenuBar implements View {
         menuItemExit.addActionListener(event -> System.exit(0));
         start.add(menuItemExit);
 
-        JMenu intelligence = new JMenu("Intelligence");
-        intelligence.setMnemonic(KeyEvent.VK_I);
+        JMenu game = new JMenu("Game");
+        game.setMnemonic(KeyEvent.VK_I);
 
         playWithAIMenuItem = new JCheckBoxMenuItem("Make AI play");
         playWithAIMenuItem.setMnemonic(KeyEvent.VK_E);
@@ -63,10 +62,18 @@ public class MenuView extends JMenuBar implements View {
         playWithAIMenuItem.addActionListener(event -> {
             processEvent(new ActionEvent(this, TOGGLE_AI, null));
         });
-        intelligence.add(playWithAIMenuItem);
+        game.add(playWithAIMenuItem);
+        
+        JMenuItem surrenderMenuItem = new JMenuItem("Surrender");
+        surrenderMenuItem.setMnemonic(KeyEvent.VK_E);
+        surrenderMenuItem.setToolTipText("Surrender to the opponent");
+        surrenderMenuItem.addActionListener(event -> {
+            processEvent(new ActionEvent(this, SURRENDER, null));
+        });
+        game.add(surrenderMenuItem);
 
         this.add(start);
-        this.add(intelligence);
+        this.add(game);
     }
 
     public void addActionListener(ActionListener actionListener) {

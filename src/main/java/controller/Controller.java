@@ -80,6 +80,15 @@ public class Controller implements ActionListener {
 				if (serverConnection.isConnected()) {
 					model.setPlayingGame(false);
 				}
+			} else if (sourceID == MenuView.SURRENDER) {
+				if (serverConnection.isConnected() && model.getPlayingGame()) {
+					int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to surrender?", "Surrender",
+							JOptionPane.YES_NO_OPTION);
+					if (result == JOptionPane.YES_OPTION) {
+						serverConnection.forfeit();
+						model.setPlayingGame(false);
+					}
+				}
 			}
 		} else if (source instanceof LobbyView) {
 			if (sourceID == LobbyView.LOBBY_REFRESH) {
@@ -89,15 +98,14 @@ public class Controller implements ActionListener {
 				if (gameType != null) {
 					String[] gameSides = model.getGameSides(gameType);
 					String[] buttons = new String[3];
-					
+
 					buttons[0] = gameSides[0];
 					buttons[1] = gameSides[1];
 					buttons[2] = "Cancel";
-					
-					int result = JOptionPane.showOptionDialog(null,
-							"Subscribing for " + gameType + "\n\nChoose a side", "Subscribe",
-							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
-					
+
+					int result = JOptionPane.showOptionDialog(null, "Subscribing for " + gameType + "\n\nChoose a side",
+							"Subscribe", JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+
 					if (result != -1 && result != 2) {
 						model.setChosenGameSides(gameType, buttons[result]);
 						subscribe(gameType);
@@ -109,15 +117,15 @@ public class Controller implements ActionListener {
 				if (player != null && gameType != null) {
 					String[] gameSides = model.getGameSides(gameType);
 					String[] buttons = new String[3];
-					
+
 					buttons[0] = gameSides[0];
 					buttons[1] = gameSides[1];
 					buttons[2] = "Cancel";
-					
+
 					int result = JOptionPane.showOptionDialog(null,
 							"Challenging " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
 							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
-					
+
 					if (result != -1 && result != 2) {
 						model.setChosenGameSides(gameType, buttons[result]);
 						challenge(player, gameType);
@@ -130,22 +138,22 @@ public class Controller implements ActionListener {
 				if (player != null && gameType != null) {
 					String[] gameSides = model.getGameSides(gameType);
 					String[] buttons = new String[3];
-					
+
 					buttons[0] = gameSides[0];
 					buttons[1] = gameSides[1];
 					buttons[2] = "Cancel";
-					
+
 					int result = JOptionPane.showOptionDialog(null,
 							"Accept challenge by " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
 							JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
-					
+
 					if (result != -1 && result != 2) {
 						lobbyView.deleteChallenge(e.getActionCommand());
 						model.setChosenGameSides(gameType, buttons[result]);
 						acceptChallenge(command);
 					}
 				}
-				
+
 			}
 		} else if (source instanceof LoginBox) {
 			if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
