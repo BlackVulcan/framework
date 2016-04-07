@@ -10,8 +10,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 public class LobbyView extends JPanel implements View {
 	public static final int LOBBY_REFRESH = 1;
@@ -30,6 +33,7 @@ public class LobbyView extends JPanel implements View {
 	private JPanel gamePlayerPanel;
 	private boolean automaticRefresh = false;
 	private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
+	DefaultTableModel challengeTableModel;
 
 	public LobbyView() {
 		playerListModel = new DefaultListModel<>();
@@ -85,9 +89,16 @@ public class LobbyView extends JPanel implements View {
 		challengeTable = new JTable();
 		challengeTable.setPreferredScrollableViewportSize(challengeTable.getPreferredSize());
 		challengeTable.setFillsViewportHeight(true);
-		challengeTable.setModel(new DefaultTableModel(new Object[][] {},
-				new String[] { "ID", "Game", "Player", CHALLENGE_ACCEPT, CHALLENGE_REJECT }));
+		challengeTableModel = new DefaultTableModel(new Object[][] {},
+				new String[] { "ID", "Game", "Player", CHALLENGE_ACCEPT, CHALLENGE_REJECT });
+		challengeTable.setModel(challengeTableModel);
+		
+		challengeTable.setAutoCreateColumnsFromModel(false);
 
+	    Vector data = challengeTableModel.getDataVector();
+	    Collections.sort(data, new ColumnSorter(1));
+	    challengeTableModel.fireTableStructureChanged();
+		
 		Action acceptChallenge = new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
@@ -201,7 +212,7 @@ public class LobbyView extends JPanel implements View {
 	public String getPlayerFromChallenge(String challengeNumber) {
 		DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
 		for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
-			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) { 
+			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) {
 				return (String) challengeTableModel.getValueAt(i, 2);
 			}
 		}
@@ -211,7 +222,7 @@ public class LobbyView extends JPanel implements View {
 	public String getGameTypeFromChallenge(String challengeNumber) {
 		DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
 		for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
-			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) { 
+			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) {
 				return (String) challengeTableModel.getValueAt(i, 1);
 			}
 		}
@@ -267,5 +278,41 @@ public class LobbyView extends JPanel implements View {
 
 	public void addActionListener(ActionListener actionListener) {
 		actionListenerList.add(actionListener);
+	}
+}
+
+class ColumnSorter implements Comparator {
+	int colIndex;
+
+	ColumnSorter(int colIndex) {
+		this.colIndex = colIndex;
+	}
+
+	public int compare(Object a, Object b) {
+		Vector v1 = (Vector) a;
+		Vector v2 = (Vector) b;
+		Object o1 = v1.get(colIndex);
+		Object o2 = v2.get(colIndex);
+
+		if (o1 instanceof String && ((String) o1).length() == 0) {
+			o1 = null;
+		}
+		if (o2 instanceof String && ((String) o2).length() == 0) {
+			o2 = null;
+		}
+
+		if (o1 == null && o2 == null) {
+			return 0;
+		} else if (o1 == null) {
+			return 1;
+		} else if (o2 == null) {
+			return -1;
+		} else if (o1 instanceof Comparable) {
+
+			return ((Comparable) o1).compareTo(o2);
+		} else {
+
+			return o1.toString().compareTo(o2.toString());
+		}
 	}
 }

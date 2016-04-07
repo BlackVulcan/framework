@@ -14,6 +14,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 
 public class Controller implements ActionListener {
 	private static final Logger logger = LogManager.getLogger(Controller.class);
@@ -93,6 +94,18 @@ public class Controller implements ActionListener {
 			}
 		} else if (source instanceof LobbyView) {
 			if (sourceID == LobbyView.LOBBY_REFRESH) {
+				List<String> playerList = serverConnection.getPlayerlist();
+				if (playerList == null) {
+					logger.trace("playerlist was null. Closing connection");
+					containerView.reset();
+					lobbyView.reset();
+					close();
+					containerView.showView(lobbyView);
+					containerView.setServerConnection("");
+					JOptionPane.showMessageDialog(null, "Server disconnected unexpectly");
+					System.exit(0);
+					return;
+				}
 				lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());
 			} else if (sourceID == LobbyView.PLAY_GAME) {
 				String gameType = lobbyView.getSelectedGame();
