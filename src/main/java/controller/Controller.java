@@ -210,7 +210,7 @@ public class Controller implements ActionListener {
 			serverConnection.addGameListener(gameController);
 			return true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while connecting.", e);
 			return false;
 		}
 	}
