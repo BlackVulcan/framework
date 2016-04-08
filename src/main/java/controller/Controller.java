@@ -68,7 +68,7 @@ public class Controller implements ActionListener {
 				loginBox.resetError();
 				loginBox.setVisible(true);
 			} else if (sourceID == MenuView.DISCONNECT_FROM_SERVER) {
-				if (serverConnection.isConnected()) {
+				if (serverConnection != null && serverConnection.isConnected()) {
 					containerView.reset();
 					lobbyView.reset();
 					close();
@@ -79,11 +79,11 @@ public class Controller implements ActionListener {
 				model.setPlayWithAI(!model.getPlayWithAI());
 				menuView.setPlayWithAI(model.getPlayWithAI());
 			} else if (sourceID == MenuView.RETURN_TO_LOBBY) {
-				if (serverConnection.isConnected()) {
+				if (serverConnection != null && serverConnection.isConnected()) {
 					model.setPlayingGame(false);
 				}
 			} else if (sourceID == MenuView.SURRENDER) {
-				if (serverConnection.isConnected() && model.getPlayingGame()) {
+				if (serverConnection != null && serverConnection.isConnected() && model.getPlayingGame()) {
 					int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to surrender?", "Surrender",
 							JOptionPane.YES_NO_OPTION);
 					if (result == JOptionPane.YES_OPTION) {
