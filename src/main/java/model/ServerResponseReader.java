@@ -235,7 +235,10 @@ public class ServerResponseReader implements Runnable {
 	        synchronized (responseBuffer) {
 		        while (responseBuffer.size() == 0) {
 			        try {
-                        responseBuffer.wait();
+                        responseBuffer.wait(250);
+                        if (responseBuffer.size() == 0) {
+                            return result;
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

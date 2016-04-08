@@ -54,7 +54,7 @@ public class ServerConnection {
         writer.println(line);
         writer.flush();
         List<String> result = reader.read(1);
-        if (result == null) {
+        if (result.get(0) == null) {
             return false;
         }
         if (result.size() == 1 && result.get(0).startsWith("(C) Copyright 2009-2016 Hanzehogeschool Groningen")) {
@@ -131,12 +131,12 @@ public class ServerConnection {
     public void close() {
         writer.println("logout");
         writer.flush();
-        reader.stop();
         try {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        reader.stop();
     }
 
     /**
