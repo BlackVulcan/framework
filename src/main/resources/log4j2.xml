@@ -5,7 +5,16 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
         </Console>
         <RollingFile name="RollingFile" fileName="logs/framework.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+                     filePattern="logs/$${date:yyyy-MM}/framework-%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="5 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+        <RollingFile name="RollingFile" fileName="logs/network.log"
+                     filePattern="logs/$${date:yyyy-MM}/network-%d{MM-dd-yyyy}-%i.log.gz">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
@@ -18,6 +27,9 @@
         </Async>
     </Appenders>
     <Loggers>
+        <Logger name="model.ServerResponseReader" level="trace">
+            <AppenderRef ref="NetworkFile"/>
+        </Logger>
         <Root level="trace">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="Async"/>

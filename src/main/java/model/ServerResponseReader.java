@@ -1,6 +1,8 @@
 package model;
 
 import controller.game.GameListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +29,6 @@ public class ServerResponseReader implements Runnable {
      * Constants for protocol communication
      */
     public static final String GAME_PREFIX = "SVR GAME ";
-
 	public static final String MATCH_PREFIX = "MATCH ";
 	public static final String YOURTURN_PREFIX = "YOURTURN ";
 	public static final String MOVE_PREFIX = "MOVE ";
@@ -35,8 +36,8 @@ public class ServerResponseReader implements Runnable {
 	public static final String WIN_PREFIX = "WIN ";
 	public static final String LOSS_PREFIX = "LOSS ";
 	public static final String DRAW_PREFIX = "DRAW ";
-
-	private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
+    private static final Logger logger = LogManager.getLogger(ServerResponseReader.class);
+    private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
 	private static final String GAMETYPE_VARNAME = "GAMETYPE";
 	private static final String OPPONENT_VARNAME = "OPPONENT";
 	private static final String TURNMESSAGE_VARNAME = "TURNMESSAGE";
@@ -121,6 +122,7 @@ public class ServerResponseReader implements Runnable {
         }
 
         s = s.trim();
+        logger.trace(s);
 
         if (s.startsWith(GAME_PREFIX)) {
             s = s.substring(GAME_PREFIX.length());
