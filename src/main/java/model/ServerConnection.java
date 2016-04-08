@@ -54,13 +54,7 @@ public class ServerConnection {
         writer.println(line);
         writer.flush();
         List<String> result = reader.read(1);
-        if (result.get(0) == null) {
-            return false;
-        }
-        if (result.size() == 1 && result.get(0).startsWith("(C) Copyright 2009-2016 Hanzehogeschool Groningen")) {
-            result = reader.read(1);
-        }
-        return result.size() == 1 && result.get(0).startsWith("OK");
+        return !(result.size() == 1 && result.get(0) == null) && result.size() == 1 && result.get(0).startsWith("OK");
     }
 
     /**
@@ -74,8 +68,8 @@ public class ServerConnection {
         writer.println("get " + type);
         writer.flush();
         List<String> result = reader.read(2);
-        if (result.get(1) != null) {
-	        JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
+        if (result.size() == 2 && result.get(1) != null) {
+            JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
 	        List<String> returnList = new ArrayList<>(array.length());
 	        for (int i = 0; i < array.length(); i++) {
 	            returnList.add(array.getString(i));

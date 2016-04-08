@@ -117,7 +117,7 @@ public class ServerResponseReader implements Runnable {
 	    if (s == null)
 		    return false;
 
-        if (s.equals("Strategic Game Server [Version 1.0]") || s.equals("(C) Copyright 2009 Hanze Hogeschool Groningen")) {
+        if (s.equals("Strategic Game Server [Version 1.0]") || s.startsWith("(C) Copyright 2009")) {
             return true;
         }
 
@@ -233,18 +233,22 @@ public class ServerResponseReader implements Runnable {
      */
     public List<String> read(int i) {
         List<String> result = new ArrayList<>(i);
+        int tries = 0;
         for (int j = 0; j < i; j++) {
 	        synchronized (responseBuffer) {
 		        while (responseBuffer.size() == 0) {
 			        try {
-                        responseBuffer.wait(250);
+                        responseBuffer.wait(500);
                         if (responseBuffer.size() == 0) {
-                            return result;
+                            if (++tries > 3) {
+                                return result;
+                            }
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
+                tries = 0;
                 result.add(responseBuffer.remove());
             }
         }
