@@ -120,3 +120,4 @@ build/
 properties.xml
 othello*.jar
 tictactoe*.jar
+logs/
