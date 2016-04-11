@@ -12,22 +12,6 @@ public class Main {
     public static String version;
 
     private Main(String[] args) throws IOException, InterruptedException {
-//        if (args.length >= 3) {
-//            for (int i = 0; i < 100; i++) {
-//                try {
-//                    Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
-//                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
-//                    printWriter.println("login " + args[2] + i);
-//                    printWriter.println("bye");
-//                    printWriter.println("bye");
-//                    printWriter.flush();
-//                } catch (IOException ignored) {
-//
-//                }
-//            }
-//        }
-
-
         Model model = new Model();
         Controller controller = new Controller(model);
         if (args.length >= 3) {

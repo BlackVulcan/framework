@@ -33,6 +33,7 @@ public class Model {
     private String clientName;
     private String opponent;
     private String serverAddress;
+    private String serverPort;
     private String turnMessage;
     private int gameResult = 0;
     private boolean myTurn = false;
@@ -139,9 +140,19 @@ public class Model {
         return this.serverAddress;
     }
 
-    public void setServerAddress(String serverAdress) {
-        this.serverAddress = serverAdress;
+    public Model setServerAddress(String serverAddress) {
+        this.serverAddress = serverAddress;
         processEvent(new ActionEvent(this, SERVER_CONNECTION_SET, null));
+        return this;
+    }
+
+    public String getServerPort() {
+        return serverPort;
+    }
+
+    public Model setServerPort(String port) {
+        this.serverPort = port;
+        return this;
     }
 
     public boolean getTurn() {

