@@ -29,32 +29,32 @@ public class ServerResponseReader implements Runnable {
      * Constants for protocol communication
      */
     public static final String GAME_PREFIX = "SVR GAME ";
-	public static final String MATCH_PREFIX = "MATCH ";
-	public static final String YOURTURN_PREFIX = "YOURTURN ";
-	public static final String MOVE_PREFIX = "MOVE ";
-	public static final String CHALLENGE_PREFIX = "CHALLENGE ";
-	public static final String WIN_PREFIX = "WIN ";
-	public static final String LOSS_PREFIX = "LOSS ";
-	public static final String DRAW_PREFIX = "DRAW ";
-    private static final Logger logger = LogManager.getLogger(ServerResponseReader.class);
+    public static final String MATCH_PREFIX = "MATCH ";
+    public static final String YOURTURN_PREFIX = "YOURTURN ";
+    public static final String MOVE_PREFIX = "MOVE ";
+    public static final String CHALLENGE_PREFIX = "CHALLENGE ";
+    public static final String WIN_PREFIX = "WIN ";
+    public static final String LOSS_PREFIX = "LOSS ";
+    public static final String DRAW_PREFIX = "DRAW ";
+    private static final Logger LOGGER = LogManager.getLogger(ServerResponseReader.class);
     private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
-	private static final String GAMETYPE_VARNAME = "GAMETYPE";
-	private static final String OPPONENT_VARNAME = "OPPONENT";
-	private static final String TURNMESSAGE_VARNAME = "TURNMESSAGE";
-	private static final String PLAYER_VARNAME = "PLAYER";
-	private static final String MOVE_VARNAME = "MOVE";
-	private static final String DETAILS_VARNAME = "DETAILS";
-	private static final String CHALLENGER_VARNAME = "CHALLENGER";
-	private static final String CHALLENGENUMBER_VARNAME = "CHALLENGENUMBER";
-	private static final String PLAYERONESCORE_VARNAME = "PLAYERONESCORE";
-	private static final String PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE";
-	private static final String COMMENT_VARNAME = "COMMENT";
-	private static final String CANCELLED_PREFIX = "CANCELLED ";
-	/**
-	 * A boolean indicating if this thread should run
-	 */
-	boolean running = true;
-	private Object stopLock = new Object();
+    private static final String GAMETYPE_VARNAME = "GAMETYPE";
+    private static final String OPPONENT_VARNAME = "OPPONENT";
+    private static final String TURNMESSAGE_VARNAME = "TURNMESSAGE";
+    private static final String PLAYER_VARNAME = "PLAYER";
+    private static final String MOVE_VARNAME = "MOVE";
+    private static final String DETAILS_VARNAME = "DETAILS";
+    private static final String CHALLENGER_VARNAME = "CHALLENGER";
+    private static final String CHALLENGENUMBER_VARNAME = "CHALLENGENUMBER";
+    private static final String PLAYERONESCORE_VARNAME = "PLAYERONESCORE";
+    private static final String PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE";
+    private static final String COMMENT_VARNAME = "COMMENT";
+    private static final String CANCELLED_PREFIX = "CANCELLED ";
+    /**
+     * A boolean indicating if this thread should run
+     */
+    boolean running = true;
+    private Object stopLock = new Object();
     /**
      * All gameListeners which will be notified of events
      */
@@ -89,19 +89,17 @@ public class ServerResponseReader implements Runnable {
                 String in = reader.readLine();
 
                 if (!parse(in)) {
-	                synchronized (responseBuffer) {
-		                responseBuffer.add(in);
+                    synchronized (responseBuffer) {
+                        responseBuffer.add(in);
                         responseBuffer.notifyAll();
                     }
                 }
-            } catch (IOException e) {
-//                e.printStackTrace();
-            } catch (JSONException e) {
-
+            } catch (IOException | JSONException e) {
+                LOGGER.error("Error when receiving data.", e);
             }
         }
-	    synchronized (stopLock) {
-		    stopLock.notifyAll();
+        synchronized (stopLock) {
+            stopLock.notifyAll();
         }
     }
 
@@ -114,88 +112,85 @@ public class ServerResponseReader implements Runnable {
      * @return true if a Line containing information for listeners has been found, false otherwise
      */
     private boolean parse(String s) {
-	    if (s == null)
-		    return false;
+        if (s == null) {
+            return false;
+        }
 
-        if (s.equals("Strategic Game Server [Version 1.0]") || s.startsWith("(C) Copyright 2009")) {
+        if ("Strategic Game Server [Version 1.0]".equals(s) || "(C) Copyright 2009".equals(s)) {
             return true;
         }
 
         s = s.trim();
-        logger.trace(s);
+        LOGGER.trace(s);
 
-        if (s.startsWith(GAME_PREFIX)) {
-            s = s.substring(GAME_PREFIX.length());
+        if (!s.startsWith(GAME_PREFIX)) {
+            return false;
+        }
+        s = s.substring(GAME_PREFIX.length());
 
-            if (s.startsWith(MATCH_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
+        if (s.startsWith(MATCH_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
 
-                String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
-                String gameType = jsonObject.getString(GAMETYPE_VARNAME);
-                String opponent = jsonObject.getString(OPPONENT_VARNAME);
+            String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
+            String gameType = jsonObject.getString(GAMETYPE_VARNAME);
+            String opponent = jsonObject.getString(OPPONENT_VARNAME);
 
-                for (GameListener gameListener : listeners) {
-                    gameListener.match(playerMove, gameType, opponent);
-                }
-            } else if (s.startsWith(YOURTURN_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
+            for (GameListener gameListener : listeners) {
+                gameListener.match(playerMove, gameType, opponent);
+            }
+        } else if (s.startsWith(YOURTURN_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
 
-                for (GameListener gameListener : listeners) {
-                    try {
-                        gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
-                    } catch (JSONException e) {
-                        gameListener.yourTurn("");
-                    }
-                }
-            } else if (s.startsWith(MOVE_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(MOVE_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-                    gameListener.move(jsonObject.getString(PLAYER_VARNAME), jsonObject.getString(MOVE_VARNAME), jsonObject.getString(DETAILS_VARNAME));
-                }
-            } else if (s.startsWith(CHALLENGE_PREFIX)) {
-//				System.out.println(s);
-                if (s.substring(CHALLENGE_PREFIX.length()).startsWith(CANCELLED_PREFIX)) {
-                    JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length() + CANCELLED_PREFIX.length()));
-
-                    for (GameListener gameListener : listeners) {
-                        gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
-                    }
-
-                    return true;
-                }
-                JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
-
-                String challenger = jsonObject.getString(CHALLENGER_VARNAME);
-                String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
-                String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
-
-                for (GameListener gameListener : listeners) {
-                    gameListener.challenge(challenger, challengeNumber, challengeGameType);
-                }
-
-
-            } else if (s.startsWith(WIN_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
-                }
-            } else if (s.startsWith(LOSS_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
-                }
-            } else if (s.startsWith(DRAW_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            for (GameListener gameListener : listeners) {
+                try {
+                    gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
+                } catch (JSONException e) {
+                    gameListener.yourTurn("");
                 }
             }
-        } else {
-            return false;
+        } else if (s.startsWith(MOVE_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(MOVE_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.move(jsonObject.getString(PLAYER_VARNAME), jsonObject.getString(MOVE_VARNAME), jsonObject.getString(DETAILS_VARNAME));
+            }
+        } else if (s.startsWith(CHALLENGE_PREFIX)) {
+            if (s.substring(CHALLENGE_PREFIX.length()).startsWith(CANCELLED_PREFIX)) {
+                JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length() + CANCELLED_PREFIX.length()));
+
+                for (GameListener gameListener : listeners) {
+                    gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
+                }
+
+                return true;
+            }
+            JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
+
+            String challenger = jsonObject.getString(CHALLENGER_VARNAME);
+            String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
+            String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
+
+            for (GameListener gameListener : listeners) {
+                gameListener.challenge(challenger, challengeNumber, challengeGameType);
+            }
+        } else if (s.startsWith(WIN_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
+        } else if (s.startsWith(LOSS_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
+        } else if (s.startsWith(DRAW_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
         }
         return true;
     }
@@ -213,12 +208,12 @@ public class ServerResponseReader implements Runnable {
      * Stop the thread reading from the server
      */
     public void stop() {
-	    synchronized (stopLock) {
-		    running = false;
+        synchronized (stopLock) {
+            running = false;
             try {
                 stopLock.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.warn("Interrupt exception");
             }
         }
     }
@@ -235,17 +230,15 @@ public class ServerResponseReader implements Runnable {
         List<String> result = new ArrayList<>(i);
         int tries = 0;
         for (int j = 0; j < i; j++) {
-	        synchronized (responseBuffer) {
-		        while (responseBuffer.size() == 0) {
-			        try {
+            synchronized (responseBuffer) {
+                while (responseBuffer.isEmpty()) {
+                    try {
                         responseBuffer.wait(500);
-                        if (responseBuffer.size() == 0) {
-                            if (++tries > 3) {
-                                return result;
-                            }
+                        if (responseBuffer.isEmpty() && ++tries > 3) {
+                            return result;
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOGGER.warn("Interrupt exception");
                     }
                 }
                 tries = 0;

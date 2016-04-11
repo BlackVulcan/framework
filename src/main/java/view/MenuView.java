@@ -26,25 +26,19 @@ public class MenuView extends JMenuBar implements View {
         JMenuItem menuItemConnect = new JMenuItem("Connect");
         menuItemConnect.setMnemonic(KeyEvent.VK_C);
         menuItemConnect.setToolTipText("Connect to a server");
-        menuItemConnect.addActionListener(event -> {
-            processEvent(new ActionEvent(this, SERVER_CONNECTION_SHOW, null));
-        });
+        menuItemConnect.addActionListener(event -> processEvent(new ActionEvent(this, SERVER_CONNECTION_SHOW, null)));
         start.add(menuItemConnect);
 
         JMenuItem menuItemdisConnect = new JMenuItem("Disconnect");
         menuItemdisConnect.setMnemonic(KeyEvent.VK_D);
         menuItemdisConnect.setToolTipText("Disconnect from the current server");
-        menuItemdisConnect.addActionListener(event -> {
-            processEvent(new ActionEvent(this, DISCONNECT_FROM_SERVER, null));
-        });
+        menuItemdisConnect.addActionListener(event -> processEvent(new ActionEvent(this, DISCONNECT_FROM_SERVER, null)));
         start.add(menuItemdisConnect);
 
         JMenuItem menuReturnToLobby = new JMenuItem("Return to lobby");
         menuReturnToLobby.setMnemonic(KeyEvent.VK_R);
         menuReturnToLobby.setToolTipText("Return to the lobby");
-        menuReturnToLobby.addActionListener(event -> {
-            processEvent(new ActionEvent(this, RETURN_TO_LOBBY, null));
-        });
+        menuReturnToLobby.addActionListener(event -> processEvent(new ActionEvent(this, RETURN_TO_LOBBY, null)));
         start.add(menuReturnToLobby);
 
         JMenuItem menuItemExit = new JMenuItem("Exit");
@@ -59,9 +53,7 @@ public class MenuView extends JMenuBar implements View {
         playWithAIMenuItem = new JCheckBoxMenuItem("Make AI play");
         playWithAIMenuItem.setMnemonic(KeyEvent.VK_E);
         playWithAIMenuItem.setToolTipText("When enabled, the AI will play moves for you");
-        playWithAIMenuItem.addActionListener(event -> {
-            processEvent(new ActionEvent(this, TOGGLE_AI, null));
-        });
+        playWithAIMenuItem.addActionListener(event -> processEvent(new ActionEvent(this, TOGGLE_AI, null)));
         game.add(playWithAIMenuItem);
         
         JMenuItem surrenderMenuItem = new JMenuItem("Surrender");

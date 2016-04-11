@@ -1,3 +1,6 @@
+plugins {
+    id "org.sonarqube" version "1.2"
+}
 group 'ptgf'
 def buildNumber = System.getenv("bamboo_buildNumber") ?: "SNAPSHOT";
 version = '0.1-' + buildNumber

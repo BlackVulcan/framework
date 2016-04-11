@@ -3,6 +3,8 @@ package view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -21,6 +23,7 @@ import java.util.Properties;
 public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
     public static final String PROPERTIES_FILE = "properties.xml";
+    private static final Logger LOGGER = LogManager.getLogger(LoginBox.class);
     private static final String EMPTY_INPUT_ERROR = "No valid input.";
     private static final String CONNECT_ERROR = "Error when connecting.";
     private static final String ALREADY_CONNECTED = "Already Connected";
@@ -52,44 +55,33 @@ public class LoginBox extends JDialog {
         setTitle("Connection Information");
         pack();
 
-        hostField.addActionListener(event -> {
-            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
-        });
-
-        portField.addActionListener(event -> {
-            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
-        });
-
-        nameField.addActionListener(event -> {
-            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
-        });
-
-        connectButton.addActionListener(event -> {
-            processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null));
-        });
+        hostField.addActionListener(event -> processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null)));
+        portField.addActionListener(event -> processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null)));
+        nameField.addActionListener(event -> processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null)));
+        connectButton.addActionListener(event -> processEvent(new ActionEvent(this, LoginBox.SERVER_CONNECTION_SET, null)));
 
 // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
         });
 
 // call onCancel() on ESCAPE
-        contentPane.registerKeyboardAction(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        contentPane.registerKeyboardAction(e -> onCancel(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
     private void loadProperties() {
-        if (!new File(PROPERTIES_FILE).exists()) return;
+        if (!new File(PROPERTIES_FILE).exists()) {
+            return;
+        }
+
         try {
             properties.loadFromXML(new FileInputStream(PROPERTIES_FILE));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Error loading properties.", e);
         }
         hostField.setText(properties.getProperty("HostField"));
         String port = properties.getProperty("PortField");
@@ -104,7 +96,7 @@ public class LoginBox extends JDialog {
         try {
             properties.storeToXML(new FileOutputStream(PROPERTIES_FILE), "");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("Error saving properties.", e);
         }
     }
 
@@ -116,6 +108,7 @@ public class LoginBox extends JDialog {
         return Integer.parseInt(portField.getText());
     }
 
+    @Override
     public String getName() {
         return nameField.getText();
     }

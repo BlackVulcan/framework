@@ -11,11 +11,11 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 
 public class GameController implements GameListener, MoveListener {
-    public static final String MODULE_PATH = "modules";
-	private static final Logger logger = LogManager.getLogger(GameController.class);
+    private static final String MODULE_PATH = "modules";
+    private static final Logger LOGGER = LogManager.getLogger(GameController.class);
     private ServerConnection serverConnection;
     private Model model;
-	private GameModuleLoader loader;
+    private GameModuleLoader loader;
 
     public GameController(Model model, ServerConnection serverConnection) {
         this.model = model;
@@ -26,52 +26,51 @@ public class GameController implements GameListener, MoveListener {
 
     @Override
     public void match(String playerToMove, String gameType, String opponent) {
-	    if (playerToMove.equals(model.getClientName())) {
-		    model.setOpponent(opponent);
-	    } else {
-		    model.setOpponent(playerToMove);
-	    }
+        if (playerToMove.equals(model.getClientName())) {
+            model.setOpponent(opponent);
+        } else {
+            model.setOpponent(playerToMove);
+        }
 
         model.setTurn(playerToMove);
-	    @SuppressWarnings("UnnecessaryLocalVariable") String playerOne = playerToMove;
-	    String playerTwo = playerOne.equals(opponent) ? model.getClientName() : opponent;
+        @SuppressWarnings("UnnecessaryLocalVariable") String playerOne = playerToMove;
+        String playerTwo = playerOne.equals(opponent) ? model.getClientName() : opponent;
 
-	    AbstractGameModule module = loader.loadGameModule(gameType, playerOne, playerTwo);
+        AbstractGameModule module = loader.loadGameModule(gameType, playerOne, playerTwo);
 
-	    logger.trace("Starting {} match. Player one: {}. Player two: {}", gameType, playerOne, playerTwo);
-	    if (module instanceof ClientAbstractGameModule) {
-		    ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule) module;
+        LOGGER.trace("Starting {} match. Player one: {}. Player two: {}", gameType, playerOne, playerTwo);
+        if (module instanceof ClientAbstractGameModule) {
+            ClientAbstractGameModule clientAbstractGameModule = (ClientAbstractGameModule) module;
             clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
             clientAbstractGameModule.setClientPlayPiece(model.getChosenGameSides(gameType));
-		    clientAbstractGameModule.start();
+            clientAbstractGameModule.start();
             model.setGameModule(clientAbstractGameModule);
-	    } else {
-		    logger.fatal("{} was not an instance of ClientAbstractGameModule", module.getClass().getName());
-	    }
-        model.loadGame(playerToMove, gameType, opponent);
+        } else {
+            LOGGER.fatal("{} was not an instance of ClientAbstractGameModule", module.getClass().getName());
+        }
     }
 
     @Override
     public void yourTurn(String turnMessage) {
-	    model.setTurnMessage(turnMessage);
-	    if (model.getPlayWithAI()) {
+        model.setTurnMessage(turnMessage);
+        if (model.getPlayWithAI()) {
             movePerformed(model.getGameModule().getAIMove());
         }
     }
 
     @Override
     public void move(String player, String move, String details) {
-	    model.getGameModule().doPlayerMove(player, move);
+        model.getGameModule().doPlayerMove(player, move);
         try {
             model.setTurn(model.getGameModule().getPlayerToMove());
         } catch (IllegalStateException e) {
-            
+            LOGGER.error("IllegalStateException when setting move.", e);
         }
     }
 
     @Override
     public void challenge(String challenger, String challengeNumber, String gameType) {
-	    model.setNewChallenge(gameType, challenger, challengeNumber);
+        model.setNewChallenge(gameType, challenger, challengeNumber);
     }
 
     @Override
@@ -81,28 +80,28 @@ public class GameController implements GameListener, MoveListener {
 
     @Override
     public void loss(String playerOneScore, String playerTwoScore, String comment) {
-	    this.model.setGameResult(Model.GAME_LOSS);
+        this.model.setGameResult(Model.GAME_LOSS);
     }
 
     @Override
     public void win(String playerOneScore, String playerTwoScore, String comment) {
-	    this.model.setGameResult(Model.GAME_WIN);
+        this.model.setGameResult(Model.GAME_WIN);
     }
 
     @Override
     public void draw(String playerOneScore, String playerTwoScore, String comment) {
-	    this.model.setGameResult(Model.GAME_DRAW);
+        this.model.setGameResult(Model.GAME_DRAW);
     }
 
     @Override
     public void movePerformed(String s) {
-	    if (serverConnection == null) {
-		    System.err.println("Not connected to a server");
+        if (serverConnection == null) {
+            LOGGER.warn("Not connected to server");
             return;
         }
-//        model.getGameModule().doPlayerMove(model.getClientName(),s);
-	    if (model.getTurn())
-		    new Thread(() -> serverConnection.move(s)).start();
+
+        if (model.getTurn())
+            new Thread(() -> serverConnection.move(s)).start();
     }
 
     public void setServerConnection(ServerConnection serverConnection) {

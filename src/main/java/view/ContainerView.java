@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerView extends JFrame implements View {
     public static final int RETURN_TO_LOBBY = 1;
@@ -85,7 +86,7 @@ public class ContainerView extends JFrame implements View {
         }
     }
 
-    public ArrayList<JButton> getButtons() {
+    public List<JButton> getButtons() {
         return buttons;
     }
 
@@ -101,7 +102,7 @@ public class ContainerView extends JFrame implements View {
     }
 
     private void setTurn(Boolean myTurn) {
-        String turnInformation = "";
+        String turnInformation;
         if (myTurn)
             turnInformation = "Your turn!";
         else
@@ -126,31 +127,27 @@ public class ContainerView extends JFrame implements View {
     }
 
     public void setTime(int timeInMilis, Model model) {
-        Runnable thread = new Runnable() {
-            public void run() {
-                setTimeBox("");
-                int timeInTens = timeInMilis;
-                boolean timeIsRunning = model.getTurn();
-                for (int i = timeInTens; i >= 0; i--) {
-                    if (model.getTurn() && model.getPlayingGame() && !gameOver) {
-                        setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        timeIsRunning = false;
-                        setTimeBox("");
-                        break;
+        Runnable thread = () -> {
+            setTimeBox("");
+            boolean timeIsRunning = model.getTurn();
+            for (int i = timeInMilis; i >= 0; i--) {
+                if (model.getTurn() && model.getPlayingGame() && !gameOver) {
+                    setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignored) {
                     }
-                }
-                if (timeIsRunning) {
+                } else {
                     timeIsRunning = false;
-                    setTimeBox("Time has run out");
-                } else
                     setTimeBox("");
+                    break;
+                }
             }
+            if (timeIsRunning) {
+                timeIsRunning = false;
+                setTimeBox("Time has run out");
+            } else
+                setTimeBox("");
         };
         new Thread(thread).start();
     }
