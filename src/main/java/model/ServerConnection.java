@@ -75,12 +75,17 @@ public class ServerConnection {
             return new ArrayList<>();
         }
 
-        JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
-        List<String> returnList = new ArrayList<>(array.length());
-        for (int i = 0; i < array.length(); i++) {
-            returnList.add(array.getString(i));
+        try {
+            JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
+            List<String> returnList = new ArrayList<>(array.length());
+            for (int i = 0; i < array.length(); i++) {
+                returnList.add(array.getString(i));
+            }
+            return returnList;
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
-        return returnList;
     }
 
     /**

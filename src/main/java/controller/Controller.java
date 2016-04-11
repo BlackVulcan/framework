@@ -22,13 +22,14 @@ import java.util.Random;
 public class Controller implements ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
     private final Model model;
-    ContainerView containerView;
-    MenuView menuView;
-    LobbyView lobbyView;
-    LoginBox loginBox;
+    private ContainerView containerView;
+    private MenuView menuView;
+    private LobbyView lobbyView;
+    private LoginBox loginBox;
     private ServerConnection serverConnection;
     private GameController gameController;
 
+    @SuppressWarnings("WeakerAccess")
     public Controller(Model model) {
         this.model = model;
         containerView = new ContainerView();
@@ -96,13 +97,13 @@ public class Controller implements ActionListener {
         if (sourceID == LobbyView.LOBBY_REFRESH) {
             List<String> playerList = serverConnection.getPlayerlist();
             if (playerList == null) {
-                LOGGER.trace("playerlist was null. Closing connection");
+                LOGGER.trace("playerList was null. Closing connection");
                 containerView.reset();
                 lobbyView.reset();
                 close();
                 containerView.showView(lobbyView);
                 containerView.setServerConnection("");
-                JOptionPane.showMessageDialog(null, "Server disconnected unexpectly");
+                JOptionPane.showMessageDialog(null, "Server disconnected unexpectedly");
                 System.exit(0);
                 return;
             }
@@ -118,7 +119,7 @@ public class Controller implements ActionListener {
                 buttons[2] = "Cancel";
 
                 int result = JOptionPane.showOptionDialog(null, "Subscribing for " + gameType + "\n\nChoose a side",
-                        "Subscribe", JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+                        "Subscribe", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, buttons, buttons[1]);
 
                 if (result != -1 && result != 2) {
                     model.setChosenGameSides(gameType, buttons[result]);
@@ -138,7 +139,7 @@ public class Controller implements ActionListener {
 
                 int result = JOptionPane.showOptionDialog(null,
                         "Challenging " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
-                        JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, buttons, buttons[1]);
 
                 if (result != -1 && result != 2) {
                     model.setChosenGameSides(gameType, buttons[result]);
@@ -159,7 +160,7 @@ public class Controller implements ActionListener {
 
                 int result = JOptionPane.showOptionDialog(null,
                         "Accept challenge by " + player + " for " + gameType + "\n\nChoose a side", "Challenge",
-                        JOptionPane.OK_OPTION, 1, null, buttons, buttons[1]);
+                        JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, buttons, buttons[1]);
 
                 if (result != -1 && result != 2) {
                     lobbyView.deleteChallenge(e.getActionCommand());
@@ -194,6 +195,29 @@ public class Controller implements ActionListener {
             }
         } else if (sourceID == MenuView.CRASH_SERVER && model.getServerAddress() != null && model.getServerPort() != null) {
             crashServer(model.getServerAddress());
+        } else if (sourceID == MenuView.MANY_CLIENTS) {
+            if (serverConnection != null && serverConnection.isConnected()) {
+                close();
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (model.getServerAddress() != null && model.getServerPort() != null) {
+                connect(model.getServerAddress(), Integer.parseInt(model.getServerPort()));
+                String name = generateName();
+                StringBuilder builder = new StringBuilder();
+                final int clientAmount = 30;
+                for (int i = 0; i < clientAmount; i++) {
+                    builder.append(name).append(i).append("\", \"");
+                }
+                builder.append(name).append(clientAmount);
+                login(builder.toString());
+            }
+        } else if (sourceID == MenuView.FALSE_MOVE) {
+            serverConnection.write("move abuse");
         }
     }
 
@@ -241,12 +265,12 @@ public class Controller implements ActionListener {
         }
     }
 
-    public void close() {
+    void close() {
         LOGGER.trace("Closing connection to server.");
         serverConnection.close();
     }
 
-    public boolean connect(String hostname, int port) {
+    boolean connect(String hostname, int port) {
         LOGGER.trace("Connecting to server {} on port {}.", hostname, port);
         try {
             model.setServerAddress(hostname).setServerPort(Integer.toString(port));
@@ -260,7 +284,7 @@ public class Controller implements ActionListener {
         }
     }
 
-    public boolean login(String username) {
+    boolean login(String username) {
         LOGGER.trace("Trying to login as {}.", username);
         if (serverConnection.login(username)) {
             model.setClientName(username);
@@ -270,17 +294,17 @@ public class Controller implements ActionListener {
         }
     }
 
-    public boolean subscribe(String gameType) {
+    private boolean subscribe(String gameType) {
         LOGGER.trace("Subscribing for {}.", gameType);
         return serverConnection.subscribe(gameType);
     }
 
-    public void challenge(String player, String gameType) {
+    private void challenge(String player, String gameType) {
         LOGGER.trace("Challenging {} for a game of {}.", player, gameType);
         serverConnection.challenge(player, gameType);
     }
 
-    public void acceptChallenge(String challengeId) {
+    private void acceptChallenge(String challengeId) {
         LOGGER.trace("Accepting challenge {}.", challengeId);
         serverConnection.acceptChallenge(challengeId);
     }
@@ -288,7 +312,7 @@ public class Controller implements ActionListener {
     /**
      * Sets the lobby with available games and players.
      */
-    public void loadLobby() {
+    void loadLobby() {
         LOGGER.trace("Loading lobby view.");
         lobbyView.setAvailableGames(serverConnection.getGamelist());
         lobbyView.setAvailablePlayers(serverConnection.getPlayerlist(), model.getClientName());

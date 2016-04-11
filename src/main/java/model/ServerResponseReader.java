@@ -234,7 +234,7 @@ public class ServerResponseReader implements Runnable {
                 while (responseBuffer.isEmpty()) {
                     try {
                         responseBuffer.wait(500);
-                        if (responseBuffer.isEmpty() && ++tries > 3) {
+                        if (!result.isEmpty() && responseBuffer.isEmpty() && ++tries > 3) {
                             return result;
                         }
                     } catch (InterruptedException e) {
