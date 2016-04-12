@@ -124,6 +124,7 @@ public class Controller implements ActionListener {
 
                 if (result != -1 && result != 2) {
                     model.setChosenGameSides(gameType, buttons[result]);
+                    model.setChallengeTurnTime("10");
                     subscribe(gameType);
                 }
             }
@@ -144,6 +145,7 @@ public class Controller implements ActionListener {
 
                 if (result != -1 && result != 2) {
                     model.setChosenGameSides(gameType, buttons[result]);
+                    model.setChallengeTurnTime(model.getTurnTime());
                     challenge(player, gameType, model.getTurnTime());
                 }
             }
