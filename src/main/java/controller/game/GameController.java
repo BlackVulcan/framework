@@ -60,8 +60,8 @@ public class GameController implements GameListener, MoveListener {
 
     @Override
     public void move(String player, String move, String details) {
-        model.getGameModule().doPlayerMove(player, move);
         try {
+            model.getGameModule().doPlayerMove(player, move);
             model.setTurn(model.getGameModule().getPlayerToMove());
         } catch (IllegalStateException e) {
             LOGGER.error("IllegalStateException when setting move.", e);
