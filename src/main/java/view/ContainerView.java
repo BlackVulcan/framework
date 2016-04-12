@@ -152,6 +152,7 @@ public class ContainerView extends JFrame implements View {
                 setTimeBox("Time has run out");
             } else
                 setTimeBox("");
+            gameOver = false;
         };
         new Thread(thread).start();
     }
