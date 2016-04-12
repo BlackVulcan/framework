@@ -270,6 +270,7 @@ public class Controller implements ActionListener {
             lobbyView.stopAutomaticRefresh();
             containerView.showView(model.getGameModule().getView());
             model.setPlayingGame(true);
+            containerView.setPlaySide(model.getChosenGameSides(model.getPlayingGameType()));
         } else if (sourceID == Model.GAME_CHANGED && command != null && command.equals(Model.GAME_IS_CLOSED)) {
             loadLobby();
             containerView.showView(lobbyView);

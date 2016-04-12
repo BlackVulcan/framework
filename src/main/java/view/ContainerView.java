@@ -20,7 +20,7 @@ public class ContainerView extends JFrame implements View {
     private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
     private JPanel container;
     private ArrayList<JButton> buttons = new ArrayList<>();
-    private JLabel turn, turnMessage, opponent, time, serverConnection;
+    private JLabel turn, turnMessage, opponent, time, serverConnection, playSide;
     private boolean gameOver = false;
 
     public ContainerView() {
@@ -54,9 +54,11 @@ public class ContainerView extends JFrame implements View {
         
         JPanel serverPanel = new JPanel();
         getContentPane().add(serverPanel, BorderLayout.SOUTH);
-        serverPanel.setLayout(new FlowLayout());
+        serverPanel.setLayout(new GridLayout(0, 2));
         serverConnection = new JLabel("");
         serverPanel.add(serverConnection);
+        playSide = new JLabel("");
+        serverPanel.add(playSide);
     }
 
     public static String pathComponent(String filename) {
@@ -128,6 +130,10 @@ public class ContainerView extends JFrame implements View {
     
     public void setServerConnection(String serverConnection) {
     	this.serverConnection.setText(serverConnection);
+    }
+    
+    public void setPlaySide(String playSide) {
+    	this.playSide.setText(playSide);
     }
 
     public void setTime(int timeInMilis, Model model) {

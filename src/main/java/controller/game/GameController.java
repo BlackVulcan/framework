@@ -44,7 +44,7 @@ public class GameController implements GameListener, MoveListener {
             clientAbstractGameModule.setClientBegins(!playerOne.equals(opponent));
             clientAbstractGameModule.setClientPlayPiece(model.getChosenGameSides(gameType));
             clientAbstractGameModule.start();
-            model.setGameModule(clientAbstractGameModule);
+            model.setGameModule(clientAbstractGameModule, gameType);
         } else {
             LOGGER.fatal("{} was not an instance of ClientAbstractGameModule", module.getClass().getName());
         }
