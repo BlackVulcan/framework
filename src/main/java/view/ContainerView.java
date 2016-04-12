@@ -1,11 +1,13 @@
 package view;
 
 import model.Model;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +25,11 @@ public class ContainerView extends JFrame implements View {
 
     public ContainerView() {
         super("Two player game framework");
-        ImageIcon img = new ImageIcon(ICON_PATH);
+        URL resource = getClass().getResource("/gameicon.png");
+        LogManager.getLogger(ContainerView.class).trace(resource);
+        ImageIcon img = new ImageIcon(resource);
         if (img.getImage() == null) {
-            img = new ImageIcon(getClass().getResource("gameicon.png"));
+            img = new ImageIcon(ICON_PATH);
         }
         this.setIconImage(img.getImage());
 

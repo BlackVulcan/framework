@@ -239,7 +239,7 @@ public class Controller implements ActionListener {
 
                 }
             }
-        });
+        }).start();
     }
 
     private String generateName() {
