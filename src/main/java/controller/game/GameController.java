@@ -69,8 +69,8 @@ public class GameController implements GameListener, MoveListener {
     }
 
     @Override
-    public void challenge(String challenger, String challengeNumber, String gameType) {
-        model.setNewChallenge(gameType, challenger, challengeNumber);
+    public void challenge(String challenger, String challengeNumber, String gameType,String challengeTurnTime) {
+        model.setNewChallenge(gameType, challenger, challengeNumber, challengeTurnTime);
     }
 
     @Override

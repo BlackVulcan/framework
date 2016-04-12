@@ -27,6 +27,7 @@ public class Model {
     public static final String CHALLENGE_GAME_TYPE = "gametype";
     public static final String CHALLENGE_PLAYER = "player";
     public static final String CHALLENGE_GAME_NUMBER = "gamenumber";
+    public static final String CHALLENGE_TURN_TIME = "turntime";
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
     private ClientAbstractGameModule gameModule;
@@ -35,6 +36,8 @@ public class Model {
     private String serverAddress;
     private String serverPort;
     private String turnMessage;
+    private String turnTime = "10";
+    private int challengeTurnTime;
     private int gameResult = 0;
     private boolean myTurn = false;
     private boolean playWithAI = false;
@@ -44,6 +47,7 @@ public class Model {
     private ArrayList<String> challengeGameTypes;
     private ArrayList<String> challengePlayers;
     private ArrayList<String> challengeNumbers;
+    private ArrayList<String> challengeTurnTimes;
     private HashMap<String, String[]> gameSides = new HashMap<>();
     private HashMap<String, String> chosenGameSide = new HashMap<>();
     private Random random = new Random();
@@ -52,6 +56,7 @@ public class Model {
         challengeGameTypes = new ArrayList<>();
         challengePlayers = new ArrayList<>();
         challengeNumbers = new ArrayList<>();
+        challengeTurnTimes =  new ArrayList<>();
 
         String[] sides = {"X", "O"};
         gameSides.put("Tic-tac-toe", sides);
@@ -68,6 +73,22 @@ public class Model {
     private void processEvent(ActionEvent e) {
         for (ActionListener l : actionListenerList)
             l.actionPerformed(e);
+    }
+
+    public int getChallengeTurnTime() {
+        return challengeTurnTime;
+    }
+
+    public void setChallengeTurnTime(String challengeTurnTime) {
+        this.challengeTurnTime = challengeTurnTime.matches("\\d+") ? Integer.parseInt(challengeTurnTime)*1000 : 10000;
+    }
+
+    public String getTurnTime() {
+        return turnTime;
+    }
+
+    public void setTurnTime(String turnTime) {
+        this.turnTime = turnTime.matches("\\d+") ? turnTime : "10";
     }
 
     public String[] getGameSides(String gameType) {
@@ -205,10 +226,11 @@ public class Model {
         this.playWithAI = playWithAI;
     }
 
-    public void setNewChallenge(String gameType, String player, String challengeNumber) {
+    public void setNewChallenge(String gameType, String player, String challengeNumber, String challengeTurnTime) {
         challengeGameTypes.add(gameType);
         challengePlayers.add(player);
         challengeNumbers.add(challengeNumber);
+        challengeTurnTimes.add(challengeTurnTime);
         processEvent(new ActionEvent(this, NEW_CHALLENGE, Integer.toString(challengeGameTypes.size() - 1)));
     }
 
@@ -217,6 +239,7 @@ public class Model {
         challenge.put(CHALLENGE_GAME_TYPE, challengeGameTypes.get(index));
         challenge.put(CHALLENGE_PLAYER, challengePlayers.get(index));
         challenge.put(CHALLENGE_GAME_NUMBER, challengeNumbers.get(index));
+        challenge.put(CHALLENGE_TURN_TIME, challengeTurnTimes.get(index));
         return challenge;
     }
 

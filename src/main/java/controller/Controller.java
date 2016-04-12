@@ -5,6 +5,7 @@ import model.Model;
 import model.ServerConnection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import util.JTextFieldLimit;
 import view.ContainerView;
 import view.LobbyView;
 import view.LoginBox;
@@ -143,13 +144,14 @@ public class Controller implements ActionListener {
 
                 if (result != -1 && result != 2) {
                     model.setChosenGameSides(gameType, buttons[result]);
-                    challenge(player, gameType);
+                    challenge(player, gameType, model.getTurnTime());
                 }
             }
         } else if (sourceID == LobbyView.CHALLENGE_ACCEPTED) {
             String challengeNumber = e.getActionCommand();
             String player = lobbyView.getPlayerFromChallenge(challengeNumber);
             String gameType = lobbyView.getGameTypeFromChallenge(challengeNumber);
+            String turnTime = lobbyView.getTurnTimeFromChallenge(challengeNumber);
             if (player != null && gameType != null) {
                 String[] gameSides = model.getGameSides(gameType);
                 String[] buttons = new String[3];
@@ -165,6 +167,7 @@ public class Controller implements ActionListener {
                 if (result != -1 && result != 2) {
                     lobbyView.deleteChallenge(e.getActionCommand());
                     model.setChosenGameSides(gameType, buttons[result]);
+                    model.setChallengeTurnTime(turnTime);
                     acceptChallenge(command);
                 }
             }
@@ -220,6 +223,11 @@ public class Controller implements ActionListener {
             serverConnection.write("move abuse");
         } else if (sourceID == MenuView.SEND_MESSAGE) {
             serverConnection.write("msg \"" + model.getOpponent() + "\" Test Message");
+        } else if (sourceID == MenuView.SET_TURNTIME) {
+            JTextField turnTimeField = new JTextField();
+            turnTimeField.setDocument(new JTextFieldLimit(4));
+            JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(lobbyView), turnTimeField, "Set turntime", JOptionPane.PLAIN_MESSAGE);
+            model.setTurnTime(turnTimeField.getText());
         }
     }
 
@@ -302,9 +310,9 @@ public class Controller implements ActionListener {
         return serverConnection.subscribe(gameType);
     }
 
-    private void challenge(String player, String gameType) {
+    private void challenge(String player, String gameType, String turnTime) {
         LOGGER.trace("Challenging {} for a game of {}.", player, gameType);
-        serverConnection.challenge(player, gameType);
+        serverConnection.challenge(player, gameType, turnTime);
     }
 
     private void acceptChallenge(String challengeId) {

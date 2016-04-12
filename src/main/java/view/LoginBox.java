@@ -7,9 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
@@ -19,6 +16,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import util.JTextFieldLimit;
 
 public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
@@ -45,7 +44,7 @@ public class LoginBox extends JDialog {
 
     public LoginBox(JFrame owner) {
         super(owner);
-        portField.setDocument(new LoginBox.JTextFieldLimit(5));
+        portField.setDocument(new JTextFieldLimit(5));
         properties = new Properties();
         loadProperties();
         actionListenerList = new ArrayList<>();
@@ -195,24 +194,5 @@ public class LoginBox extends JDialog {
     /** @noinspection ALL */
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
-    }
-
-    private class JTextFieldLimit extends PlainDocument {
-        private int limit;
-
-        JTextFieldLimit(int limit) {
-            super();
-            this.limit = limit;
-        }
-
-        @Override
-        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-            if (str == null || !str.matches("\\d+"))
-                return;
-
-            if ((getLength() + str.length()) <= limit) {
-                super.insertString(offset, str, attr);
-            }
-        }
     }
 }

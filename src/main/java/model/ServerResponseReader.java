@@ -46,6 +46,7 @@ public class ServerResponseReader implements Runnable {
     private static final String DETAILS_VARNAME = "DETAILS";
     private static final String CHALLENGER_VARNAME = "CHALLENGER";
     private static final String CHALLENGENUMBER_VARNAME = "CHALLENGENUMBER";
+    private static final String CHALLENGETURNTIME_VARNAME = "TURNTIME";
     private static final String PLAYERONESCORE_VARNAME = "PLAYERONESCORE";
     private static final String PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE";
     private static final String COMMENT_VARNAME = "COMMENT";
@@ -169,9 +170,10 @@ public class ServerResponseReader implements Runnable {
             String challenger = jsonObject.getString(CHALLENGER_VARNAME);
             String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
             String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
+            String challengeTurnTime = jsonObject.getString(CHALLENGETURNTIME_VARNAME);
 
             for (GameListener gameListener : listeners) {
-                gameListener.challenge(challenger, challengeNumber, challengeGameType);
+                gameListener.challenge(challenger, challengeNumber, challengeGameType, challengeTurnTime);
             }
         } else if (s.startsWith(WIN_PREFIX)) {
             JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));

@@ -37,7 +37,7 @@ public interface GameListener {
      * @param challengeNumber The number of the challenge (used to accept the challenge)
      * @param gameType        The type of game being played.
      */
-    public void challenge(String challenger, String challengeNumber, String gameType);
+    public void challenge(String challenger, String challengeNumber, String gameType,String challengeTurnTime);
 
     /**
      * Invoked when a challenge is cancelled
