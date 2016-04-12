@@ -17,6 +17,7 @@ public class MenuView extends JMenuBar implements View {
     public static final int CRASH_SERVER = 8;
     public static final int MANY_CLIENTS = 9;
     public static final int FALSE_MOVE = 10;
+    public static final int SEND_MESSAGE = 11;
 
     private static final long serialVersionUID = 1L;
     private JCheckBoxMenuItem playWithAIMenuItem;
@@ -79,6 +80,11 @@ public class MenuView extends JMenuBar implements View {
         wrondMove.setToolTipText("Send a illegal move to the opponent");
         wrondMove.addActionListener(event -> processEvent(new ActionEvent(this, FALSE_MOVE, null)));
         foulPlay.add(wrondMove);
+
+        JMenuItem message = new JMenuItem("Send message");
+        message.setToolTipText("Send a illegal move to the opponent");
+        message.addActionListener(event -> processEvent(new ActionEvent(this, SEND_MESSAGE, null)));
+        foulPlay.add(message);
 
         this.add(start);
         this.add(game);

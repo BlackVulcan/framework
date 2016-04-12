@@ -218,6 +218,8 @@ public class Controller implements ActionListener {
             }
         } else if (sourceID == MenuView.FALSE_MOVE) {
             serverConnection.write("move abuse");
+        } else if (sourceID == MenuView.SEND_MESSAGE) {
+            serverConnection.write("msg \"" + model.getOpponent() + "\" Test Message");
         }
     }
 

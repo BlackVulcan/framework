@@ -116,7 +116,7 @@ public class ServerResponseReader implements Runnable {
             return false;
         }
 
-        if ("Strategic Game Server [Version 1.0]".equals(s) || s.startsWith("(C) Copyright 2009")) {
+        if ("Strategic Game Server [Version 1.0]".equals(s) || s.startsWith("(C) Copyright 2009") || s.startsWith("SVR MESSAGE")) {
             return true;
         }
 
