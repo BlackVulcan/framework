@@ -39,6 +39,7 @@ public class Model {
     private boolean myTurn = false;
     private boolean playWithAI = false;
     private boolean playingGame = false;
+    private String playingGameType = "";
     private GameModuleLoader gameModuleLoader;
     private ArrayList<String> challengeGameTypes;
     private ArrayList<String> challengePlayers;
@@ -103,9 +104,10 @@ public class Model {
         return gameModule;
     }
 
-    public void setGameModule(ClientAbstractGameModule gameModule) {
+    public void setGameModule(ClientAbstractGameModule gameModule, String gameType) {
         LOGGER.trace("Setting game module to {}.", gameModule.getClass().getName());
         this.gameModule = gameModule;
+        this.playingGameType = gameType;
         processEvent(new ActionEvent(this, GAME_CHANGED, GAMEMODULE_SET));
     }
 
@@ -117,6 +119,14 @@ public class Model {
         this.playingGame = playingGame;
         if (!playingGame)
             processEvent(new ActionEvent(this, GAME_CHANGED, GAME_IS_CLOSED));
+    }
+    
+    public String getPlayingGameType() { 
+    	return playingGameType;
+    }
+    
+    public void setPlayingGameType(String gameType) {
+    	this.playingGameType = gameType;
     }
 
     public String getClientName() {
