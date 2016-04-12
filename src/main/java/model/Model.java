@@ -37,7 +37,7 @@ public class Model {
     private String serverPort;
     private String turnMessage;
     private String turnTime = "10";
-    private int challengeTurnTime;
+    private int challengeTurnTime = 10;
     private int gameResult = 0;
     private boolean myTurn = false;
     private boolean playWithAI = false;
