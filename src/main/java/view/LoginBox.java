@@ -5,6 +5,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import util.JTextFieldLimit;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-
-import util.JTextFieldLimit;
 
 public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
