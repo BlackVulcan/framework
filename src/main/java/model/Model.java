@@ -57,9 +57,6 @@ public class Model {
         challengePlayers = new ArrayList<>();
         challengeNumbers = new ArrayList<>();
         challengeTurnTimes =  new ArrayList<>();
-
-        String[] sides = {"X", "O"};
-        gameSides.put("Tic-tac-toe", sides);
     }
 
     public void addActionListener(ActionListener actionListener) {
