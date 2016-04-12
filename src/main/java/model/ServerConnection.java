@@ -172,8 +172,8 @@ public class ServerConnection {
      *
      * @return
      */
-    public boolean challenge(String player, String gametype) {
-        return write("challenge \"" + player + "\" \"" + gametype + "\"");
+    public boolean challenge(String player, String gametype, String turnTime) {
+        return write("challenge \"" + player + "\" \"" + gametype + "\" " + turnTime);
     }
 
     /**

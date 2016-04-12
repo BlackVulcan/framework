@@ -72,7 +72,7 @@ public class ContainerView extends JFrame implements View {
             Model model = (Model) object;
             if (objectID == Model.TURN_SWITCHED) {
                 setTurn(model.getTurn());
-                setTime(10000, model);
+                setTime(model.getChallengeTurnTime(), model);
             } else if (objectID == Model.GAME_DRAW && model.getPlayingGame()) {
                 this.turn.setText(RESULT_DRAW);
                 gameOver = true;

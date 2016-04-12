@@ -18,6 +18,7 @@ public class MenuView extends JMenuBar implements View {
     public static final int MANY_CLIENTS = 9;
     public static final int FALSE_MOVE = 10;
     public static final int SEND_MESSAGE = 11;
+    public static final int SET_TURNTIME = 12;
 
     private static final long serialVersionUID = 1L;
     private JCheckBoxMenuItem playWithAIMenuItem;
@@ -60,10 +61,16 @@ public class MenuView extends JMenuBar implements View {
         game.add(playWithAIMenuItem);
         
         JMenuItem surrenderMenuItem = new JMenuItem("Surrender");
-        surrenderMenuItem.setMnemonic(KeyEvent.VK_E);
+        surrenderMenuItem.setMnemonic(KeyEvent.VK_S);
         surrenderMenuItem.setToolTipText("Surrender to the opponent");
         surrenderMenuItem.addActionListener(event -> processEvent(new ActionEvent(this, SURRENDER, null)));
         game.add(surrenderMenuItem);
+
+        JMenuItem setTurnTime = new JMenuItem("Set turntime");
+        setTurnTime.setMnemonic(KeyEvent.VK_T);
+        setTurnTime.setToolTipText("Set the turntime");
+        setTurnTime.addActionListener(event -> processEvent(new ActionEvent(this, SET_TURNTIME, null)));
+        game.add(setTurnTime);
 
         JMenu foulPlay = new JMenu("Foul play");
         JMenuItem serverCrash = new JMenuItem("Crash Server");
