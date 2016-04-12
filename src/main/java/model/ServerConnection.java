@@ -1,6 +1,8 @@
 package model;
 
 import controller.game.GameListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.List;
  * Created by Jules on 29-3-2016.
  */
 public class ServerConnection {
+    private static final Logger LOGGER = LogManager.getLogger(ServerConnection.class);
     private static final String GAMELIST = "gamelist";
     private static final String PLAYERLIST = "playerlist";
     private final Socket socket;
@@ -68,15 +71,21 @@ public class ServerConnection {
         writer.println("get " + type);
         writer.flush();
         List<String> result = reader.read(2);
-        if (result.size() == 2 && result.get(1) != null) {
-            JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
-	        List<String> returnList = new ArrayList<>(array.length());
-	        for (int i = 0; i < array.length(); i++) {
-	            returnList.add(array.getString(i));
-	        }
-	        return returnList;
+        if (result.size() != 2 || result.get(1) == null) {
+            return new ArrayList<>();
         }
-        return null;
+
+        try {
+            JSONArray array = new JSONArray(result.get(1).substring(5 + type.length())); // We first recieve an OK before the playerlist arrives
+            List<String> returnList = new ArrayList<>(array.length());
+            for (int i = 0; i < array.length(); i++) {
+                returnList.add(array.getString(i));
+            }
+            return returnList;
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -128,7 +137,7 @@ public class ServerConnection {
         try {
             socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warn("IOException", e);
         }
         reader.stop();
     }
@@ -163,8 +172,8 @@ public class ServerConnection {
      *
      * @return
      */
-    public boolean challenge(String player, String gametype) {
-        return write("challenge \"" + player + "\" \"" + gametype + "\"");
+    public boolean challenge(String player, String gametype, String turnTime) {
+        return write("challenge \"" + player + "\" \"" + gametype + "\" " + turnTime);
     }
 
     /**

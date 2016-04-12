@@ -90,10 +90,11 @@ public class LobbyView extends JPanel implements View {
 		challengeTable.setPreferredScrollableViewportSize(challengeTable.getPreferredSize());
 		challengeTable.setFillsViewportHeight(true);
 		challengeTableModel = new DefaultTableModel(new Object[][] {},
-				new String[] { "ID", "Game", "Player", CHALLENGE_ACCEPT, CHALLENGE_REJECT });
+				new String[] { "ID", "Game", "Player", "Turn Time", CHALLENGE_ACCEPT, CHALLENGE_REJECT });
 		challengeTable.setModel(challengeTableModel);
 		
 		challengeTable.setAutoCreateColumnsFromModel(false);
+		challengeTable.getTableHeader().setReorderingAllowed(false);
 
 	    Vector data = challengeTableModel.getDataVector();
 	    Collections.sort(data, new ColumnSorter(1));
@@ -123,8 +124,8 @@ public class LobbyView extends JPanel implements View {
 			}
 		};
 
-		new ButtonColumn(challengeTable, acceptChallenge, 3);
-		new ButtonColumn(challengeTable, rejectChallenge, 4);
+		new ButtonColumn(challengeTable, acceptChallenge, 4);
+		new ButtonColumn(challengeTable, rejectChallenge, 5);
 
 		challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
 	}
@@ -185,7 +186,7 @@ public class LobbyView extends JPanel implements View {
 		// needs to be modified to accept or reject a challenge
 		model.addRow(
 				new Object[] { challenge.get(Model.CHALLENGE_GAME_NUMBER), challenge.get(Model.CHALLENGE_GAME_TYPE),
-						challenge.get(Model.CHALLENGE_PLAYER), CHALLENGE_ACCEPT, CHALLENGE_REJECT, });
+						challenge.get(Model.CHALLENGE_PLAYER), challenge.get(Model.CHALLENGE_TURN_TIME), CHALLENGE_ACCEPT, CHALLENGE_REJECT, });
 	}
 
 	private void acceptChallenge(String challengeNumber) {
@@ -224,6 +225,16 @@ public class LobbyView extends JPanel implements View {
 		for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
 			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) {
 				return (String) challengeTableModel.getValueAt(i, 1);
+			}
+		}
+		return null;
+	}
+
+	public String getTurnTimeFromChallenge(String challengeNumber) {
+		DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
+		for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
+			if (challengeNumber.equals(challengeTableModel.getValueAt(i, 0))) {
+				return (String) challengeTableModel.getValueAt(i, 3);
 			}
 		}
 		return null;

@@ -24,17 +24,16 @@ import java.awt.event.MouseListener;
  * source of the Action will be the table. The action command will contain
  * the model row number of the button that was clicked.
  */
-public class ButtonColumn extends AbstractCellEditor
-        implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
+public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
     private JTable table;
-    private Action action;
+    private transient Action action;
     private int mnemonic;
-    private Border originalBorder;
-    private Border focusBorder;
+    private transient Border originalBorder;
+    private transient Border focusBorder;
 
     private JButton renderButton;
     private JButton editButton;
-    private Object editorValue;
+    private transient Object editorValue;
     private boolean isButtonColumnEditor;
 
     /**
@@ -99,8 +98,7 @@ public class ButtonColumn extends AbstractCellEditor
     }
 
     @Override
-    public Component getTableCellEditorComponent(
-            JTable table, Object value, boolean isSelected, int row, int column) {
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         if (value == null) {
             editButton.setText("");
             editButton.setIcon(null);
@@ -121,11 +119,9 @@ public class ButtonColumn extends AbstractCellEditor
         return editorValue;
     }
 
-    //
-//  Implement TableCellRenderer interface
-//
-    public Component getTableCellRendererComponent(
-            JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+    @Override
+    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+                                                   int row, int column) {
         if (isSelected) {
             renderButton.setForeground(table.getSelectionForeground());
             renderButton.setBackground(table.getSelectionBackground());
@@ -140,7 +136,6 @@ public class ButtonColumn extends AbstractCellEditor
             renderButton.setBorder(originalBorder);
         }
 
-//		renderButton.setText( (value == null) ? "" : value.toString() );
         if (value == null) {
             renderButton.setText("");
             renderButton.setIcon(null);
@@ -161,33 +156,28 @@ public class ButtonColumn extends AbstractCellEditor
     /*
      *	The button has been pressed. Stop editing and invoke the custom Action
 	 */
+    @Override
     public void actionPerformed(ActionEvent e) {
         int row = table.convertRowIndexToModel(table.getEditingRow());
         fireEditingStopped();
 
-        //  Invoke the Action
-
-        ActionEvent event = new ActionEvent(
-                table,
-                ActionEvent.ACTION_PERFORMED,
-                "" + row);
+        ActionEvent event = new ActionEvent(table, ActionEvent.ACTION_PERFORMED, Integer.toString(row));
         action.actionPerformed(event);
     }
 
-    //
-//  Implement MouseListener interface
-//
-	/*
-	 *  When the mouse is pressed the editor is invoked. If you then then drag
+    /*
+     *  When the mouse is pressed the editor is invoked. If you then then drag
 	 *  the mouse to another cell before releasing it, the editor is still
 	 *  active. Make sure editing is stopped when the mouse is released.
 	 */
+    @Override
     public void mousePressed(MouseEvent e) {
         if (table.isEditing()
                 && table.getCellEditor() == this)
             isButtonColumnEditor = true;
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
         if (isButtonColumnEditor
                 && table.isEditing())
@@ -196,12 +186,15 @@ public class ButtonColumn extends AbstractCellEditor
         isButtonColumnEditor = false;
     }
 
+    @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    @Override
     public void mouseExited(MouseEvent e) {
     }
 }

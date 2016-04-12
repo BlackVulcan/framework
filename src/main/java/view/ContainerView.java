@@ -1,12 +1,15 @@
 package view;
 
 import model.Model;
+import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContainerView extends JFrame implements View {
     public static final int RETURN_TO_LOBBY = 1;
@@ -17,14 +20,16 @@ public class ContainerView extends JFrame implements View {
     private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
     private JPanel container;
     private ArrayList<JButton> buttons = new ArrayList<>();
-    private JLabel turn, turnMessage, opponent, time, serverConnection;
+    private JLabel turn, turnMessage, opponent, time, serverConnection, playSide;
     private boolean gameOver = false;
 
     public ContainerView() {
         super("Two player game framework");
-        ImageIcon img = new ImageIcon(ICON_PATH);
+        URL resource = getClass().getResource("/gameicon.png");
+        LogManager.getLogger(ContainerView.class).trace(resource);
+        ImageIcon img = new ImageIcon(resource);
         if (img.getImage() == null) {
-            img = new ImageIcon(getClass().getResource("gameicon.png"));
+            img = new ImageIcon(ICON_PATH);
         }
         this.setIconImage(img.getImage());
 
@@ -49,9 +54,11 @@ public class ContainerView extends JFrame implements View {
         
         JPanel serverPanel = new JPanel();
         getContentPane().add(serverPanel, BorderLayout.SOUTH);
-        serverPanel.setLayout(new FlowLayout());
+        serverPanel.setLayout(new GridLayout(0, 2));
         serverConnection = new JLabel("");
         serverPanel.add(serverConnection);
+        playSide = new JLabel("");
+        serverPanel.add(playSide);
     }
 
     public static String pathComponent(String filename) {
@@ -67,7 +74,7 @@ public class ContainerView extends JFrame implements View {
             Model model = (Model) object;
             if (objectID == Model.TURN_SWITCHED) {
                 setTurn(model.getTurn());
-                setTime(10000, model);
+                setTime(model.getChallengeTurnTime(), model);
             } else if (objectID == Model.GAME_DRAW && model.getPlayingGame()) {
                 this.turn.setText(RESULT_DRAW);
                 gameOver = true;
@@ -85,7 +92,7 @@ public class ContainerView extends JFrame implements View {
         }
     }
 
-    public ArrayList<JButton> getButtons() {
+    public List<JButton> getButtons() {
         return buttons;
     }
 
@@ -101,7 +108,7 @@ public class ContainerView extends JFrame implements View {
     }
 
     private void setTurn(Boolean myTurn) {
-        String turnInformation = "";
+        String turnInformation;
         if (myTurn)
             turnInformation = "Your turn!";
         else
@@ -124,33 +131,34 @@ public class ContainerView extends JFrame implements View {
     public void setServerConnection(String serverConnection) {
     	this.serverConnection.setText(serverConnection);
     }
+    
+    public void setPlaySide(String playSide) {
+    	this.playSide.setText(playSide);
+    }
 
     public void setTime(int timeInMilis, Model model) {
-        Runnable thread = new Runnable() {
-            public void run() {
-                setTimeBox("");
-                int timeInTens = timeInMilis;
-                boolean timeIsRunning = model.getTurn();
-                for (int i = timeInTens; i >= 0; i--) {
-                    if (model.getTurn() && model.getPlayingGame() && !gameOver) {
-                        setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
-                        try {
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        timeIsRunning = false;
-                        setTimeBox("");
-                        break;
+        Runnable thread = () -> {
+            setTimeBox("");
+            boolean timeIsRunning = model.getTurn();
+            for (int i = timeInMilis; i >= 0; i--) {
+                if (model.getTurn() && model.getPlayingGame() && !gameOver) {
+                    setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException ignored) {
                     }
-                }
-                if (timeIsRunning) {
+                } else {
                     timeIsRunning = false;
-                    setTimeBox("Time has run out");
-                } else
                     setTimeBox("");
+                    break;
+                }
             }
+            if (timeIsRunning) {
+                timeIsRunning = false;
+                setTimeBox("Time has run out");
+            } else
+                setTimeBox("");
+            gameOver = false;
         };
         new Thread(thread).start();
     }

@@ -37,7 +37,7 @@ public class ServerResponseReader implements Runnable {
 	public static final String LOSS_PREFIX = "LOSS ";
 	public static final String DRAW_PREFIX = "DRAW ";
     private static final Logger logger = LogManager.getLogger(ServerResponseReader.class);
-    private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
+    private static final PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
 	private static final String GAMETYPE_VARNAME = "GAMETYPE";
 	private static final String OPPONENT_VARNAME = "OPPONENT";
 	private static final String TURNMESSAGE_VARNAME = "TURNMESSAGE";
@@ -96,10 +96,8 @@ public class ServerResponseReader implements Runnable {
                         }
                     }
                 }
-            } catch (IOException e) {
-//                e.printStackTrace();
-            } catch (JSONException e) {
-
+            } catch (IOException | JSONException e) {
+                LOGGER.error("Error when receiving data.", e);
             }
         }
 	    synchronized (stopLock) {
@@ -116,88 +114,86 @@ public class ServerResponseReader implements Runnable {
      * @return true if a Line containing information for listeners has been found, false otherwise
      */
     private boolean parse(String s) {
-	    if (s == null)
-		    return false;
+        if (s == null) {
+            return false;
+        }
 
-        if (s.equals("Strategic Game Server [Version 1.0]") || s.startsWith("(C) Copyright 2009")) {
+        if ("Strategic Game Server [Version 1.0]".equals(s) || s.startsWith("(C) Copyright 2009") || s.startsWith("SVR MESSAGE")) {
             return true;
         }
 
         s = s.trim();
-        logger.trace(s);
+        LOGGER.trace(s);
 
-        if (s.startsWith(GAME_PREFIX)) {
-            s = s.substring(GAME_PREFIX.length());
+        if (!s.startsWith(GAME_PREFIX)) {
+            return false;
+        }
+        s = s.substring(GAME_PREFIX.length());
 
-            if (s.startsWith(MATCH_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
+        if (s.startsWith(MATCH_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(MATCH_PREFIX.length()));
 
-                String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
-                String gameType = jsonObject.getString(GAMETYPE_VARNAME);
-                String opponent = jsonObject.getString(OPPONENT_VARNAME);
+            String playerMove = jsonObject.getString(PLAYERTOMOVE_VARNAME);
+            String gameType = jsonObject.getString(GAMETYPE_VARNAME);
+            String opponent = jsonObject.getString(OPPONENT_VARNAME);
 
-                for (GameListener gameListener : listeners) {
-                    gameListener.match(playerMove, gameType, opponent);
-                }
-            } else if (s.startsWith(YOURTURN_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
+            for (GameListener gameListener : listeners) {
+                gameListener.match(playerMove, gameType, opponent);
+            }
+        } else if (s.startsWith(YOURTURN_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(YOURTURN_PREFIX.length()));
 
-                for (GameListener gameListener : listeners) {
-                    try {
-                        gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
-                    } catch (JSONException e) {
-                        gameListener.yourTurn("");
-                    }
-                }
-            } else if (s.startsWith(MOVE_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(MOVE_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-                    gameListener.move(jsonObject.getString(PLAYER_VARNAME), jsonObject.getString(MOVE_VARNAME), jsonObject.getString(DETAILS_VARNAME));
-                }
-            } else if (s.startsWith(CHALLENGE_PREFIX)) {
-//				System.out.println(s);
-                if (s.substring(CHALLENGE_PREFIX.length()).startsWith(CANCELLED_PREFIX)) {
-                    JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length() + CANCELLED_PREFIX.length()));
-
-                    for (GameListener gameListener : listeners) {
-                        gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
-                    }
-
-                    return true;
-                }
-                JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
-
-                String challenger = jsonObject.getString(CHALLENGER_VARNAME);
-                String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
-                String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
-
-                for (GameListener gameListener : listeners) {
-                    gameListener.challenge(challenger, challengeNumber, challengeGameType);
-                }
-
-
-            } else if (s.startsWith(WIN_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
-                }
-            } else if (s.startsWith(LOSS_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
-                }
-            } else if (s.startsWith(DRAW_PREFIX)) {
-                JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
-
-                for (GameListener gameListener : listeners) {
-	                gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            for (GameListener gameListener : listeners) {
+                try {
+                    gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
+                } catch (JSONException e) {
+                    gameListener.yourTurn("");
                 }
             }
-        } else {
-            return false;
+        } else if (s.startsWith(MOVE_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(MOVE_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.move(jsonObject.getString(PLAYER_VARNAME), jsonObject.getString(MOVE_VARNAME), jsonObject.getString(DETAILS_VARNAME));
+            }
+        } else if (s.startsWith(CHALLENGE_PREFIX)) {
+            if (s.substring(CHALLENGE_PREFIX.length()).startsWith(CANCELLED_PREFIX)) {
+                JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length() + CANCELLED_PREFIX.length()));
+
+                for (GameListener gameListener : listeners) {
+                    gameListener.challengeCancelled(jsonObject.getString(CHALLENGENUMBER_VARNAME));
+                }
+
+                return true;
+            }
+            JSONObject jsonObject = new JSONObject(s.substring(CHALLENGE_PREFIX.length()));
+
+            String challenger = jsonObject.getString(CHALLENGER_VARNAME);
+            String challengeNumber = jsonObject.getString(CHALLENGENUMBER_VARNAME);
+            String challengeGameType = jsonObject.getString(GAMETYPE_VARNAME);
+            String challengeTurnTime = jsonObject.getString(CHALLENGETURNTIME_VARNAME);
+
+            for (GameListener gameListener : listeners) {
+                gameListener.challenge(challenger, challengeNumber, challengeGameType, challengeTurnTime);
+            }
+        } else if (s.startsWith(WIN_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(WIN_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.win(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
+        } else if (s.startsWith(LOSS_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(LOSS_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.loss(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
+        } else if (s.startsWith(DRAW_PREFIX)) {
+            JSONObject jsonObject = new JSONObject(s.substring(DRAW_PREFIX.length()));
+
+            for (GameListener gameListener : listeners) {
+                gameListener.draw(jsonObject.getString(PLAYERONESCORE_VARNAME), jsonObject.getString(PLAYERTWOSCORE_VARNAME), jsonObject.getString(COMMENT_VARNAME));
+            }
         }
         return true;
     }
@@ -220,7 +216,7 @@ public class ServerResponseReader implements Runnable {
             try {
                 stopLock.wait();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOGGER.warn("Interrupt exception");
             }
         }
     }
@@ -237,17 +233,15 @@ public class ServerResponseReader implements Runnable {
         List<String> result = new ArrayList<>(i);
         int tries = 0;
         for (int j = 0; j < i; j++) {
-	        synchronized (responseBuffer) {
-		        while (responseBuffer.size() == 0) {
-			        try {
+            synchronized (responseBuffer) {
+                while (responseBuffer.isEmpty()) {
+                    try {
                         responseBuffer.wait(500);
-                        if (responseBuffer.size() == 0) {
-                            if (++tries > 3) {
-                                return result;
-                            }
+                        if (!result.isEmpty() && responseBuffer.isEmpty() && ++tries > 3) {
+                            return result;
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        LOGGER.warn("Interrupt exception");
                     }
                 }
                 tries = 0;
