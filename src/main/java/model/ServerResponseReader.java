@@ -36,8 +36,8 @@ public class ServerResponseReader implements Runnable {
 	public static final String WIN_PREFIX = "WIN ";
 	public static final String LOSS_PREFIX = "LOSS ";
 	public static final String DRAW_PREFIX = "DRAW ";
-    private static final Logger logger = LogManager.getLogger(ServerResponseReader.class);
-    private static final PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
+    private static final Logger LOGGER = LogManager.getLogger(ServerResponseReader.class);
+    private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
 	private static final String GAMETYPE_VARNAME = "GAMETYPE";
 	private static final String OPPONENT_VARNAME = "OPPONENT";
 	private static final String TURNMESSAGE_VARNAME = "TURNMESSAGE";
@@ -50,6 +50,7 @@ public class ServerResponseReader implements Runnable {
 	private static final String PLAYERTWOSCORE_VARNAME = "PLAYERTWOSCORE";
 	private static final String COMMENT_VARNAME = "COMMENT";
 	private static final String CANCELLED_PREFIX = "CANCELLED ";
+    private static final String CHALLENGETURNTIME_VARNAME = "TURNTIME";
 	/**
 	 * A boolean indicating if this thread should run
 	 */
