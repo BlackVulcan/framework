@@ -90,8 +90,10 @@ public class ServerResponseReader implements Runnable {
 
                 if (!parse(in)) {
 	                synchronized (responseBuffer) {
-		                responseBuffer.add(in);
-                        responseBuffer.notifyAll();
+                        if(in.toLowerCase().startsWith("ok")||in.toLowerCase().startsWith("err")||in.toLowerCase().startsWith("svr gamelist")||in.toLowerCase().startsWith("svr playerlist")){
+                            responseBuffer.add(in);
+                            responseBuffer.notifyAll();
+                        }
                     }
                 }
             } catch (IOException e) {
