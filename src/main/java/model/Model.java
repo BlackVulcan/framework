@@ -1,6 +1,5 @@
 package model;
 
-import controller.game.GameModuleLoader;
 import nl.abstractteam.gamemodule.ClientAbstractGameModule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,12 +37,10 @@ public class Model {
     private String turnMessage;
     private String turnTime = "10";
     private int challengeTurnTime = 10;
-    private int gameResult = 0;
     private boolean myTurn = false;
     private boolean playWithAI = false;
     private boolean playingGame = false;
     private String playingGameType = "";
-    private GameModuleLoader gameModuleLoader;
     private ArrayList<String> challengeGameTypes;
     private ArrayList<String> challengePlayers;
     private ArrayList<String> challengeNumbers;
@@ -61,10 +58,6 @@ public class Model {
 
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
-    }
-
-    public void notifyListeners() {
-        processEvent(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
     }
 
     private void processEvent(ActionEvent e) {
@@ -92,10 +85,6 @@ public class Model {
         return gameSides.get(gameType);
     }
 
-    public void setGameSides(String gameType, String[] sides) {
-        gameSides.put(gameType, sides);
-    }
-
     public String getChosenGameSides(String gameType) {
         if (chosenGameSide.get(gameType) == null) {
             if (random.nextInt(3000) % 2 > 0)
@@ -108,14 +97,6 @@ public class Model {
 
     public void setChosenGameSides(String gameType, String side) {
         chosenGameSide.put(gameType, side);
-    }
-
-    public GameModuleLoader getGameModuleLoader() {
-        return this.gameModuleLoader;
-    }
-
-    public void setGameModuleLoader(GameModuleLoader gameModuleLoader) {
-        this.gameModuleLoader = gameModuleLoader;
     }
 
     public ClientAbstractGameModule getGameModule() {
@@ -141,10 +122,6 @@ public class Model {
     
     public String getPlayingGameType() { 
     	return playingGameType;
-    }
-    
-    public void setPlayingGameType(String gameType) {
-    	this.playingGameType = gameType;
     }
 
     public String getClientName() {
@@ -206,12 +183,7 @@ public class Model {
         processEvent(new ActionEvent(this, TURN_MESSAGE_CHANGED, null));
     }
 
-    public int getGameResult() {
-        return gameResult;
-    }
-
     public void setGameResult(int gameResult) {
-        this.gameResult = gameResult;
         processEvent(new ActionEvent(this, gameResult, null));
     }
 

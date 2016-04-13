@@ -15,22 +15,18 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class GameModuleLoader {
     private static final Logger LOGGER = LogManager.getLogger(GameModuleLoader.class);
     private HashMap<String, Class<? extends AbstractGameModule>> gameModuleMap;
-    private ArrayList<String> gameTypeList;
     private Model model;
 
     public GameModuleLoader(File modulePath, Model model) {
         this.model = model;
         gameModuleMap = new HashMap<>();
         loadJarFiles(modulePath);
-
-        gameTypeList = new ArrayList<>(gameModuleMap.keySet());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -49,10 +45,6 @@ public class GameModuleLoader {
         }
 
         return jarList;
-    }
-
-    public List<String> getGameTypeList() {
-        return gameTypeList;
     }
 
     public AbstractGameModule loadGameModule(String gameTypeName, String playerOne, String playerTwo) {

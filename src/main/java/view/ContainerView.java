@@ -8,18 +8,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ContainerView extends JFrame implements View {
-    public static final int RETURN_TO_LOBBY = 1;
     private static final long serialVersionUID = 1L;
     private static final String RESULT_DRAW = "It's a draw!";
     private static final String RESULT_LOSS = "You have lost the game!";
     private static final String RESULT_WIN = "You have won the game!";
     private static final String ICON_PATH = "src" + File.separator + "main" + File.separator + "resources" + File.separator + "gameicon.png";
     private JPanel container;
-    private ArrayList<JButton> buttons = new ArrayList<>();
     private JLabel turn, turnMessage, opponent, time, serverConnection, playSide;
     private boolean gameOver = false;
 
@@ -61,11 +57,6 @@ public class ContainerView extends JFrame implements View {
         serverPanel.add(playSide);
     }
 
-    public static String pathComponent(String filename) {
-        int i = filename.lastIndexOf(File.separator);
-        return (i > -1) ? filename.substring(0, i) : filename;
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object object = e.getSource();
@@ -92,10 +83,6 @@ public class ContainerView extends JFrame implements View {
         }
     }
 
-    public List<JButton> getButtons() {
-        return buttons;
-    }
-
     public void showView(Component component) {
         container.removeAll();
         container.add(component);
@@ -114,10 +101,6 @@ public class ContainerView extends JFrame implements View {
         else
             turnInformation = opponent.getText() + "'s turn!";
         this.turn.setText(turnInformation);
-    }
-
-    public void setTurnEmpty() {
-        this.turn.setText("");
     }
 
     private void setTurnMessage(String message) {

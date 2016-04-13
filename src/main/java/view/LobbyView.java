@@ -1,6 +1,7 @@
 package view;
 
 import model.Model;
+import util.ColumnSorter;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -275,39 +276,5 @@ public class LobbyView extends JPanel implements View {
 
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
-    }
-}
-
-class ColumnSorter implements Comparator {
-    private int colIndex;
-
-    ColumnSorter(int colIndex) {
-        this.colIndex = colIndex;
-    }
-
-    public int compare(Object a, Object b) {
-        Vector v1 = (Vector) a;
-        Vector v2 = (Vector) b;
-        Object o1 = v1.get(colIndex);
-        Object o2 = v2.get(colIndex);
-
-        if (o1 instanceof String && ((String) o1).length() == 0) {
-            o1 = null;
-        }
-        if (o2 instanceof String && ((String) o2).length() == 0) {
-            o2 = null;
-        }
-
-        if (o1 == null && o2 == null) {
-            return 0;
-        } else if (o1 == null) {
-            return 1;
-        } else if (o2 == null) {
-            return -1;
-        } else if (o1 instanceof Comparable) {
-            return ((Comparable) o1).compareTo(o2);
-        } else {
-            return o1.toString().compareTo(o2.toString());
-        }
     }
 }

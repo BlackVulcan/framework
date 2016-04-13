@@ -20,7 +20,7 @@ import java.util.Properties;
 
 public class LoginBox extends JDialog {
     public static final int SERVER_CONNECTION_SET = 1;
-    public static final String PROPERTIES_FILE = "properties.xml";
+    private static final String PROPERTIES_FILE = "properties.xml";
     private static final Logger LOGGER = LogManager.getLogger(LoginBox.class);
     private static final String EMPTY_INPUT_ERROR = "No valid input.";
     private static final String CONNECT_ERROR = "Error when connecting.";
@@ -87,7 +87,7 @@ public class LoginBox extends JDialog {
         nameField.setText(properties.getProperty("NameField"));
     }
 
-    public void saveProperties() {
+    private void saveProperties() {
         properties.setProperty("HostField", hostField.getText());
         properties.setProperty("PortField", portField.getText());
         properties.setProperty("NameField", nameField.getText());

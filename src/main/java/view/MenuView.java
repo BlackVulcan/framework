@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 public class MenuView extends JMenuBar implements View {
     public static final int DISCONNECT_FROM_SERVER = 1;
-    public static final int ENABLE_AI = 2;
-    public static final int DISABLE_AI = 3;
     public static final int SERVER_CONNECTION_SHOW = 4;
     public static final int RETURN_TO_LOBBY = 5;
     public static final int TOGGLE_AI = 6;
