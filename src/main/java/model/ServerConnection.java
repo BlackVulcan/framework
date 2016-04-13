@@ -4,6 +4,7 @@ import controller.game.GameListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -83,7 +84,10 @@ public class ServerConnection {
             }
             return returnList;
         } catch (StringIndexOutOfBoundsException e) {
-            e.printStackTrace();
+            LOGGER.trace("Error receiving", e);
+            return new ArrayList<>();
+        } catch (JSONException e) {
+            LOGGER.trace("Error receiving", e);
             return new ArrayList<>();
         }
     }
