@@ -43,11 +43,11 @@ public class ContainerView extends JFrame implements View {
         setFullScreen();
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setMinimumSize(new Dimension(400, 300));
-        
+
         container = new JPanel();
         container.setLayout(new BorderLayout(0, 0));
         this.getContentPane().add(new JScrollPane(container), BorderLayout.CENTER);
-        
+
         JPanel serverPanel = new JPanel();
         getContentPane().add(serverPanel, BorderLayout.SOUTH);
         serverPanel.setLayout(new GridLayout(0, 2));
@@ -110,13 +110,13 @@ public class ContainerView extends JFrame implements View {
     private void setTimeBox(String time) {
         this.time.setText(time);
     }
-    
+
     public void setServerConnection(String serverConnection) {
-    	this.serverConnection.setText(serverConnection);
+        this.serverConnection.setText(serverConnection);
     }
-    
+
     public void setPlaySide(String playSide) {
-    	this.playSide.setText(playSide);
+        this.playSide.setText(playSide);
     }
 
     private void setTime(int timeInMillis, Model model) {

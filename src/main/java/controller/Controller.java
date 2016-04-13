@@ -51,6 +51,18 @@ public class Controller implements ActionListener {
         containerView.setVisible(true);
     }
 
+    private static String generateName() {
+        final String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        int length = random.nextInt(10) + 5;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(10000) % alphabet.length();
+            builder.append(alphabet.charAt(number));
+        }
+        return builder.toString();
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -206,7 +218,7 @@ public class Controller implements ActionListener {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.error("Error when trying to login as many clients", e);
                 }
             }
 
@@ -221,9 +233,9 @@ public class Controller implements ActionListener {
                 builder.append(name).append(clientAmount);
                 login(builder.toString());
             }
-        } else if (sourceID == MenuView.FALSE_MOVE) {
+        } else if (sourceID == MenuView.FALSE_MOVE && serverConnection != null && serverConnection.isConnected()) {
             serverConnection.write("move abuse");
-        } else if (sourceID == MenuView.SEND_MESSAGE) {
+        } else if (sourceID == MenuView.SEND_MESSAGE && serverConnection != null && serverConnection.isConnected()) {
             serverConnection.write("msg \"" + model.getOpponent() + "\" Test Message");
         } else if (sourceID == MenuView.SET_TURNTIME) {
             JTextField turnTimeField = new JTextField();
@@ -250,18 +262,6 @@ public class Controller implements ActionListener {
                 }
             }
         }).start();
-    }
-
-    private String generateName() {
-        final String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        Random random = new Random();
-        int length = random.nextInt(10) + 5;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int number = random.nextInt(10000) % alphabet.length();
-            builder.append(alphabet.charAt(number));
-        }
-        return builder.toString();
     }
 
     private void handleModelEvent(int sourceID, String command) {

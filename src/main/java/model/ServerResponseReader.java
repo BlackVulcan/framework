@@ -152,6 +152,7 @@ public class ServerResponseReader implements Runnable {
                 try {
                     gameListener.yourTurn(jsonObject.getString(TURNMESSAGE_VARNAME));
                 } catch (JSONException e) {
+                    LOGGER.error("JSON error when getting turntime", e);
                     gameListener.yourTurn("");
                 }
             }

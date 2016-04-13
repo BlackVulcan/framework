@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class Model {
@@ -53,7 +54,7 @@ public class Model {
         challengeGameTypes = new ArrayList<>();
         challengePlayers = new ArrayList<>();
         challengeNumbers = new ArrayList<>();
-        challengeTurnTimes =  new ArrayList<>();
+        challengeTurnTimes = new ArrayList<>();
     }
 
     public void addActionListener(ActionListener actionListener) {
@@ -70,7 +71,7 @@ public class Model {
     }
 
     public void setChallengeTurnTime(String challengeTurnTime) {
-        this.challengeTurnTime = challengeTurnTime.matches("\\d+") ? Integer.parseInt(challengeTurnTime)*1000 : 10000;
+        this.challengeTurnTime = challengeTurnTime.matches("\\d+") ? Integer.parseInt(challengeTurnTime) * 1000 : 10000;
     }
 
     public String getTurnTime() {
@@ -119,9 +120,9 @@ public class Model {
         if (!playingGame)
             processEvent(new ActionEvent(this, GAME_CHANGED, GAME_IS_CLOSED));
     }
-    
-    public String getPlayingGameType() { 
-    	return playingGameType;
+
+    public String getPlayingGameType() {
+        return playingGameType;
     }
 
     public String getClientName() {
@@ -203,7 +204,7 @@ public class Model {
         processEvent(new ActionEvent(this, NEW_CHALLENGE, Integer.toString(challengeGameTypes.size() - 1)));
     }
 
-    public HashMap<String, String> getChallenge(int index) {
+    public Map<String, String> getChallenge(int index) {
         HashMap<String, String> challenge = new HashMap<>();
         challenge.put(CHALLENGE_GAME_TYPE, challengeGameTypes.get(index));
         challenge.put(CHALLENGE_PLAYER, challengePlayers.get(index));

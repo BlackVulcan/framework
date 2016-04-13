@@ -102,7 +102,6 @@ public class MenuView extends JMenuBar implements View {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        // TODO Auto-generated method stub
     }
 
     private void processEvent(ActionEvent e) {

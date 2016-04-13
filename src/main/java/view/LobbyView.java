@@ -1,6 +1,8 @@
 package view;
 
 import model.Model;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import util.ColumnSorter;
 
 import javax.swing.*;
@@ -18,6 +20,7 @@ public class LobbyView extends JPanel implements View {
     public static final int PLAY_GAME = 2;
     public static final int CHALLENGE_PLAYER = 3;
     public static final int CHALLENGE_ACCEPTED = 4;
+    private static final Logger LOGGER = LogManager.getLogger(LobbyView.class);
     private static final String CHALLENGE_ACCEPT = "Accept";
     private static final String CHALLENGE_REJECT = "Reject";
     private static final long serialVersionUID = 1L;
@@ -96,9 +99,10 @@ public class LobbyView extends JPanel implements View {
         Action acceptChallenge = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JTable table = (JTable) e.getSource();
-                int modelRow = Integer.valueOf(e.getActionCommand());
+                int modelRow = Integer.parseInt(e.getActionCommand());
                 acceptChallenge((String) table.getValueAt(modelRow, 0));
             }
         };
@@ -106,12 +110,13 @@ public class LobbyView extends JPanel implements View {
         Action rejectChallenge = new AbstractAction() {
             private static final long serialVersionUID = 1L;
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 int result = JOptionPane.showConfirmDialog(null, CHALLENGE_REJECT + " challenge?", null,
                         JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     JTable table = (JTable) e.getSource();
-                    int modelRow = Integer.valueOf(e.getActionCommand());
+                    int modelRow = Integer.parseInt(e.getActionCommand());
                     ((DefaultTableModel) table.getModel()).removeRow(modelRow);
                 }
             }
@@ -169,7 +174,7 @@ public class LobbyView extends JPanel implements View {
         players.stream().filter(player -> !playerListModel.contains(player) && !player.equals(clientName)).forEach(player -> playerListModel.addElement(player));
     }
 
-    private void setChallenge(HashMap<String, String> challenge) {
+    private void setChallenge(Map<String, String> challenge) {
         DefaultTableModel model = (DefaultTableModel) challengeTable.getModel();
 
         // needs to be modified to accept or reject a challenge
@@ -179,7 +184,6 @@ public class LobbyView extends JPanel implements View {
     }
 
     private void acceptChallenge(String challengeNumber) {
-        // ((DefaultTableModel) challengeTable.getModel()).removeRow(modelRow);
         processEvent(new ActionEvent(this, CHALLENGE_ACCEPTED, challengeNumber));
     }
 
@@ -230,14 +234,12 @@ public class LobbyView extends JPanel implements View {
     }
 
     private void resetPlayerList() {
-        DefaultListModel<String> playerListModel = (DefaultListModel<String>) playerList.getModel();
         for (int i = playerListModel.size() - 1; i >= 0; i--) {
             playerListModel.remove(i);
         }
     }
 
     private void resetGameList() {
-        DefaultListModel<String> gameListModel = (DefaultListModel<String>) gameList.getModel();
         for (int i = gameListModel.size() - 1; i >= 0; i--) {
             gameListModel.remove(i);
         }
@@ -262,7 +264,7 @@ public class LobbyView extends JPanel implements View {
                     processEvent(refreshLobby);
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOGGER.warn("Interrupt when refreshing lobby.");
                 }
             }
         };
