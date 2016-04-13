@@ -13,7 +13,6 @@ import java.util.Random;
 
 public class Model {
     public static final int TURN_SWITCHED = 1;
-    public static final int SERVER_CONNECTION_SET = 2;
     public static final int GAME_CHANGED = 3;
     public static final int GAME_DRAW = 4;
     public static final int GAME_WIN = 5;
@@ -28,6 +27,7 @@ public class Model {
     public static final String CHALLENGE_PLAYER = "player";
     public static final String CHALLENGE_GAME_NUMBER = "gamenumber";
     public static final String CHALLENGE_TURN_TIME = "turntime";
+    private static final int SERVER_CONNECTION_SET = 2;
     private static final Logger LOGGER = LogManager.getLogger(Model.class);
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
     private ClientAbstractGameModule gameModule;

@@ -228,7 +228,7 @@ public class Controller implements ActionListener {
         } else if (sourceID == MenuView.SET_TURNTIME) {
             JTextField turnTimeField = new JTextField();
             turnTimeField.setDocument(new JTextFieldLimit(4));
-            JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(lobbyView), turnTimeField, "Set turntime", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(lobbyView), turnTimeField, "Set turntime", JOptionPane.DEFAULT_OPTION);
             model.setTurnTime(turnTimeField.getText());
         }
     }

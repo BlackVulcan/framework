@@ -45,7 +45,7 @@ public class ContainerView extends JFrame implements View {
         informationPanel.add(turnMessage);
         informationPanel.add(time);
         setFullScreen();
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setMinimumSize(new Dimension(400, 300));
         
         container = new JPanel();
@@ -103,7 +103,7 @@ public class ContainerView extends JFrame implements View {
         repaint();
     }
 
-    public void setFullScreen() {
+    private void setFullScreen() {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
@@ -120,7 +120,7 @@ public class ContainerView extends JFrame implements View {
         this.turn.setText("");
     }
 
-    public void setTurnMessage(String message) {
+    private void setTurnMessage(String message) {
         this.turnMessage.setText(message);
     }
 
@@ -136,11 +136,11 @@ public class ContainerView extends JFrame implements View {
     	this.playSide.setText(playSide);
     }
 
-    public void setTime(int timeInMilis, Model model) {
+    private void setTime(int timeInMillis, Model model) {
         Runnable thread = () -> {
             setTimeBox("");
             boolean timeIsRunning = model.getTurn();
-            for (int i = timeInMilis; i >= 0; i--) {
+            for (int i = timeInMillis; i >= 0; i--) {
                 if (model.getTurn() && model.getPlayingGame() && !gameOver) {
                     setTimeBox("Seconds left: " + (i / 1000) + "." + ((i % 1000) / 100));
                     try {

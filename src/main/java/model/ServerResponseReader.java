@@ -28,14 +28,14 @@ public class ServerResponseReader implements Runnable {
     /**
      * Constants for protocol communication
      */
-    public static final String GAME_PREFIX = "SVR GAME ";
-    public static final String MATCH_PREFIX = "MATCH ";
-    public static final String YOURTURN_PREFIX = "YOURTURN ";
-    public static final String MOVE_PREFIX = "MOVE ";
-    public static final String CHALLENGE_PREFIX = "CHALLENGE ";
-    public static final String WIN_PREFIX = "WIN ";
-    public static final String LOSS_PREFIX = "LOSS ";
-    public static final String DRAW_PREFIX = "DRAW ";
+    private static final String GAME_PREFIX = "SVR GAME ";
+    private static final String MATCH_PREFIX = "MATCH ";
+    private static final String YOURTURN_PREFIX = "YOURTURN ";
+    private static final String MOVE_PREFIX = "MOVE ";
+    private static final String CHALLENGE_PREFIX = "CHALLENGE ";
+    private static final String WIN_PREFIX = "WIN ";
+    private static final String LOSS_PREFIX = "LOSS ";
+    private static final String DRAW_PREFIX = "DRAW ";
     private static final Logger LOGGER = LogManager.getLogger(ServerResponseReader.class);
     private static final String PLAYERTOMOVE_VARNAME = "PLAYERTOMOVE";
     private static final String GAMETYPE_VARNAME = "GAMETYPE";
@@ -51,20 +51,20 @@ public class ServerResponseReader implements Runnable {
     private static final String COMMENT_VARNAME = "COMMENT";
     private static final String CANCELLED_PREFIX = "CANCELLED ";
     private static final String CHALLENGETURNTIME_VARNAME = "TURNTIME";
-    /**
-     * A boolean indicating if this thread should run
-     */
-    boolean running = true;
-    private Object stopLock = new Object();
-    /**
-     * All gameListeners which will be notified of events
-     */
-    private ArrayList<GameListener> listeners = new ArrayList<>();
+    private final Object stopLock = new Object();
     /**
      * All server responses which should not be sent to listeners (Like a game has started for example, mostly this queue consists of
      * OK's and ERR's). When a line from this queue is read it is also deleted.
      */
-    private Queue<String> responseBuffer = new LinkedList<>();
+    private final Queue<String> responseBuffer = new LinkedList<>();
+    /**
+     * A boolean indicating if this thread should run
+     */
+    private boolean running = true;
+    /**
+     * All gameListeners which will be notified of events
+     */
+    private ArrayList<GameListener> listeners = new ArrayList<>();
     /**
      * A reader to read the input stream.
      */

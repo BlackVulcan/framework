@@ -12,14 +12,14 @@ public interface GameListener {
      * @param gameType     The name of the game which will be played
      * @param opponent     The name of the opponent
      */
-    public void match(String playerToMove, String gameType, String opponent);
+    void match(String playerToMove, String gameType, String opponent);
 
     /**
      * Invoked when it is the client's turn in a game
      *
      * @param turnMessage A message giving more information about the turn.
      */
-    public void yourTurn(String turnMessage);
+    void yourTurn(String turnMessage);
 
     /**
      * Invoked when a move is done
@@ -28,7 +28,7 @@ public interface GameListener {
      * @param move    The move that the player has performed
      * @param details Details about the move
      */
-    public void move(String player, String move, String details);
+    void move(String player, String move, String details);
 
     /**
      * Invoked when the client is being challenged
@@ -37,14 +37,14 @@ public interface GameListener {
      * @param challengeNumber The number of the challenge (used to accept the challenge)
      * @param gameType        The type of game being played.
      */
-    public void challenge(String challenger, String challengeNumber, String gameType,String challengeTurnTime);
+    void challenge(String challenger, String challengeNumber, String gameType, String challengeTurnTime);
 
     /**
      * Invoked when a challenge is cancelled
      *
      * @param challengeNumber The number of the challenge being cancelled
      */
-    public void challengeCancelled(String challengeNumber);
+    void challengeCancelled(String challengeNumber);
 
     /**
      * Invoked when the client has lost a game
@@ -53,7 +53,7 @@ public interface GameListener {
      * @param playerTwoScore The end score of player two
      * @param comment        A comment given by the server
      */
-    public void loss(String playerOneScore, String playerTwoScore, String comment);
+    void loss(String playerOneScore, String playerTwoScore, String comment);
 
     /**
      * Invoked when the client has won a game
@@ -62,7 +62,7 @@ public interface GameListener {
      * @param playerTwoScore The end score of player two
      * @param comment        A comment given by the server
      */
-    public void win(String playerOneScore, String playerTwoScore, String comment);
+    void win(String playerOneScore, String playerTwoScore, String comment);
 
     /**
      * Invoked when the client has played a game which ended in draw.
@@ -71,5 +71,5 @@ public interface GameListener {
      * @param playerTwoScore The end score of player two
      * @param comment        A comment given by the server
      */
-    public void draw(String playerOneScore, String playerTwoScore, String comment);
+    void draw(String playerOneScore, String playerTwoScore, String comment);
 }

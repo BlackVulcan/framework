@@ -77,7 +77,7 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
      *
      * @param focusBorder the foreground color
      */
-    public void setFocusBorder(Border focusBorder) {
+    private void setFocusBorder(Border focusBorder) {
         this.focusBorder = focusBorder;
         editButton.setBorder(focusBorder);
     }
@@ -99,16 +99,7 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        if (value == null) {
-            editButton.setText("");
-            editButton.setIcon(null);
-        } else if (value instanceof Icon) {
-            editButton.setText("");
-            editButton.setIcon((Icon) value);
-        } else {
-            editButton.setText(value.toString());
-            editButton.setIcon(null);
-        }
+        setRenderButtonText(value);
 
         this.editorValue = value;
         return editButton;
@@ -136,6 +127,12 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
             renderButton.setBorder(originalBorder);
         }
 
+        setRenderButtonText(value);
+
+        return renderButton;
+    }
+
+    private void setRenderButtonText(Object value) {
         if (value == null) {
             renderButton.setText("");
             renderButton.setIcon(null);
@@ -146,8 +143,6 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
             renderButton.setText(value.toString());
             renderButton.setIcon(null);
         }
-
-        return renderButton;
     }
 
     //

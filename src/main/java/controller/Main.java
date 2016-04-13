@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class Main {
-    public static final Logger LOGGER = LogManager.getFormatterLogger(Main.class);
-    public static String version;
+    private static final Logger LOGGER = LogManager.getFormatterLogger(Main.class);
 
     private Main(String[] args) throws IOException, InterruptedException {
         Model model = new Model();
@@ -28,7 +27,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        version = Main.class.getPackage().getImplementationVersion();
+        String version = Main.class.getPackage().getImplementationVersion();
         LOGGER.trace("Starting PTGF-Framework");
         LOGGER.trace("Version: " + version);
         LOGGER.trace("Using command line arguments: " + Arrays.toString(args));

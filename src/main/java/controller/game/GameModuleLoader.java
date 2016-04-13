@@ -33,6 +33,7 @@ public class GameModuleLoader {
         gameTypeList = new ArrayList<>(gameModuleMap.keySet());
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static ArrayList<File> getJarFiles(File modulePath) {
         ArrayList<File> jarList = new ArrayList<>();
 
@@ -128,7 +129,7 @@ public class GameModuleLoader {
         JarFile jarFile = new JarFile(file);
 
         // Store found game module classes
-        ArrayList<Class<? extends AbstractGameModule>> classList = new ArrayList<Class<? extends AbstractGameModule>>();
+        ArrayList<Class<? extends AbstractGameModule>> classList = new ArrayList<>();
 
         // Find classes, iterate through Jar file looking for classes who's superclass is castable to AbstractGameModule and is not abstract.
         for (Enumeration<JarEntry> entries = jarFile.entries(); entries.hasMoreElements(); ) {

@@ -12,9 +12,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Jules on 29-3-2016.
- */
 public class ServerConnection {
     private static final Logger LOGGER = LogManager.getLogger(ServerConnection.class);
     private static final String GAMELIST = "gamelist";
