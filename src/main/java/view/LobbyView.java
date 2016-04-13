@@ -91,6 +91,7 @@ public class LobbyView extends JPanel implements View {
 
         challengeTable.setAutoCreateColumnsFromModel(false);
         challengeTable.getTableHeader().setReorderingAllowed(false);
+        challengeTable.setAutoCreateRowSorter(true);
 
         Vector data = challengeTableModel.getDataVector();
         Collections.sort(data, new ColumnSorter(1));
