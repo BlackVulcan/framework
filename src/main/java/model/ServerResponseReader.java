@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * Created by Jules on 29-3-2016.
  * <p>
  * The responseReader reads all input from the server, it also parses all input, if it has found something useful he notifies all listeners
  * If the response doesn't turn out to be useful he adds it to a queue. Lines can be gotten from the queue.

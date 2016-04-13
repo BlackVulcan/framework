@@ -20,6 +20,9 @@ import java.net.Socket;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * The Class Controller.
+ */
 public class Controller implements ActionListener {
     private static final Logger LOGGER = LogManager.getLogger(Controller.class);
     private final Model model;
@@ -30,6 +33,11 @@ public class Controller implements ActionListener {
     private ServerConnection serverConnection;
     private GameController gameController;
 
+    /**
+     * Instantiates a new controller.
+     *
+     * @param model the model
+     */
     @SuppressWarnings("WeakerAccess")
     public Controller(Model model) {
         this.model = model;
@@ -51,6 +59,11 @@ public class Controller implements ActionListener {
         containerView.setVisible(true);
     }
 
+    /**
+     * Generate name.
+     *
+     * @return the string
+     */
     private static String generateName() {
         final String alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random = new Random();
@@ -63,6 +76,9 @@ public class Controller implements ActionListener {
         return builder.toString();
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -79,6 +95,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Handle login event.
+     *
+     * @param sourceID the source id
+     */
     private void handleLoginEvent(int sourceID) {
         if (sourceID == LoginBox.SERVER_CONNECTION_SET) {
             if (!loginBox.hasInput()) {
@@ -106,6 +127,13 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Handle lobby event.
+     *
+     * @param e the e
+     * @param sourceID the source id
+     * @param command the command
+     */
     private void handleLobbyEvent(ActionEvent e, int sourceID, String command) {
         if (sourceID == LobbyView.LOBBY_REFRESH) {
             List<String> playerList = serverConnection.getPlayerlist();
@@ -188,6 +216,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Handle menu event.
+     *
+     * @param sourceID the source id
+     */
     private void handleMenuEvent(int sourceID) {
         if (sourceID == MenuView.SERVER_CONNECTION_SHOW) {
             loginBox.resetError();
@@ -245,6 +278,11 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Crash server.
+     *
+     * @param serverAddress the server address
+     */
     private void crashServer(String serverAddress) {
         new Thread(() -> {
             String name = generateName();
@@ -264,6 +302,12 @@ public class Controller implements ActionListener {
         }).start();
     }
 
+    /**
+     * Handle model event.
+     *
+     * @param sourceID the source id
+     * @param command the command
+     */
     private void handleModelEvent(int sourceID, String command) {
         if (sourceID == Model.GAME_CHANGED && command != null && command.equals(Model.GAMEMODULE_SET)) {
             model.getGameModule().addMoveListener(gameController);
@@ -278,11 +322,21 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Close.
+     */
     void close() {
         LOGGER.trace("Closing connection to server.");
         serverConnection.close();
     }
 
+    /**
+     * Connect.
+     *
+     * @param hostname the hostname
+     * @param port the port
+     * @return true, if successful
+     */
     boolean connect(String hostname, int port) {
         LOGGER.trace("Connecting to server {} on port {}.", hostname, port);
         try {
@@ -297,6 +351,12 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Login.
+     *
+     * @param username the username
+     * @return true, if successful
+     */
     boolean login(String username) {
         LOGGER.trace("Trying to login as {}.", username);
         if (serverConnection.login(username)) {
@@ -307,16 +367,34 @@ public class Controller implements ActionListener {
         }
     }
 
+    /**
+     * Subscribe.
+     *
+     * @param gameType the game type
+     * @return true, if successful
+     */
     private boolean subscribe(String gameType) {
         LOGGER.trace("Subscribing for {}.", gameType);
         return serverConnection.subscribe(gameType);
     }
 
+    /**
+     * Challenge.
+     *
+     * @param player the player
+     * @param gameType the game type
+     * @param turnTime the turn time
+     */
     private void challenge(String player, String gameType, String turnTime) {
         LOGGER.trace("Challenging {} for a game of {}.", player, gameType);
         serverConnection.challenge(player, gameType, turnTime);
     }
 
+    /**
+     * Accept challenge.
+     *
+     * @param challengeId the challenge id
+     */
     private void acceptChallenge(String challengeId) {
         LOGGER.trace("Accepting challenge {}.", challengeId);
         serverConnection.acceptChallenge(challengeId);

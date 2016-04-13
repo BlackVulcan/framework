@@ -4,20 +4,31 @@ package util;
 import java.util.Comparator;
 import java.util.Vector;
 
+/**
+ * The Class ColumnSorter.
+ */
 public class ColumnSorter implements Comparator {
-    private int colIndex;
+    private int columnIndex;
 
+    /**
+     * Instantiates a new column sorter.
+     *
+     * @param colIndex the column index
+     */
     public ColumnSorter(int colIndex) {
-        this.colIndex = colIndex;
+        this.columnIndex = colIndex;
     }
 
+    /* (non-Javadoc)
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
     @SuppressWarnings("unchecked")
     @Override
     public int compare(Object a, Object b) {
         Vector v1 = (Vector) a;
         Vector v2 = (Vector) b;
-        Object o1 = v1.get(colIndex);
-        Object o2 = v2.get(colIndex);
+        Object o1 = v1.get(columnIndex);
+        Object o2 = v2.get(columnIndex);
 
         if (o1 instanceof String && ((String) o1).length() == 0) {
             o1 = null;

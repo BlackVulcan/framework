@@ -3,6 +3,8 @@ package view;
 import model.Model;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import util.ButtonColumn;
 import util.ColumnSorter;
 
 import javax.swing.*;
@@ -15,6 +17,9 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 import java.util.List;
 
+/**
+ * The Class LobbyView.
+ */
 public class LobbyView extends JPanel implements View {
     public static final int LOBBY_REFRESH = 1;
     public static final int PLAY_GAME = 2;
@@ -31,6 +36,9 @@ public class LobbyView extends JPanel implements View {
     private boolean automaticRefresh = false;
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
+    /**
+     * Instantiates a new lobby view.
+     */
     public LobbyView() {
         playerListModel = new DefaultListModel<>();
         gameListModel = new DefaultListModel<>();
@@ -129,6 +137,9 @@ public class LobbyView extends JPanel implements View {
         challengePanel.add(new JScrollPane(challengeTable), BorderLayout.CENTER);
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object object = e.getSource();
@@ -144,6 +155,11 @@ public class LobbyView extends JPanel implements View {
         }
     }
 
+    /**
+     * Gets the selected game.
+     *
+     * @return the selected game
+     */
     public String getSelectedGame() {
         int gameIndex = gameList.getSelectedIndex();
         if (gameIndex >= 0)
@@ -151,6 +167,11 @@ public class LobbyView extends JPanel implements View {
         return null;
     }
 
+    /**
+     * Sets the available games.
+     *
+     * @param games the new available games
+     */
     public void setAvailableGames(List<String> games) {
         resetGameList();
         for (String game : games) {
@@ -158,6 +179,11 @@ public class LobbyView extends JPanel implements View {
         }
     }
 
+    /**
+     * Gets the selected player.
+     *
+     * @return the selected player
+     */
     public String getSelectedPlayer() {
         int playerIndex = playerList.getSelectedIndex();
         if (playerIndex >= 0)
@@ -165,6 +191,12 @@ public class LobbyView extends JPanel implements View {
         return null;
     }
 
+    /**
+     * Sets the available players.
+     *
+     * @param players the players
+     * @param clientName the client name
+     */
     public void setAvailablePlayers(List<String> players, String clientName) {
         for (int i = playerListModel.size() - 1; i >= 0; i--) {
             if (!players.contains(playerListModel.get(i))) {
@@ -175,6 +207,11 @@ public class LobbyView extends JPanel implements View {
         players.stream().filter(player -> !playerListModel.contains(player) && !player.equals(clientName)).forEach(player -> playerListModel.addElement(player));
     }
 
+    /**
+     * Sets the challenge.
+     *
+     * @param challenge the challenge
+     */
     private void setChallenge(Map<String, String> challenge) {
         DefaultTableModel model = (DefaultTableModel) challengeTable.getModel();
 
@@ -184,10 +221,20 @@ public class LobbyView extends JPanel implements View {
                         challenge.get(Model.CHALLENGE_PLAYER), challenge.get(Model.CHALLENGE_TURN_TIME), CHALLENGE_ACCEPT, CHALLENGE_REJECT,});
     }
 
+    /**
+     * Accept challenge.
+     *
+     * @param challengeNumber the challenge number
+     */
     private void acceptChallenge(String challengeNumber) {
         processEvent(new ActionEvent(this, CHALLENGE_ACCEPTED, challengeNumber));
     }
 
+    /**
+     * Delete challenge.
+     *
+     * @param challengeNumber the challenge number
+     */
     public void deleteChallenge(String challengeNumber) {
         DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
         for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
@@ -197,6 +244,9 @@ public class LobbyView extends JPanel implements View {
         }
     }
 
+    /**
+     * Reset challenge.
+     */
     private void resetChallenge() {
         DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
         for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
@@ -204,6 +254,12 @@ public class LobbyView extends JPanel implements View {
         }
     }
 
+    /**
+     * Gets the player from the challenge.
+     *
+     * @param challengeNumber the challenge number
+     * @return the player from challenge
+     */
     public String getPlayerFromChallenge(String challengeNumber) {
         DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
         for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
@@ -214,6 +270,12 @@ public class LobbyView extends JPanel implements View {
         return null;
     }
 
+    /**
+     * Gets the game type from the challenge.
+     *
+     * @param challengeNumber the challenge number
+     * @return the game type from challenge
+     */
     public String getGameTypeFromChallenge(String challengeNumber) {
         DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
         for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
@@ -224,6 +286,12 @@ public class LobbyView extends JPanel implements View {
         return null;
     }
 
+    /**
+     * Gets the turn time from the challenge.
+     *
+     * @param challengeNumber the challenge number
+     * @return the turn time from challenge
+     */
     public String getTurnTimeFromChallenge(String challengeNumber) {
         DefaultTableModel challengeTableModel = (DefaultTableModel) challengeTable.getModel();
         for (int i = challengeTableModel.getRowCount() - 1; i >= 0; i--) {
@@ -234,28 +302,43 @@ public class LobbyView extends JPanel implements View {
         return null;
     }
 
+    /**
+     * Reset the player list.
+     */
     private void resetPlayerList() {
         for (int i = playerListModel.size() - 1; i >= 0; i--) {
             playerListModel.remove(i);
         }
     }
 
+    /**
+     * Reset the game list.
+     */
     private void resetGameList() {
         for (int i = gameListModel.size() - 1; i >= 0; i--) {
             gameListModel.remove(i);
         }
     }
 
+    /**
+     * Reset all the lists and the challenge table.
+     */
     public void reset() {
         resetChallenge();
         resetPlayerList();
         resetGameList();
     }
 
+    /**
+     * Stop the automatic refresh of the lobby.
+     */
     public void stopAutomaticRefresh() {
         automaticRefresh = false;
     }
 
+    /**
+     * Start the automatic refresh of the lobby.
+     */
     public void automaticRefresh() {
         automaticRefresh = true;
         ActionEvent refreshLobby = new ActionEvent(this, LOBBY_REFRESH, null);
@@ -272,11 +355,21 @@ public class LobbyView extends JPanel implements View {
         new Thread(thread).start();
     }
 
+    /**
+     * Process event to listeners.
+     *
+     * @param e the e
+     */
     private void processEvent(ActionEvent e) {
         for (ActionListener l : actionListenerList)
             l.actionPerformed(e);
     }
 
+    /**
+     * Adds an action listener on this class.
+     *
+     * @param actionListener the action listener
+     */
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
     }

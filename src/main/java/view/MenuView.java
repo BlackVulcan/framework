@@ -6,6 +6,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+/**
+ * The Class MenuView.
+ */
 public class MenuView extends JMenuBar implements View {
     public static final int DISCONNECT_FROM_SERVER = 1;
     public static final int SERVER_CONNECTION_SHOW = 4;
@@ -22,6 +25,9 @@ public class MenuView extends JMenuBar implements View {
     private JCheckBoxMenuItem playWithAIMenuItem;
     private ArrayList<ActionListener> actionListenerList = new ArrayList<>();
 
+    /**
+     * Instantiates a new menu view.
+     */
     public MenuView() {
         JMenu start = new JMenu("Start");
         start.setMnemonic(KeyEvent.VK_S);
@@ -96,19 +102,37 @@ public class MenuView extends JMenuBar implements View {
         this.add(foulPlay);
     }
 
+    /**
+     * Adds an action listener.
+     *
+     * @param actionListener the action listener
+     */
     public void addActionListener(ActionListener actionListener) {
         actionListenerList.add(actionListener);
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
     }
 
+    /**
+     * Process event to listeners on this class.
+     *
+     * @param e the e
+     */
     private void processEvent(ActionEvent e) {
         for (ActionListener l : actionListenerList)
             l.actionPerformed(e);
     }
 
+    /**
+     * Switch to the implemented AI of a game module.
+     *
+     * @param playWithAI true, if the AI needs to be activated
+     */
     public void setPlayWithAI(boolean playWithAI) {
         playWithAIMenuItem.setState(playWithAI);
     }

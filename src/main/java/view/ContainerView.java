@@ -9,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * The Class ContainerView.
+ */
 public class ContainerView extends JFrame implements View {
     private static final long serialVersionUID = 1L;
     private static final String RESULT_DRAW = "It's a draw!";
@@ -19,6 +22,9 @@ public class ContainerView extends JFrame implements View {
     private JLabel turn, turnMessage, opponent, time, serverConnection, playSide;
     private boolean gameOver = false;
 
+    /**
+     * Instantiates a new container view.
+     */
     public ContainerView() {
         super("Two player game framework");
         URL resource = getClass().getResource("/gameicon.png");
@@ -57,6 +63,9 @@ public class ContainerView extends JFrame implements View {
         serverPanel.add(playSide);
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object object = e.getSource();
@@ -83,6 +92,11 @@ public class ContainerView extends JFrame implements View {
         }
     }
 
+    /**
+     * Loads the view of a module into the main JPanel.
+     *
+     * @param component the component
+     */
     public void showView(Component component) {
         container.removeAll();
         container.add(component);
@@ -90,10 +104,18 @@ public class ContainerView extends JFrame implements View {
         repaint();
     }
 
+    /**
+     * Sets the window to full screen modus.
+     */
     private void setFullScreen() {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
+    /**
+     * Sets the turn.
+     *
+     * @param myTurn the new turn
+     */
     private void setTurn(Boolean myTurn) {
         String turnInformation;
         if (myTurn)
@@ -103,22 +125,48 @@ public class ContainerView extends JFrame implements View {
         this.turn.setText(turnInformation);
     }
 
+    /**
+     * Sets the turn message.
+     *
+     * @param message the new turn message
+     */
     private void setTurnMessage(String message) {
         this.turnMessage.setText(message);
     }
 
+    /**
+     * Sets the time box with the remaining turn time.
+     *
+     * @param time the new time box
+     */
     private void setTimeBox(String time) {
         this.time.setText(time);
     }
 
+    /**
+     * Sets the server connection text.
+     *
+     * @param serverConnection the new server connection
+     */
     public void setServerConnection(String serverConnection) {
         this.serverConnection.setText(serverConnection);
     }
 
+    /**
+     * Sets the play side text.
+     *
+     * @param playSide the new play side
+     */
     public void setPlaySide(String playSide) {
         this.playSide.setText(playSide);
     }
 
+    /**
+     * Sets the time.
+     *
+     * @param timeInMillis the time in millis
+     * @param model the model
+     */
     private void setTime(int timeInMillis, Model model) {
         Runnable thread = () -> {
             setTimeBox("");
@@ -146,6 +194,9 @@ public class ContainerView extends JFrame implements View {
         new Thread(thread).start();
     }
 
+    /**
+     * Reset the text fields of the upper panel.
+     */
     public void reset() {
         this.turn.setText("");
         this.turnMessage.setText("");

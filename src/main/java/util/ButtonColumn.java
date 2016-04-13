@@ -1,4 +1,4 @@
-package view;
+package util;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -62,7 +62,7 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
     }
 
     /**
-     * The foreground color of the button when the cell has focus
+     * The foreground color of the button when the cell has focus.
      *
      * @param focusBorder the foreground color
      */
@@ -71,6 +71,9 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         editButton.setBorder(focusBorder);
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellEditor#getTableCellEditorComponent(javax.swing.JTable, java.lang.Object, boolean, int, int)
+     */
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
         setRenderButtonText(value);
@@ -79,11 +82,17 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         return editButton;
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.CellEditor#getCellEditorValue()
+     */
     @Override
     public Object getCellEditorValue() {
         return editorValue;
     }
 
+    /* (non-Javadoc)
+     * @see javax.swing.table.TableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
+     */
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
                                                    int row, int column) {
@@ -106,6 +115,11 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         return renderButton;
     }
 
+    /**
+     * Sets the render button text.
+     *
+     * @param value the new render button text
+     */
     private void setRenderButtonText(Object value) {
         if (value == null) {
             renderButton.setText("");
@@ -119,9 +133,9 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         }
     }
 
-    //
-//  Implement ActionListener interface
-//
+    /* (non-Javadoc)
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
     /*
      *	The button has been pressed. Stop editing and invoke the custom Action
 	 */
@@ -134,6 +148,9 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         action.actionPerformed(event);
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+     */
     /*
      *  When the mouse is pressed the editor is invoked. If you then then drag
 	 *  the mouse to another cell before releasing it, the editor is still
@@ -146,6 +163,9 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
             isButtonColumnEditor = true;
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
         if (isButtonColumnEditor
@@ -155,14 +175,23 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
         isButtonColumnEditor = false;
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
     }
 
+    /* (non-Javadoc)
+     * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+     */
     @Override
     public void mouseExited(MouseEvent e) {
     }

@@ -7,9 +7,19 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.util.Arrays;
 
+/**
+ * The Class Main.
+ */
 public class Main {
     private static final Logger LOGGER = LogManager.getFormatterLogger(Main.class);
 
+    /**
+     * Instantiates a new main.
+     *
+     * @param args the args
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws InterruptedException the interrupted exception
+     */
     private Main(String[] args) throws IOException, InterruptedException {
         Model model = new Model();
         Controller controller = new Controller(model);
@@ -26,6 +36,13 @@ public class Main {
         }
     }
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws InterruptedException the interrupted exception
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String version = Main.class.getPackage().getImplementationVersion();
         LOGGER.trace("Starting PTGF-Framework");
